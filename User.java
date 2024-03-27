@@ -50,14 +50,7 @@ public class User implements UserInterface {
     public void unblockUser(String username) {
 //implement
     }
-    // method to save the information to all_users.txt
-  //public void saveToFile(String fileName) {
-        //try (PrintWriter writer = new PrintWriter(new FileWriter(fileName, true))) {
-           // writer.println(username + "|" + password + "|" + String.join("|", friends) + "|" + String.join("|", blockedUsers));
-       // } catch (IOException e) {
-         //   e.printStackTrace();
-        //}
-   // }
+    
     // other methods
 
     public String getUsername() {
