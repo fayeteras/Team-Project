@@ -35,5 +35,15 @@ public interface DatabaseInterface {
         void deletePost(Post post);
   
 //some methods might require or work better with boolean
+        //if yall implement the methods in the correspoding classes the databaseinterface will still have - 
+        
+        // method to save the information to all_users.txt
+  //public void saveToFile(String fileName) {
+        //try (PrintWriter writer = new PrintWriter(new FileWriter(fileName, true))) {
+           // writer.println(username + "|" + password + "|" + String.join("|", friends) + "|" + String.join("|", blockedUsers));
+       // } catch (IOException e) {
+         //   e.printStackTrace();
+        //}
+   // } (same for user_posts.txt and user_comments.txt)
 
     }
