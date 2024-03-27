@@ -1,20 +1,20 @@
 public interface DatabaseInterface {
 
-        void createUser(String username, String password);
+        void createUser(String username, String password); //userprofile creation
 
-        void searchUser(String username);
+        void searchUser(String username); //viewing/searching users
 
-        boolean authenticateUser(String username, String password);
+        boolean authenticateUser(String username, String password); // checking pw and username (equal)
 
-        void addFriend(String username);
+        void addFriend(String username); //add
 
-        void removeFriend(String username);
+        void removeFriend(String username); //remove
 
         void blockUser(String username);
 
         void unblockUser(String username);
 
-        void makePost(String content);
+        void makePost(String content); //createPost
 
         Post[] getFeed(); // displaying all friends feed
 
