@@ -1,0 +1,5 @@
+//format here
+Username|PostID|Content|LikeCount|DislikeCount|
+//examples here
+OurLordAndSavni|1|This is my first post!|3|4|
+MitchellDanielsBlvd|2|Just had a BLAST in CS180 today!|0|50|
