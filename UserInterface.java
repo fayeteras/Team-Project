@@ -13,5 +13,7 @@ public interface UserInterface {
 
     void unblockUser(String username);
 
+    Post[] getFeed(); // displaying all friends feed
+
 
 }
