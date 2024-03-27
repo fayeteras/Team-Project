@@ -1,0 +1,8 @@
+Brief summary...
+The database’s current function is to save the file info to the User, Post, and Comment classes. 
+All the adding and deleting of Users, Posts, and Comments happen in their respective classes. 
+If you find that this doesn’t work and wish to move all of the adding and deleting to the database, please do so bc we aren’t 100% on it. 
+We have added a few helpful comments that will hopefully guide you all, but sorry if they are vague.
+We have added the 3 .txt files for users, posts, and comments. each file has expected formats with some examples.
+The interfaces and (hopefully prior to your meetup) the User class is completed, so the database, post, and comment classes are left.
+I L O V E C O D I N G 
