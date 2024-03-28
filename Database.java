@@ -1,3 +1,4 @@
+//(Noah) for future reference, i made this. anyone who makes big changes add your name in a comment.
 public class Database implements DatabaseInterface{
 	private final String filename;
 	
