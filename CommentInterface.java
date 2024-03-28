@@ -1,4 +1,5 @@
 public interface CommentInterface {
+    /*
     //(Savni) Takes a comment from the user and adds it to the post specified by the user
     public void addComment(Post post, Comment comment);
 
@@ -15,4 +16,9 @@ public interface CommentInterface {
     //(Sean) Stringafies the fields of the Comment class
     //Formatting can be seen in userComments.txt
     public String toString();
+    */
+
+    //(Noah) Comment is a child of post, so these would be inherited. That or they don't make sense. I added the only one in the comment class rn below.
+
+    public Post getParent();
 }
