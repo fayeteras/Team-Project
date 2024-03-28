@@ -14,6 +14,7 @@ public class User implements UserInterface {
         this.password = password;
         this.friendList = null;
         this.blockList = null;
+        //add code to add this to the new user file
     }
 
     //getters
@@ -46,7 +47,7 @@ public class User implements UserInterface {
     //I accessed the allUsers file directly for these.
     //We will probably access the files differently later on, but idk.
     
-    /*
+    /* (Noah) this should be in the database class.
     public void createUser() {
         //(Sean) Outputs toString() of current user to the allUsers file.
         try {
@@ -132,10 +133,11 @@ public class User implements UserInterface {
     }
 
     //(Sean) Savni's code btw
+    
     public boolean authenticateUser(String username, String password) {
         return this.username.equals(username) && this.password.equals(password);
     }
-
+    
     //(Sean) Savni started this one, but I ruined everything she tried to do.
     public void addFriend(String friendUsername) {
         //(Sean) friendList may be null, as this could be the user's first friend.
