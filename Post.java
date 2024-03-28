@@ -1,3 +1,5 @@
+import java.sql.Timestamp;
+
 public class Post implements PostInterface {
     private final String username;
     private int likes;
@@ -13,6 +15,8 @@ public class Post implements PostInterface {
         likes = 0;
         dislikes = 0;
         //time = don't actually know how to do this
+        Timestamp ts1 = new Timestamp(System.currentTimeMillis());
+        System.out.println("Timestamp : " + ts1);
         //edited = false
     }
 }
