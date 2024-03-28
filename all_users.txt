@@ -1,5 +1,5 @@
 //format here
-Username|Password|Friend1;Friend2|BlockedUser1;BlockedUser2
+Username|Password|Friend1;Friend2|BlockedUser1;BlockedUser2|
 //examples here
-BigGuy|Sm@llGuy|DaVanci|WillyWoo;SpamBot
-Seanski|D@Man123|NoahWinny;TylerTheCrater|Savni123;FaykeUser
+BigGuy|Sm@llGuy|DaVanci|WillyWoo;SpamBot|
+Seanski|D@Man123|NoahWinny;TylerTheCrater|Savni123;FaykeUser|
