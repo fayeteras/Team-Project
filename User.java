@@ -2,13 +2,13 @@ import java.io.*;
 //(Sean) NOTE: I finished this class really late so literally none
 //of it has been tested. you're welcome.
 public class User implements UserInterface {
-    //Da fields
-    private String username;
+    //fields
+    private final String username;
     private String password;
     private String[] friendList;
     private String[] blockList;
 
-    //Da constructor
+    //constructor
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -16,7 +16,7 @@ public class User implements UserInterface {
         this.blockList = null;
     }
 
-    // Da getters
+    //getters
     public String getUsername() {
         return username;
     }
@@ -32,7 +32,7 @@ public class User implements UserInterface {
         return blockList;
     }
 
-    //Da methods
+    //methods
 
     //(Sean) I'm pretty sure createUser and searchUser interact with the user files, so
     //I accessed the allUsers file directly for these.
