@@ -71,5 +71,7 @@ public class Post implements PostInterface {
     //Increments dislikes count here to 
     //not use up resources with .size()
     }
+    //Still need Methods to Write and Read Likes, Dislikes, 
+    //and timestamp to store and retrieve them
 }
     
