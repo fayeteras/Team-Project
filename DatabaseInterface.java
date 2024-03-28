@@ -30,7 +30,7 @@ public interface DatabaseInterface {
     //(Noah) It does not. commented out.
     //public Post[] getFeed();
 
-    //(Noah) I made the database file. so i'm adding the methods that are in there.
+    //(Noah) I made the database file. so i'm adding the methods that are in there. The three below are mine. 
 
     public boolean addUser(User user);
 
