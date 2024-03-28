@@ -32,12 +32,21 @@ public class User implements UserInterface {
         return blockList;
     }
 
+    public boolean isFriend(String username) {
+        //returns if the given username is a friend of the user
+    }
+
+    public boolean isBlocked(String username) {
+        //returns if the given username is blocked by the user
+    }
+
     //methods
 
     //(Sean) I'm pretty sure createUser and searchUser interact with the user files, so
     //I accessed the allUsers file directly for these.
     //We will probably access the files differently later on, but idk.
-
+    
+    /*
     public void createUser() {
         //(Sean) Outputs toString() of current user to the allUsers file.
         try {
@@ -51,7 +60,8 @@ public class User implements UserInterface {
             e.printStackTrace();
         }
     }
-
+    */
+    
     //(Sean) These other people in the computer lab I'm in won't stop yapping
     //I'm about to snap
     public String[] searchUsers(String searchText) {
