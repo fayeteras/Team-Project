@@ -6,13 +6,13 @@ public class Database implements DatabaseInterface{
 		filename = "allUsers.txt";
 	}
 
-	public boolean addUser(User user) {
+	public boolean addUser(String username, String password) {
 		try {
 			File f = new File(filename);
 			FileOutputStream fos = new FileWriter(f);
 			FileWriter fw = new FileWriter(fos);
 	
-			fw.println(user.getUsername() + ", " + user.getPassword());
+			fw.println(username + "," + password);
 	
 			fw.close();
 			return true;
@@ -46,7 +46,7 @@ public class Database implements DatabaseInterface{
 		}
 	}
 
-	public String getPassword(String username) {
+	public String authenticateUser(String username) {
 		try {
 			File f = new File(filename);
 			FileReader fr = new FileReader(f);
@@ -59,7 +59,7 @@ public class Database implements DatabaseInterface{
 					break;
 
 				if (line.substring(0, line.indexOf(",")).equals(username)) {
-					return line.substring(line.indexOf("," + 1));
+					return line.substring(line.indexOf("," + 1)).equals(password);
 				}
 			}
 			bfr.close();
