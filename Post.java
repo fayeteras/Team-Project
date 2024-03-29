@@ -22,7 +22,7 @@ public class Post implements PostInterface {
         //edited = false
     }
     
-    public Int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
+    public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         //System.out.println("Timestamp : " + ts); <- Full TimeStamp
         String ts1 = ts.toString();
@@ -46,11 +46,11 @@ public class Post implements PostInterface {
     // of people that have liked the post, removes there username if already in list (removing like)
     // or adds them if not (liking post)
         //Also not sure when to return what -- (to be discussed)
-        if (liked.contains(username) {
-            liked.remove(username)
+        if (liked.contains(username)) {
+            liked.remove(username);
             likes--;
         } else {
-            liked.add(username)
+            liked.add(username);
             likes++;
         }
     //Increments likes count here to 
@@ -62,10 +62,10 @@ public class Post implements PostInterface {
     // or adds them if not (disliking post)
         //Also not sure when to return what -- (to be discussed)
         if (disliked.contains(username) {
-            disliked.remove(username)
+            disliked.remove(username);
             dislikes--;
         } else {
-            disliked.add(username)
+            disliked.add(username);
             dislikes++;
         }
     //Increments dislikes count here to 
