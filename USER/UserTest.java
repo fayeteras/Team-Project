@@ -1,14 +1,36 @@
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
+import java.io.*;
 
 public class UserTest {
+
+    @Test
+    public void testCreateUser() {
+        User user = new User("testUser", "testPassword");
+        assertNotNull(user);
+        assertTrue(user.checkFriendsFile().exists());
+        assertTrue(user.checkBlockedFile().exists());
+        System.out.println("User Created - Success");
+    }
+
+
+    @Test
+    public void testCreateFile() {
+        User user = new User("testUser", "testPassword");
+        assertNotNull(user.checkFriendsFile());
+        assertNotNull(user.checkBlockedFile());
+        System.out.println("File Created - Success");
+    }
 
     @Test
     public void testAddFriend() {
         User user = new User("testUser", "testPassword");
         assertTrue(user.addFriend("friend1"));
         assertTrue(user.getFriendList().contains("friend1"));
-        System.out.println("Friend added successfully");
+        // Check if changes are reflected in the file
+        assertTrue(checkFileContainsUser("testUser_Friends.txt", "friend1"));
+        System.out.println("Friend added - Success");
+        System.out.println(user.getFriendList());
     }
 
     @Test
@@ -17,7 +39,9 @@ public class UserTest {
         user.addFriend("friend1");
         assertTrue(user.removeFriend("friend1"));
         assertFalse(user.getFriendList().contains("friend1"));
-        System.out.println("Friend removed successfully");
+        // Check if changes are reflected in the file
+        assertFalse(checkFileContainsUser("testUser_Friends.txt", "friend1"));
+        System.out.println("Friend removed - Success");
     }
 
     @Test
@@ -25,7 +49,10 @@ public class UserTest {
         User user = new User("testUser", "testPassword");
         assertTrue(user.blockUser("blockedUser"));
         assertTrue(user.getBlockList().contains("blockedUser"));
-        System.out.println("User blocked successfully");
+        // Check if changes are reflected in the file
+        assertTrue(checkFileContainsUser("testUser_Blocked.txt", "blockedUser"));
+        System.out.println("User blocked - Success");
+        System.out.println(user.getBlockList());
     }
 
     @Test
@@ -34,6 +61,22 @@ public class UserTest {
         user.blockUser("blockedUser");
         assertTrue(user.unblockUser("blockedUser"));
         assertFalse(user.getBlockList().contains("blockedUser"));
-        System.out.println("User unblocked successfully");
+        // Check if changes are reflected in the file
+        assertFalse(checkFileContainsUser("testUser_Blocked.txt", "blockedUser"));
+        System.out.println("User unblocked - Success");
+    }
+
+    private boolean checkFileContainsUser(String filename, String username) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.equals(username)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
