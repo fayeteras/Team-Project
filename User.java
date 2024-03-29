@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class User implements UserInterface {
     //fields
     private final String username;
-    private String password;
+    //private String password; (Noah) commented out because password now stored in database.
     private ArrayList<String> friendList;
     private ArrayList<String> blockList;
     private File friendsFile;
@@ -16,7 +16,7 @@ public class User implements UserInterface {
     //constructor
     public User(String username, String password) {
         this.username = username;
-        this.password = password;
+        //this.password = password;
         this.friendsFile = new File(username + "_Friends.txt");
         this.blockFile = new File(username + "_Blocked.txt");
         //(Noah) I noticed that the friends list array list doesn't actually refill with the friends list from the file if the servers go down so
@@ -34,7 +34,7 @@ public class User implements UserInterface {
             }
         } catch (Exception ex) {
             this.friendList = null;
-        }
+        } //(Noah) Not printing stack trace because the exception occurs whenever they don't have any friends :(
 
         try {
             fr = new FileReader(blockFile);
@@ -49,7 +49,7 @@ public class User implements UserInterface {
             }
         } catch (Exception ex) {
             this.blockList = null;
-        }
+        } //this will occur whenever they don't have any people blocked :) so no need to print a stack trace.
 
         bfr.close();
         
