@@ -8,6 +8,7 @@ public class UserTest {
         User user = new User("testUser", "testPassword");
         assertTrue(user.addFriend("friend1"));
         assertTrue(user.getFriendList().contains("friend1"));
+        System.out.println("Friend added successfully");
     }
 
     @Test
@@ -16,6 +17,7 @@ public class UserTest {
         user.addFriend("friend1");
         assertTrue(user.removeFriend("friend1"));
         assertFalse(user.getFriendList().contains("friend1"));
+        System.out.println("Friend removed successfully");
     }
 
     @Test
@@ -23,6 +25,7 @@ public class UserTest {
         User user = new User("testUser", "testPassword");
         assertTrue(user.blockUser("blockedUser"));
         assertTrue(user.getBlockList().contains("blockedUser"));
+        System.out.println("User blocked successfully");
     }
 
     @Test
@@ -31,5 +34,6 @@ public class UserTest {
         user.blockUser("blockedUser");
         assertTrue(user.unblockUser("blockedUser"));
         assertFalse(user.getBlockList().contains("blockedUser"));
+        System.out.println("User unblocked successfully");
     }
 }
