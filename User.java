@@ -213,21 +213,8 @@ public class User implements UserInterface {
         return false;
     }
 
+    //(Noah) I moved writeFile into the database because it's used by both user and post so it would be better to leave it there.
 
-    private static boolean writeFile (File filename, ArrayList<String> array) {
-        try (FileOutputStream fos = new FileOutputStream(filename, false);
-             PrintWriter writer = new PrintWriter(fos)) {
-            for (int i = 0; i < array.size(); i++) {
-                writer.write(array.get(i));
-                writer.println();
-            }
-            writer.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
 //    public String toString() {
 //        String allFriends = "";
