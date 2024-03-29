@@ -202,8 +202,7 @@ public class User implements UserInterface {
     public boolean blockUser(String username) {
         if (!blockList.contains(username)) {
             blockList.add(username);
-            writeFile(blockedFile, blockList);
-            return true;
+            return writeFile(blockedFile, blockList);
         }
         return false;
     }
@@ -235,6 +234,21 @@ public class User implements UserInterface {
             }
         }
         return false;
+    }
+
+    public boolean writeFile (File filename, ArrayList<String> array) {
+        try (FileOutputStream fos = new FileOutputStream(filename, false);
+             PrintWriter writer = new PrintWriter(fos)) {
+            for (int i = 0; i < array.size(); i++) {
+                writer.write(array.get(i));
+                writer.println();
+            }
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
