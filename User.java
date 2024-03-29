@@ -10,7 +10,7 @@ public class User implements UserInterface {
     private ArrayList<String> friendList;
     private ArrayList<String> blockList;
     private File friendsFile;
-    private File blockedFile;
+    private File blockFile;
 
 
     //constructor
@@ -20,21 +20,7 @@ public class User implements UserInterface {
         this.friendList = null;
         this.blockList = null;
         this.friendsFile = new File(username + "_Friends.txt");
-        this.blockedFile = new File(username + "_Blocked.txt");
-    }
-
-    //
-    public void addFriend(String friendName) {
-        friendList.add(friendName);
-    }
-
-    public void writeToFile(String username, String filename, String input) {
-        try (FileOutputStream fos = new FileOutputStream(filename);
-             PrintWriter writer = new PrintWriter(fos)) {
-            writer.println(" " + input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.blockFile = new File(username + "_Blocked.txt");
     }
 
     public String getUsername() {
@@ -50,14 +36,13 @@ public class User implements UserInterface {
     }
 
     public boolean isFriend(String username) {
-        return friendList.contains(username)
+        return friendList.contains(username);
     }
 
     public boolean isBlocked(String username) {
         return blockList.contains(username);
     }
 
-    //methods
 
     //(Sean) I'm pretty sure createUser and searchUser interact with the user files, so
     //I accessed the allUsers file directly for these.
@@ -151,14 +136,24 @@ public class User implements UserInterface {
     //(Sean) Savni's code btw
 
 
-    //(Faye) I think it makes more since to just write them directly to the file so they're stored efficiently
     //(Sean) Savni started this one, but I ruined everything she tried to do.
 
-    //(Faye) Should be easier to just remove from an arraylist, if returns false we'll show an error that this user
+    //METHODS
+    //(Faye) Should be easier to just add and remove from an arraylist, if returns false we'll show an error that this user
     //is already added/isn't on the list
+    public boolean addFriend(String username) {
+        if (!friendList.contains(username)) {
+            friendList.add(username);
+            writeFile(friendsFile, friendList);
+            return true;
+        }
+        return false;
+    }
+
     public boolean removeFriend(String username) {
         if (friendList.contains(username)) {
             friendList.remove(username);
+            writeFile(friendsFile, friendList);
             return true;
         }
         return false;
@@ -166,6 +161,7 @@ public class User implements UserInterface {
     public boolean blockUser(String username) {
         if (!blockList.contains(username)) {
             blockList.add(username);
+            writeFile(blockFile, blockList);
             return true;
         }
         return false;
@@ -174,9 +170,26 @@ public class User implements UserInterface {
     public boolean unblockUser(String username) {
         if (blockList.contains(username)) {
             blockList.remove(username);
+            writeFile(blockFile, blockList);
             return true;
         }
         return false;
+    }
+
+
+    private boolean writeFile (File filename, ArrayList<String> array) {
+        try (FileOutputStream fos = new FileOutputStream(filename, false);
+             PrintWriter writer = new PrintWriter(fos)) {
+            for (int i = 0; i < array.size(); i++) {
+                writer.write(array.get(i));
+                writer.println();
+            }
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 //    public String toString() {
@@ -196,6 +209,6 @@ public class User implements UserInterface {
 //
 //        return String.format("%s|%s|%s|%s", username, password, allFriends, allBlocked);
 //    }
-    
-    
+
+
 }
