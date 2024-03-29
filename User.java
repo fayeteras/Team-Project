@@ -177,7 +177,7 @@ public class User implements UserInterface {
     //(Faye) Should be easier to just add and remove from an arraylist, if returns false we'll show an error that this user
     //is already added/isn't on the list
     public boolean addFriend(String username) {
-        if (!friendList.contains(username)) {
+        if (!friendList.contains(username) && !this.isblocked(username)) { //(Noah) can't friend somebody you've blocked. 
             friendList.add(username);
             writeFile(friendsFile, friendList);
             return true;
@@ -197,6 +197,8 @@ public class User implements UserInterface {
         if (!blockList.contains(username)) {
             blockList.add(username);
             writeFile(blockFile, blockList);
+            if (isFriend(username)) //(Noah)If you block your friend take them off the friends list
+                this.removeFriend(username);
             return true;
         }
         return false;
