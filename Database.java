@@ -68,5 +68,21 @@ public class Database implements DatabaseInterface{
 			return null;
 		}
 	}
+
+	//(Noah) Faye wrote this i just moved it here because it makes more sense here with it being used in both user and post.
+	private static boolean writeFile (File filename, ArrayList<String> array) {
+        try (FileOutputStream fos = new FileOutputStream(filename, false);
+             PrintWriter writer = new PrintWriter(fos)) {
+            for (int i = 0; i < array.size(); i++) {
+                writer.write(array.get(i));
+                writer.println();
+            }
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 	
 }
