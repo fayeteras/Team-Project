@@ -6,57 +6,65 @@ import java.util.ArrayList;
 public class User implements UserInterface {
     //fields
     private final String username;
-    //private String password; (Noah) commented out because password now stored in database.
+    //(Faye) since we only reference password in database we may not need this field here
+    private String password;
     private ArrayList<String> friendList;
     private ArrayList<String> blockList;
     private File friendsFile;
-    private File blockFile;
+    private File blockedFile;
 
 
     //constructor
     public User(String username, String password) {
         this.username = username;
-        //this.password = password;
-        this.friendsFile = new File(username + "_Friends.txt");
-        this.blockFile = new File(username + "_Blocked.txt");
-        //(Noah) I noticed that the friends list array list doesn't actually refill with the friends list from the file if the servers go down so
-        //after the servers go down the getfriendslist method wouldn't do anything. So i added the below stuff to make it update that
-        friendList = new ArrayList<String>();
-        blockList = new ArrayList<String>();
-        try {
-            FileReader fr = new FileReader(friendsFile);
-            BufferedReader bfr = new BufferedReader(fr);
-            String line;
-            while(true) {
-                line = bfr.readLine();
-    
-                if (line == null)
-                    break;
-                this.friendList.add(line);
-            }
-        } catch (Exception ex) {
-            continue;
-        } //(Noah) Not printing stack trace because the exception occurs whenever they don't have any friends :(
-
-        try {
-            fr = new FileReader(blockFile);
-            bfr = new BufferedReader(fr);
-    
-            while(true) {
-                line = bfr.readLine();
-    
-                if (line == null)
-                    break;
-                this.blockList.add(line);
-            }
-        } catch (Exception ex) {
-            continue;
-        } //this will occur whenever they don't have any people blocked :) so no need to print a stack trace.
-
-        bfr.close();
-        
-        
+        this.password = password;
+        this.friendList = new ArrayList<>();
+        this.blockList = new ArrayList<>();
+        this.friendsFile = checkFriendsFile();
+        this.blockedFile = checkBlockedFile();
     }
+
+    //(Faye) When username is referenced, if the file has not been created yet will create the file. 
+    // If it has will initialize the array using the file.
+    public File checkFriendsFile() {
+        File file = new File(username + "_Friends.txt");
+        if (file.exists()) {
+            friendsFile = file;
+            if (friendList.isEmpty()) {
+                readFile(friendsFile, friendList);
+            }
+        } else {
+            friendsFile = createFile(file);
+        }
+        return friendsFile;
+    }
+    
+    public File checkBlockedFile() {
+        File file = new File(username + "_Blocked.txt");
+        if (file.exists()) {
+            blockedFile = file;
+            if (blockList.isEmpty()) {
+                readFile(blockedFile, blockList);
+            }
+        } else {
+            blockedFile = createFile(file);
+        }
+        return blockedFile;
+    }
+    
+    private File createFile(File file) {
+        try {
+            if (file.createNewFile()) {
+                return file;
+            } else {
+                System.err.println("Failed to create file: " + file.getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if file creation fails
+    }
+    
 
     public String getUsername() {
         return username;
@@ -177,10 +185,9 @@ public class User implements UserInterface {
     //(Faye) Should be easier to just add and remove from an arraylist, if returns false we'll show an error that this user
     //is already added/isn't on the list
     public boolean addFriend(String username) {
-        if (!friendList.contains(username) && !this.isblocked(username)) { //(Noah) can't friend somebody you've blocked. 
+        if (!friendList.contains(username)) {
             friendList.add(username);
-            writeFile(friendsFile, friendList);
-            return true;
+            return writeFile(friendsFile, friendList);
         }
         return false;
     }
@@ -188,17 +195,14 @@ public class User implements UserInterface {
     public boolean removeFriend(String username) {
         if (friendList.contains(username)) {
             friendList.remove(username);
-            writeFile(friendsFile, friendList);
-            return true;
+            return writeFile(friendsFile, friendList);
         }
         return false;
     }
     public boolean blockUser(String username) {
         if (!blockList.contains(username)) {
             blockList.add(username);
-            writeFile(blockFile, blockList);
-            if (isFriend(username)) //(Noah)If you block your friend take them off the friends list
-                this.removeFriend(username);
+            writeFile(blockedFile, blockList);
             return true;
         }
         return false;
@@ -207,13 +211,31 @@ public class User implements UserInterface {
     public boolean unblockUser(String username) {
         if (blockList.contains(username)) {
             blockList.remove(username);
-            writeFile(blockFile, blockList);
-            return true;
+            return writeFile(blockedFile, blockList);
         }
         return false;
     }
 
-    //(Noah) I moved writeFile into the database because it's used by both user and post so it would be better to leave it there.
+
+    //Reads file to intitialize arrays when the server is started up again
+    protected boolean readFile (File filename, ArrayList<String> array) {
+        
+        if (filename.exists()) {
+            try (FileReader fileReader = new FileReader(filename);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                array.add(line);
+            }
+            return true;
+
+            } catch (IOException e) {
+            e.printStackTrace();
+            }
+        }
+        return false;
+    }
 
 
 //    public String toString() {
@@ -233,6 +255,7 @@ public class User implements UserInterface {
 //
 //        return String.format("%s|%s|%s|%s", username, password, allFriends, allBlocked);
 //    }
+
 
 
 }
