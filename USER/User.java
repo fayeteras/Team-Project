@@ -59,7 +59,7 @@ public class User implements UserInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null; // Return null if file creation fails
+        return null;
     }
     
 
@@ -213,7 +213,8 @@ public class User implements UserInterface {
     }
 
 
-    //Reads file to intitialize arrays when the server is started up again
+    //(Faye) Reads file to intitialize arrays when the server is started up again
+    //Every line is added to the array, which is returned to recreate the array
     protected boolean readFile (File filename, ArrayList<String> array) {
         
         if (filename.exists()) {

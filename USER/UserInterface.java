@@ -1,13 +1,18 @@
+import java.io.File;
 import java.util.ArrayList;
 
 public interface UserInterface {
     //(Sean) the getters. If there are more variables you think
     //are needed for the class, don't forget to add the getter.
     public String getUsername();
-    //(Faye) shouldn't need password if it's stored in Database
-//    public String getPassword();
+    
     public ArrayList<String> getFriendList();
+
     public ArrayList<String> getBlockList();
+
+    public File checkFriendsFile();
+
+    public File checkBlockedFile();
 
     //(Sean) **FILE USED**
     //creates a new user by appending the allUsers file
@@ -34,22 +39,24 @@ public interface UserInterface {
 
     //(Faye) I changed all of these to booleans so we can check if there's an error and return an error message
     //(Sean) adds a friend String to the friendList array in the user class
-    public boolean addFriend(String friendUsername);
+    public boolean addFriend(String username);
 
     //(Sean) removes a friend string from the friendList.
-    public boolean removeFriend(String friendUsername);
+    public boolean removeFriend(String username);
 
     //(Sean) Adds a user String to the blockList array in the user class
     //This functions almost the exact same way as addFriend() btw
-    public boolean blockUser(String friendUsername);
+    public boolean blockUser(String username);
 
     //(Sean) Removes a user string from the blockList.
     //This functions almost the exact same way as removeFriend() btw
-    public boolean unblockUser(String friendUsername);
+    public boolean unblockUser(String username);
 
     //Instead of making it a string I changed it to update each file after the array is changed
     //(Sean) Stringafies the fields of the User class
     //Formatting can be seen in allUsers.txt
 //    public String toString();
+    
+    public boolean writeFile(File filename, ArrayList<String> array);
     
 }
