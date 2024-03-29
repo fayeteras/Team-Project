@@ -17,10 +17,43 @@ public class User implements UserInterface {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.friendList = null;
-        this.blockList = null;
         this.friendsFile = new File(username + "_Friends.txt");
         this.blockFile = new File(username + "_Blocked.txt");
+        //(Noah) I noticed that the friends list array list doesn't actually refill with the friends list from the file if the servers go down so
+        //after the servers go down the getfriendslist method wouldn't do anything. So i added the below stuff to make it update that
+        try {
+            FileReader fr = new FileReader(friendsFile);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line;
+            while(true) {
+                line = bfr.readLine();
+    
+                if (line == null)
+                    break;
+                this.friendList.add(line);
+            }
+        } catch (Exception ex) {
+            this.friendList = null;
+        }
+
+        try {
+            fr = new FileReader(blockFile);
+            bfr = new BufferedReader(fr);
+    
+            while(true) {
+                line = bfr.readLine();
+    
+                if (line == null)
+                    break;
+                this.blockList.add(line);
+            }
+        } catch (Exception ex) {
+            this.blockList = null;
+        }
+
+        bfr.close();
+        
+        
     }
 
     public String getUsername() {
