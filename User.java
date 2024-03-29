@@ -212,7 +212,7 @@ public class User implements UserInterface {
     }
 
 
-    private boolean writeFile (File filename, ArrayList<String> array) {
+    private static boolean writeFile (File filename, ArrayList<String> array) {
         try (FileOutputStream fos = new FileOutputStream(filename, false);
              PrintWriter writer = new PrintWriter(fos)) {
             for (int i = 0; i < array.size(); i++) {
