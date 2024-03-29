@@ -9,7 +9,7 @@ public class Post implements PostInterface {
     private int[] time;
     private ArrayList<String> liked;
     private ArrayList<String> disliked;
-    //private boolean edited? might be good to have some indicator of that.
+    private boolean edited;
 
     public Post(String username, String text) {
         this.username = username;
@@ -73,5 +73,12 @@ public class Post implements PostInterface {
     }
     //Still need Methods to Write and Read Likes, Dislikes, 
     //and timestamp to store and retrieve them
+
+    public boolean editPost(String newText){ //(Noah)
+        this.text = newText;
+    }
+
+    
+    
 }
     
