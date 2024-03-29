@@ -6,8 +6,6 @@ import java.util.ArrayList;
 public class User implements UserInterface {
     //fields
     private final String username;
-    //(Faye) since we only reference password in database we may not need this field here
-    private String password;
     private ArrayList<String> friendList;
     private ArrayList<String> blockList;
     private File friendsFile;
@@ -15,9 +13,8 @@ public class User implements UserInterface {
 
 
     //constructor
-    public User(String username, String password) {
+    public User(String username) {
         this.username = username;
-        this.password = password;
         this.friendList = new ArrayList<>();
         this.blockList = new ArrayList<>();
         this.friendsFile = checkFriendsFile();
