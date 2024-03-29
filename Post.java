@@ -9,9 +9,13 @@ public class Post implements PostInterface {
     private int[] time;
     private ArrayList<String> liked;
     private ArrayList<String> disliked;
+    private final int postNumber; //(Noah) this is a bit odd, but i realized we need to have a way to separate each post's like/dislike files from each other.
+    //with users we used the usernames to do that but posts don't have a name so I added a number to use to separate each one.
+    private File likesFile;
+    private File dislikesFile;
     private boolean edited;
 
-    public Post(String username, String text) {
+    public Post(String username, String text, int postNumber) {
         this.username = username;
         this.text = text;
         likes = 0;
@@ -19,7 +23,42 @@ public class Post implements PostInterface {
         time = getCurrentTime(); //This Too <-
         liked = new ArrayList<String>(); //(Tyler) These still need to be written
         disliked = new ArrayList<String>(); //To files to store (probably in Post Method)
-        //edited = false
+        edited = false;
+        //(Noah) added the part below, mostly just copy pasted from the User constructor because it's mostly the same thing.
+        this.likesFile = new File(username + "_" + postNumber + "_likes.txt");
+        this.dislikesFile = new File(username + "_" + postNumber + "_dislikes.txt");
+
+        try {
+            FileReader fr = new FileReader(likesFile);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line;
+            while(true) {
+                line = bfr.readLine();
+    
+                if (line == null)
+                    break;
+                this.liked.add(line);
+            }
+        } catch (Exception ex) {
+            continue;
+        } //(Noah) Not printing stack trace because the exception occurs whenever they don't have any likes :(
+
+        try {
+            fr = new FileReader(dislikesFile);
+            bfr = new BufferedReader(fr);
+    
+            while(true) {
+                line = bfr.readLine();
+    
+                if (line == null)
+                    break;
+                this.disliked.add(line);
+            }
+        } catch (Exception ex) {
+            continue;
+        } //this will occur whenever they don't have any dislikes :) so no need to print a stack trace.      
+
+        bfr.close();
     }
     
     public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
@@ -76,6 +115,33 @@ public class Post implements PostInterface {
 
     public boolean editPost(String newText){ //(Noah)
         this.text = newText;
+        this.edited = true;
+    }
+
+    public boolean like(String username) { //(Noah)
+        if (!liked.contains(username)) {
+            liked.add(username);
+            writeFile(likesFile, liked);
+            if (disliked.contains(username)) {
+                disliked.remove(username);
+                writeFile(dislikesFile, disliked);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean dislike(String username) { //(Noah)
+        if (!disliked.contains(username)) {
+            disliked.add(username);
+            writeFile(dislikesFile, disliked);
+            if (liked.contains(username)) {
+                liked.remove(username);
+                writeFile(likesFile, liked);
+            }
+            return true;
+        }
+        return false;
     }
 
     
