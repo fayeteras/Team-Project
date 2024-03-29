@@ -21,6 +21,8 @@ public class User implements UserInterface {
         this.blockFile = new File(username + "_Blocked.txt");
         //(Noah) I noticed that the friends list array list doesn't actually refill with the friends list from the file if the servers go down so
         //after the servers go down the getfriendslist method wouldn't do anything. So i added the below stuff to make it update that
+        friendList = new ArrayList<String>();
+        blockList = new ArrayList<String>();
         try {
             FileReader fr = new FileReader(friendsFile);
             BufferedReader bfr = new BufferedReader(fr);
@@ -33,7 +35,7 @@ public class User implements UserInterface {
                 this.friendList.add(line);
             }
         } catch (Exception ex) {
-            this.friendList = null;
+            continue;
         } //(Noah) Not printing stack trace because the exception occurs whenever they don't have any friends :(
 
         try {
@@ -48,7 +50,7 @@ public class User implements UserInterface {
                 this.blockList.add(line);
             }
         } catch (Exception ex) {
-            this.blockList = null;
+            continue;
         } //this will occur whenever they don't have any people blocked :) so no need to print a stack trace.
 
         bfr.close();
