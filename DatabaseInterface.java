@@ -36,5 +36,10 @@ public interface DatabaseInterface {
 
     public boolean userExists(String username);
 
-    public String getPassword(String username);
+    //(Sean) you have this method listed in this interface, yet it's not implemented in the Database class
+    //Idk if you meant authenticateUser instead of getPassword, but I'll leave it commented out.
+    //public String getPassword(String username);
+
+    //(Sean) added this method here bc it exists in the Database class
+    public String authenticateUser(String username);
 }
