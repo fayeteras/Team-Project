@@ -1,4 +1,14 @@
 //(Noah) for future reference, i made this. anyone who makes big changes add your name in a comment.
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
 public class Database implements DatabaseInterface{
 	private final String filename;
 	
@@ -13,6 +23,7 @@ public class Database implements DatabaseInterface{
 			FileWriter fw = new FileWriter(fos);
 	
 			fw.println(username + "," + password);
+			new User(username, password);
 	
 			fw.close();
 			return true;
@@ -70,7 +81,8 @@ public class Database implements DatabaseInterface{
 	}
 
 	//(Noah) Faye wrote this i just moved it here because it makes more sense here with it being used in both user and post.
-	private static boolean writeFile (File filename, ArrayList<String> array) {
+	//(Faye) this makes it much more difficult to use in User. For now I'm going to have it in user as well, but we can talk about it.
+	public boolean writeFile (File filename, ArrayList<String> array) {
         try (FileOutputStream fos = new FileOutputStream(filename, false);
              PrintWriter writer = new PrintWriter(fos)) {
             for (int i = 0; i < array.size(); i++) {
