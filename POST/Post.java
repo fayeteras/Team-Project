@@ -12,48 +12,36 @@ public class Post implements PostInterface {
     private int[] time;
     private ArrayList<String> liked;
     private ArrayList<String> disliked;
-    private final int postNumber; //(Noah) this is a bit odd, but i realized we need to have a way to separate each post's like/dislike files from each other.
-    //with users, we used the usernames to do that but posts don't have a name so I added a number to use to separate each one.
-    private File textFile;
-    private File likesFile;
-    private File dislikesFile;
+    private final File textFile;
+    private final File likesFile;
+    private final File dislikesFile;
     private ArrayList<Comment> comments;
     private boolean edited;
 
-    public Post(String username, String text, int postNumber) {
+    public Post(String username, String text, String fileName) {
         this.username = username;
         this.text = text;
         likes = 0;
         dislikes = 0;
-        this.postNumber = postNumber;
         time = getCurrentTime(); //This Too <-
         liked = new ArrayList<String>(); //(Tyler) These still need to be written
         disliked = new ArrayList<String>(); //To files to store (probably in Post Method)
         edited = false;
         //(Noah) added the part below, mostly just copy pasted from the User constructor because it's mostly the same thing.
-        this.textFile = new File(username + "_" + postNumber + ".txt");
-        this.likesFile = new File(username + "_" + postNumber + "_likes.txt");
-        this.dislikesFile = new File(username + "_" + postNumber + "_dislikes.txt");
-
-        try {
-            fr = new FileReader(textFile);
-            bfr = new BufferedReader(fr);
-            bfr.writeLine(text);
-        } catch (IOException e) {
-        //placeholder
-        }
+        this.textFile = new File(fileName + ".txt");
+        this.likesFile = new File(fileName + "_likes.txt");
+        this.dislikesFile = new File(fileName + "_dislikes.txt");
     }
-    
-    public Post(String username, int postNumber) {
+
+    public Post(String username, String fileName) {
         this.username  =username;
-        this.postNumber = postNumber;
         time = getCurrentTime();
         FileReader fr;
         BufferedReader bfr = null;
 
-        this.textFile = new File(username + "_" + postNumber + ".txt");
-        this.likesFile = new File(username + "_" + postNumber + "_likes.txt");
-        this.dislikesFile = new File(username + "_" + postNumber + "_dislikes.txt");
+        this.textFile = new File(fileName + ".txt");
+        this.likesFile = new File(fileName + "_likes.txt");
+        this.dislikesFile = new File(fileName + "_dislikes.txt");
 
         try {
             fr = new FileReader(textFile);
@@ -64,7 +52,7 @@ public class Post implements PostInterface {
             //an empty thing here but i mean this should do it.
             //(Noah) Not printing stack trace because the exception occurs whenever they don't have any likes :(
         }
-        
+
         try {
             fr = new FileReader(likesFile);
             bfr = new BufferedReader(fr);
@@ -136,7 +124,7 @@ public class Post implements PostInterface {
     //     } */
     //     //(Noah) see below comment ope
     //     return liked.contains(username);
-    // //Increments likes count here to 
+    // //Increments likes count here to
     // //not use up resources with .size()
     // }
     // public boolean dislikes(String username) { //(Tyler)
@@ -156,10 +144,10 @@ public class Post implements PostInterface {
     //     return disliked.contains(username); //(Noah)ok so i didn't realize that this was doing that sorry. but i
     //     //think it does make more sense for adding a dislike and returning dislikes to be separate things so i just
     //     //did that.
-    // //Increments dislikes count here to 
+    // //Increments dislikes count here to
     // //not use up resources with .size()
     // }
-    //Still need Methods to Write and Read Likes, Dislikes, 
+    //Still need Methods to Write and Read Likes, Dislikes,
     //and timestamp to store and retrieve them
 
     public void editPost(String newText){ //(Noah)
@@ -207,4 +195,4 @@ public class Post implements PostInterface {
     //need a delete post method
 
 }
-    
+
