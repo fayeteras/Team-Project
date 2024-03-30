@@ -5,13 +5,13 @@ import java.util.ArrayList;
 
 public class Database implements DatabaseInterface {
     private final String filename;
-
+    
     public Database() {
         filename = "allUsers.txt";
     }
 
     // Add user to the database file
-    public boolean addUser(String username, String password) {
+    public synchronized boolean addUser(String username, String password) {
         try (FileWriter fw = new FileWriter(filename, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter pw = new PrintWriter(bw)) {
@@ -25,7 +25,7 @@ public class Database implements DatabaseInterface {
     }
 
     // Check if user exists in the database file
-    public boolean userExists(String username) {
+    public synchronized boolean userExists(String username) {
         File file = new File(filename);
         if (!file.exists()) {
             return false; // File doesn't exist, so user can't exist
@@ -44,7 +44,7 @@ public class Database implements DatabaseInterface {
     }
 
     // Authenticate user credentials
-    public boolean authenticateUser(String username, String password) {
+    public synchronized boolean authenticateUser(String username, String password) {
         File file = new File(filename);
         if (!file.exists()) {
             return false; // File doesn't exist, so user can't be authenticated
@@ -64,7 +64,7 @@ public class Database implements DatabaseInterface {
     }
 
     // Utility method to write data to a file
-    public static boolean writeFile(File filename, ArrayList<String> array) {
+    public synchronized static boolean writeFile(File filename, ArrayList<String> array) {
         try (FileOutputStream fos = new FileOutputStream(filename, false);
              PrintWriter writer = new PrintWriter(fos)) {
             for (String line : array) {
