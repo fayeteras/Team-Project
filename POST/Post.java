@@ -17,6 +17,7 @@ public class Post implements PostInterface {
     private final File dislikesFile;
     private ArrayList<Comment> comments;
     private boolean edited;
+    private boolean hidden;
 
     public Post(String username, String text, String fileName) {
         this.username = username;
@@ -153,6 +154,10 @@ public class Post implements PostInterface {
     public void editPost(String newText){ //(Noah)
         this.text = newText;
         this.edited = true;
+    }
+
+    public void hidePost() {
+    hidden = true;
     }
 
     public boolean like(String username) { //(Noah) so the way it works is a bit confusing but you give the user
