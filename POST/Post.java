@@ -23,13 +23,14 @@ public class Post implements PostInterface {
     public Post(String username, String text, int postNumber) {
         this.username = username;
         this.text = text;
-        likes = 0;
-        dislikes = 0;
+
         this.postNumber = postNumber;
         time = getCurrentTime(); //This Too <-
         liked = new ArrayList<String>(); //(Tyler) These still need to be written
         disliked = new ArrayList<String>(); //To files to store (probably in Post Method)
         edited = false;
+        likes = liked.size();
+        dislikes = disliked.size();
         //(Noah) added the part below, mostly just copy pasted from the User constructor because it's mostly the same thing.
         this.likesFile = new File(username + "_" + postNumber + "_likes.txt");
         this.dislikesFile = new File(username + "_" + postNumber + "_dislikes.txt");
@@ -143,23 +144,28 @@ public class Post implements PostInterface {
         //who's liking it as a parameter.
         if (!liked.contains(username)) {
             liked.add(username);
+            likes++;
             Database.writeFile(likesFile, liked);
             if (disliked.contains(username)) {
                 disliked.remove(username);
                 Database.writeFile(dislikesFile, disliked);
+                dislikes--;
             }
             return true;
         }
         return false;
     }
 
+
     public boolean dislike(String username) { //(Noah)
         if (!disliked.contains(username)) {
             disliked.add(username);
+            dislikes++;
             Database.writeFile(dislikesFile, disliked);
             if (liked.contains(username)) {
                 liked.remove(username);
                 Database.writeFile(likesFile, liked);
+                likes--;
             }
             return true;
         }
