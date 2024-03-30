@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 public class PostTest {
 
     @Test(timeout = 1000)
-    public void testConstructorWithText() {
+    public void testCreateNewPost() {
         Post post1 = new Post("user1", "Hello World!", "post1");
         assertEquals("Hello World!", post1.getText());
     }
@@ -14,18 +14,21 @@ public class PostTest {
         Post post1 = new Post("user1", "Hello World!", "post1");
         post1.editPost("Edited post1 text");
         assertEquals("Edited post1 text", post1.getText());
+        assertTrue(post1.isEdited());
     }
 
     @Test(timeout = 1000)
     public void testLikes() {
         Post post1 = new Post("user1", "Hello World!", "post1");
         assertTrue(post1.like("user2"));
+        assertTrue(post1.getLikesList().contains("user2"));
     }
 
     @Test(timeout = 1000)
     public void testDislikes() {
         Post post1 = new Post("user1", "Hello World!", "post1");
         assertTrue(post1.dislike("user3"));
+        assertTrue(post1.getDislikesList().contains("user3"));
     }
 
     @Test(timeout = 1000)
@@ -58,5 +61,7 @@ public class PostTest {
         Post post2 = new Post("user2", "post2", "name");
         post2.hide("user2");
         assertTrue(post2.getHidden().contains("user2"));
-        }
+    }
+
+    
 }

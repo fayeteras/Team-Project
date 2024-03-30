@@ -20,34 +20,6 @@ public class Post implements PostInterface {
     private final File hiddenFile;
     private final File editedFile;
 
-     //GETTERS (Faye)
-    public String getUsername() {
-        return username;
-    }
-    public String getText() {
-        return text;
-    }
-    public int getLikesCount() {
-        return likesCount;
-    }
-    public int getDislikesCount() {
-        return dislikesCount;
-    }
-    public int[] getTime() {
-        return time;
-    }
-    public ArrayList<String> getLikesList() {
-        return likesList;
-    }
-    public ArrayList<String> getDislikesList() {
-        return dislikesList;
-    }
-    public ArrayList<String> getHidden() {
-        return hidden;
-    }
-    public boolean isEdited() {
-        return edited;
-    }
 
     public Post(String username, String text, String fileName) {
         this.username = username;
@@ -67,8 +39,9 @@ public class Post implements PostInterface {
         this.editedFile = new File(fileName + "_edited.txt");
     }
 
+    //Written by Noah edited by Faye
     public Post(String username, String fileName) {
-        this.username  =username;
+        this.username  = username;
         time = getCurrentTime();
         FileReader fr;
         BufferedReader bfr = null;
@@ -84,65 +57,85 @@ public class Post implements PostInterface {
             bfr = new BufferedReader(fr);
             this.text = bfr.readLine();
         } catch(Exception ex) {
-            //(Noah) ok idk the best way to do this but it doesn't need to do a single thing here. feels weird having
-            //an empty thing here but i mean this should do it.
-            //(Noah) Not printing stack trace because the exception occurs whenever they don't have any likes :(
+            ex.printStackTrace();
         }
 
+        String line;
         try {
             fr = new FileReader(likesFile);
             bfr = new BufferedReader(fr);
-            String line;
-            while(true) {
-                line = bfr.readLine();
-
-                if (line == null)
-                    break;
+            while((line = bfr.readLine()) != null) {
                 this.likesList.add(line);
             }
         } catch(Exception ex) {
             //(Noah) ok idk the best way to do this but it doesn't need to do a single thing here. feels weird having
             //an empty thing here but i mean this should do it.
             //(Noah) Not printing stack trace because the exception occurs whenever they don't have any likes :(
+            ex.printStackTrace();
         }
 
         try {
             fr = new FileReader(dislikesFile);
             bfr = new BufferedReader(fr);
-
-            while(true) {
-                String line = bfr.readLine();
-
-                if (line == null)
-                    break;
+            while((line = bfr.readLine()) != null) {
                 this.dislikesList.add(line);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
         } //this will occur whenever they don't have any dislikes :) so no need to print a stack trace.
 
         try {
             fr = new FileReader(hiddenFile);
             bfr = new BufferedReader(fr);
-
-            while(true) {
-                String line = bfr.readLine();
-
-                if (line == null)
-                    break;
+            while((line = bfr.readLine()) != null) {
                 this.hidden.add(line);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         try {
             fr = new FileReader(editedFile);
             bfr = new BufferedReader(fr);
             this.edited = Boolean.parseBoolean(bfr.readLine());
+            fr.close();
+            bfr.close();
         } catch(Exception ex) {
+            ex.printStackTrace();
         }
+        
 
     }
 
+         //GETTERS (Faye)
+         public String getUsername() {
+            return username;
+        }
+        public String getText() {
+            return text;
+        }
+        public int getLikesCount() {
+            return likesCount;
+        }
+        public int getDislikesCount() {
+            return dislikesCount;
+        }
+        public int[] getTime() {
+            return time;
+        }
+        public ArrayList<String> getLikesList() {
+            return likesList;
+        }
+        public ArrayList<String> getDislikesList() {
+            return dislikesList;
+        }
+        public ArrayList<String> getHidden() {
+            return hidden;
+        }
+        public boolean isEdited() {
+            return edited;
+        }
+    
     public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         //System.out.println("Timestamp : " + ts); <- Full TimeStamp
@@ -175,7 +168,6 @@ public class Post implements PostInterface {
         Database.writeFile(textFile, texts);
     }
 
-   
     public boolean hide(String username) {
         if (!hidden.contains(username)) {
             hidden.add(username);
@@ -225,10 +217,10 @@ public class Post implements PostInterface {
             dislikesFile.delete();
             return true;
         } catch (Exception ex) {
-            return false;
+            ex.printStackTrace();
         }
+        return false;
     }
 
-    //need a delete post method
 
 }

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public interface PostInterface {
     //(Savni) Creates a post that contains a string of content
     //public void makePost(String content);
@@ -5,6 +7,15 @@ public interface PostInterface {
     //(Savni) Takes a post and increments the like total of it
     public boolean like(String username);
 
+    //(Faye) getters
+    public String getUsername();
+    public int getLikesCount();
+    public int getDislikesCount();
+    public int[] getTime();
+    public ArrayList<String> getLikesList();
+    public ArrayList<String> getDislikesList();
+    public ArrayList<String> getHidden();
+    public boolean isEdited();
 
     //(Savni) Takes a post and increments the dislike total of it
     public boolean dislike(String username);
