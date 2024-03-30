@@ -142,9 +142,6 @@ public class Post implements PostInterface {
         }
 
     }
-    
-        return text;
-    }
 
     public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
         Timestamp ts = new Timestamp(System.currentTimeMillis());
