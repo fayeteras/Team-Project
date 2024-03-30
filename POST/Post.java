@@ -151,17 +151,29 @@ public class Post implements PostInterface {
         Database.writeFile(textFile, texts);
     }
 
+    public ArrayList<String> getliked() {
+        return liked;
+    }
+    public ArrayList<String> getDisliked() {
+        return disliked;
+    }
+    public ArrayList<String> getHidden() {
+        return hidden;
+    }
+    public boolean isEdited() {
+        return edited;
+    }
+ 
     public boolean hide(String username) {
         if (!hidden.contains(username)) {
             hidden.add(username);
             Database.writeFile(hiddenFile, hidden);
-            if (hidden.contains(username)) {
-                hidden.remove(username);
-                Database.writeFile(hiddenFile, hidden);
-            }
             return true;
+        } else if (hidden.contains(username)) {
+            hidden.remove(username);
+            Database.writeFile(hiddenFile, hidden);
         }
-        return false;
+            return false;
     }
 
     public synchronized boolean like(String username) { //(Noah) so the way it works is a bit confusing but you give the user

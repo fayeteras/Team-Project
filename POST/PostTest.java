@@ -57,5 +57,6 @@ public class PostTest {
     public void testHidePost() {
         Post post2 = new Post("user2", "post2");
         post2.hide("user2");
-    }
+        assertTrue(post2.getHidden().contains("user2"));
+        }
 }
