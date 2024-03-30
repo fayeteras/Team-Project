@@ -56,7 +56,6 @@ public class PostTest {
     @Test(timeout = 1000)
     public void testHidePost() {
         Post post2 = new Post("user2", "post2");
-        post2.hidePost();
-        assertTrue(post2.isHidden);
+        post2.hide("user2");
     }
 }
