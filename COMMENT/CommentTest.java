@@ -24,9 +24,9 @@ public class CommentTest {
         assertEquals("Parent of comment2: ", comment2.getParent().getText());
 
         // Test likes and dislikes for comments
-        assertTrue(comment1.likes("user1"));
-        assertFalse(comment1.dislikes("user2"));
-        assertFalse(comment2.likes("user1"));
-        assertTrue(comment2.dislikes("user2"));
+        assertTrue(comment1.like("user1"));
+        assertFalse(comment1.dislike("user2"));
+        assertFalse(comment2.like("user1"));
+        assertTrue(comment2.dislike("user2"));
     }
 }
