@@ -3,7 +3,7 @@ public class Comment extends Post implements CommentInterface {
     private final Post parent;
 
     public Comment(String username, String fileName, String text, Post parent) {
-        super(username, text, filename);
+        super(username, text, fileName);
         this.parent = parent;
     }
 
