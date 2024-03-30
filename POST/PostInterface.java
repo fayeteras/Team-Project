@@ -27,7 +27,7 @@ public interface PostInterface {
 
     //(Faye) adds or removes username from array of likes (method written by Tyler)
     public boolean likes(String username);
-    
+
     //(Faye) adds or removes username from array of dislikes (method written by Tyler)
     public boolean dislikes(String username);
 
