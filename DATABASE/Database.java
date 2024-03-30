@@ -19,13 +19,13 @@ public class Database implements DatabaseInterface{
 	public boolean addUser(String username, String password) {
 		try {
 			File f = new File(filename);
-			FileOutputStream fos = new FileWriter(f);
-			FileWriter fw = new FileWriter(fos);
+			FileOutputStream fos = new FileOutputStream(f);
+			PrintWriter pw = new PrintWriter(fos);
 	
-			fw.println(username + "," + password);
-			new User(username, password);
+			pw.println(username + "," + password);
+			new User(username);
 	
-			fw.close();
+			pw.close();
 			return true;
 		} catch (Exception ex) {
 			return false;
@@ -41,7 +41,7 @@ public class Database implements DatabaseInterface{
 			String line;
 			boolean found = false;
 			while(true) {
-				line = bfr.nextLine();
+				line = bfr.readLine();
 				if (line == null)
 					break;
 
@@ -57,7 +57,7 @@ public class Database implements DatabaseInterface{
 		}
 	}
 
-	public String authenticateUser(String username) {
+	public boolean authenticateUser(String username, String password) {
 		try {
 			File f = new File(filename);
 			FileReader fr = new FileReader(f);
@@ -65,7 +65,7 @@ public class Database implements DatabaseInterface{
 
 			String line;
 			while(true) {
-				line = bfr.nextLine();
+				line = bfr.readLine();
 				if (line == null)
 					break;
 
@@ -74,15 +74,15 @@ public class Database implements DatabaseInterface{
 				}
 			}
 			bfr.close();
-			return null;
+			return false;
 		} catch (Exception ex) {
-			return null;
+			return false;
 		}
 	}
 
 	//(Noah) Faye wrote this i just moved it here because it makes more sense here with it being used in both user and post.
 	//(Faye) this makes it much more difficult to use in User. For now I'm going to have it in user as well, but we can talk about it.
-	public boolean writeFile (File filename, ArrayList<String> array) {
+	public static boolean writeFile (File filename, ArrayList<String> array) {
         try (FileOutputStream fos = new FileOutputStream(filename, false);
              PrintWriter writer = new PrintWriter(fos)) {
             for (int i = 0; i < array.size(); i++) {
