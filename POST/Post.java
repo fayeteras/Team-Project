@@ -13,9 +13,11 @@ public class Post implements PostInterface {
     private ArrayList<String> liked;
     private ArrayList<String> disliked;
     private final int postNumber; //(Noah) this is a bit odd, but i realized we need to have a way to separate each post's like/dislike files from each other.
-    //with users we used the usernames to do that but posts don't have a name so I added a number to use to separate each one.
+    //with users, we used the usernames to do that but posts don't have a name so I added a number to use to separate each one.
     private File likesFile;
     private File dislikesFile;
+
+    private ArrayList<Comment> comments;
     private boolean edited;
 
     public Post(String username, String text, int postNumber) {
@@ -23,6 +25,7 @@ public class Post implements PostInterface {
         this.text = text;
         likes = 0;
         dislikes = 0;
+        this.postNumber = postNumber;
         time = getCurrentTime(); //This Too <-
         liked = new ArrayList<String>(); //(Tyler) These still need to be written
         disliked = new ArrayList<String>(); //To files to store (probably in Post Method)
@@ -31,9 +34,12 @@ public class Post implements PostInterface {
         this.likesFile = new File(username + "_" + postNumber + "_likes.txt");
         this.dislikesFile = new File(username + "_" + postNumber + "_dislikes.txt");
 
+        FileReader fr;
+        BufferedReader bfr = null;
+
         try {
-            FileReader fr = new FileReader(likesFile);
-            BufferedReader bfr = new BufferedReader(fr);
+            fr = new FileReader(likesFile);
+            bfr = new BufferedReader(fr);
             String line;
             while(true) {
                 line = bfr.readLine();
@@ -42,9 +48,11 @@ public class Post implements PostInterface {
                     break;
                 this.liked.add(line);
             }
-        } catch (Exception ex) {
-            continue;
-        } //(Noah) Not printing stack trace because the exception occurs whenever they don't have any likes :(
+        } catch(Exception ex) {
+            //(Noah) ok idk the best way to do this but it doesn't need to do a single thing here. feels weird having
+            //an empty thing here but i mean this should do it.
+            //(Noah) Not printing stack trace because the exception occurs whenever they don't have any likes :(
+        }
 
         try {
             fr = new FileReader(dislikesFile);
@@ -58,10 +66,7 @@ public class Post implements PostInterface {
                 this.disliked.add(line);
             }
         } catch (Exception ex) {
-            continue;
-        } //this will occur whenever they don't have any dislikes :) so no need to print a stack trace.      
-
-        bfr.close();
+        } //this will occur whenever they don't have any dislikes :) so no need to print a stack trace.
     }
     
     public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
@@ -89,13 +94,16 @@ public class Post implements PostInterface {
     // of people that have liked the post, removes there username if already in list (removing like)
     // or adds them if not (liking post)
         //Also not sure when to return what -- (to be discussed)
+        /*
         if (liked.contains(username)) {
             liked.remove(username);
             likes--;
         } else {
             liked.add(username);
             likes++;
-        }
+        } */
+        //(Noah) see below comment ope
+        return liked.contains(username);
     //Increments likes count here to 
     //not use up resources with .size()
     }
@@ -104,31 +112,37 @@ public class Post implements PostInterface {
     // of people that have disliked the post, removes there username if already in list (removing dislike)
     // or adds them if not (disliking post)
         //Also not sure when to return what -- (to be discussed)
-        if (disliked.contains(username) {
+        /*
+        if (disliked.contains(username)) {
             disliked.remove(username);
             dislikes--;
         } else {
             disliked.add(username);
             dislikes++;
         }
+         */
+        return disliked.contains(username); //(Noah)ok so i didn't realize that this was doing that sorry. but i
+        //think it does make more sense for adding a dislike and returning dislikes to be separate things so i just
+        //did that.
     //Increments dislikes count here to 
     //not use up resources with .size()
     }
     //Still need Methods to Write and Read Likes, Dislikes, 
     //and timestamp to store and retrieve them
 
-    public boolean editPost(String newText){ //(Noah)
+    public void editPost(String newText){ //(Noah)
         this.text = newText;
         this.edited = true;
     }
 
-    public boolean like(String username) { //(Noah)
+    public boolean like(String username) { //(Noah) so the way it works is a bit confusing but you give the user
+        //who's liking it as a parameter.
         if (!liked.contains(username)) {
             liked.add(username);
-            writeFile(likesFile, liked);
+            Database.writeFile(likesFile, liked);
             if (disliked.contains(username)) {
                 disliked.remove(username);
-                writeFile(dislikesFile, disliked);
+                Database.writeFile(dislikesFile, disliked);
             }
             return true;
         }
@@ -138,17 +152,27 @@ public class Post implements PostInterface {
     public boolean dislike(String username) { //(Noah)
         if (!disliked.contains(username)) {
             disliked.add(username);
-            writeFile(dislikesFile, disliked);
+            Database.writeFile(dislikesFile, disliked);
             if (liked.contains(username)) {
                 liked.remove(username);
-                writeFile(likesFile, liked);
+                Database.writeFile(likesFile, liked);
             }
             return true;
         }
         return false;
     }
 
-    
+    public boolean deletePost() {
+        try {
+            likesFile.delete();
+            dislikesFile.delete();
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    //need a delete post method
     
 }
     
