@@ -68,6 +68,10 @@ public class Post implements PostInterface {
         } catch (Exception ex) {
         } //this will occur whenever they don't have any dislikes :) so no need to print a stack trace.
     }
+    //(savni)
+    public String getText() {
+        return text;
+    }
     
     public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
         Timestamp ts = new Timestamp(System.currentTimeMillis());
