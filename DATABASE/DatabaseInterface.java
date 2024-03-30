@@ -32,7 +32,7 @@ public interface DatabaseInterface {
 
     //(Noah) I made the database file. so i'm adding the methods that are in there. The three below are mine. 
 
-    public boolean addUser(User user);
+    public boolean addUser(String username, String password);
 
     public boolean userExists(String username);
 
@@ -41,5 +41,5 @@ public interface DatabaseInterface {
     //public String getPassword(String username);
 
     //(Sean) added this method here bc it exists in the Database class
-    public String authenticateUser(String username);
+    public boolean authenticateUser(String username, String password);
 }
