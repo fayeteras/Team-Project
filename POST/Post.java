@@ -6,12 +6,12 @@ import java.util.ArrayList;
 
 public class Post implements PostInterface {
     private final String username;
-    private int likes;
-    private int dislikes;
     private String text;
+    private int likesCount;
+    private int dislikesCount;
     private int[] time;
-    private ArrayList<String> liked;
-    private ArrayList<String> disliked;
+    private ArrayList<String> likesList;
+    private ArrayList<String> dislikesList;
     private ArrayList<String> hidden;
     private boolean edited;
     private final File textFile;
@@ -19,16 +19,44 @@ public class Post implements PostInterface {
     private final File dislikesFile;
     private final File hiddenFile;
     private final File editedFile;
-    private ArrayList<Comment> comments;
+
+     //GETTERS (Faye)
+    public String getUsername() {
+        return username;
+    }
+    public String getText() {
+        return text;
+    }
+    public int getLikesCount() {
+        return likesCount;
+    }
+    public int getDislikesCount() {
+        return dislikesCount;
+    }
+    public int[] getTime() {
+        return time;
+    }
+    public ArrayList<String> getLikesList() {
+        return likesList;
+    }
+    public ArrayList<String> getDislikesList() {
+        return dislikesList;
+    }
+    public ArrayList<String> getHidden() {
+        return hidden;
+    }
+    public boolean isEdited() {
+        return edited;
+    }
 
     public Post(String username, String text, String fileName) {
         this.username = username;
         this.text = text;
-        likes = 0;
-        dislikes = 0;
+        likesCount = 0;
+        dislikesCount = 0;
         time = getCurrentTime(); //This Too <-
-        liked = new ArrayList<String>(); //(Tyler) These still need to be written
-        disliked = new ArrayList<String>(); //To files to store (probably in Post Method)
+        likesList = new ArrayList<String>(); //(Tyler) These still need to be written
+        dislikesList = new ArrayList<String>(); //To files to store (probably in Post Method)
         hidden = new ArrayList<String>();
         edited = false;
         //(Noah) added the part below, mostly just copy pasted from the User constructor because it's mostly the same thing.
@@ -70,7 +98,7 @@ public class Post implements PostInterface {
 
                 if (line == null)
                     break;
-                this.liked.add(line);
+                this.likesList.add(line);
             }
         } catch(Exception ex) {
             //(Noah) ok idk the best way to do this but it doesn't need to do a single thing here. feels weird having
@@ -87,7 +115,7 @@ public class Post implements PostInterface {
 
                 if (line == null)
                     break;
-                this.disliked.add(line);
+                this.dislikesList.add(line);
             }
         } catch (Exception ex) {
         } //this will occur whenever they don't have any dislikes :) so no need to print a stack trace.
@@ -115,7 +143,6 @@ public class Post implements PostInterface {
 
     }
     
-    public String getText() {
         return text;
     }
 
@@ -151,19 +178,7 @@ public class Post implements PostInterface {
         Database.writeFile(textFile, texts);
     }
 
-    public ArrayList<String> getliked() {
-        return liked;
-    }
-    public ArrayList<String> getDisliked() {
-        return disliked;
-    }
-    public ArrayList<String> getHidden() {
-        return hidden;
-    }
-    public boolean isEdited() {
-        return edited;
-    }
- 
+   
     public boolean hide(String username) {
         if (!hidden.contains(username)) {
             hidden.add(username);
@@ -178,12 +193,14 @@ public class Post implements PostInterface {
 
     public synchronized boolean like(String username) { //(Noah) so the way it works is a bit confusing but you give the user
         //who's liking it as a parameter.
-        if (!liked.contains(username)) {
-            liked.add(username);
-            Database.writeFile(likesFile, liked);
-            if (disliked.contains(username)) {
-                disliked.remove(username);
-                Database.writeFile(dislikesFile, disliked);
+        if (!likesList.contains(username)) {
+            likesList.add(username);
+            Database.writeFile(likesFile, likesList);
+            likesCount++;
+            if (dislikesList.contains(username)) {
+                dislikesList.remove(username);
+                Database.writeFile(dislikesFile, dislikesList);
+                dislikesCount--;
             }
             return true;
         }
@@ -191,12 +208,14 @@ public class Post implements PostInterface {
     }
 
     public synchronized boolean dislike(String username) { //(Noah)
-        if (!disliked.contains(username)) {
-            disliked.add(username);
-            Database.writeFile(dislikesFile, disliked);
-            if (liked.contains(username)) {
-                liked.remove(username);
-                Database.writeFile(likesFile, liked);
+        if (!dislikesList.contains(username)) {
+            dislikesList.add(username);
+            dislikesCount++;
+            Database.writeFile(dislikesFile, dislikesList);
+            if (likesList.contains(username)) {
+                likesList.remove(username);
+                Database.writeFile(likesFile, likesList);
+                likesCount--;
             }
             return true;
         }
