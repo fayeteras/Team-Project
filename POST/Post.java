@@ -124,13 +124,13 @@ public class Post implements PostInterface {
     //         disliked.add(username);
     //         dislikes++;
     //     }
-         */
-        return disliked.contains(username); //(Noah)ok so i didn't realize that this was doing that sorry. but i
-        //think it does make more sense for adding a dislike and returning dislikes to be separate things so i just
-        //did that.
-    //Increments dislikes count here to 
-    //not use up resources with .size()
-    }
+    //      */
+    //     return disliked.contains(username); //(Noah)ok so i didn't realize that this was doing that sorry. but i
+    //     //think it does make more sense for adding a dislike and returning dislikes to be separate things so i just
+    //     //did that.
+    // //Increments dislikes count here to 
+    // //not use up resources with .size()
+    // }
     //Still need Methods to Write and Read Likes, Dislikes, 
     //and timestamp to store and retrieve them
 
