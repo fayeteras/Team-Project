@@ -18,5 +18,16 @@ public interface PostInterface {
     //(Sean) Stringafies the fields of the Post class
     //Formatting can be seen in userPosts.txt
     public String toString();
+
+    //(Faye) gets current time stamp (method written by Tyler)
+    public int[] getCurrentTime();
+
+    //(Faye) replaces old comment with new text (method written by Noah)
+    public boolean editPost(String newText);
+
+    //(Faye) adds or removes username from array of likes (method written by Tyler)
+    public boolean likes(String username);
     
+    //(Faye) adds or removes username from array of dislikes (method written by Tyler)
+    public boolean dislikes(String username)
 }

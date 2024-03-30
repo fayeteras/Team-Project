@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -48,7 +51,7 @@ public class Post implements PostInterface {
             bfr = new BufferedReader(fr);
     
             while(true) {
-                line = bfr.readLine();
+                String line = bfr.readLine();
     
                 if (line == null)
                     break;
@@ -79,8 +82,9 @@ public class Post implements PostInterface {
         time[5] = Integer.parseInt(ts1.substring(0, ts1.indexOf("."))); //Seconds
         ts1 = ts1.substring(ts1.indexOf(".") + 1);
         time[6] = Integer.parseInt(ts1); //Milliseconds
+        return time;
     }
-    public boolean liking(String username) { //(Tyler)
+    public boolean likes(String username) { //(Tyler)
     // New Like System (possibly) Uses arraylist to store the usernames
     // of people that have liked the post, removes there username if already in list (removing like)
     // or adds them if not (liking post)
@@ -95,7 +99,7 @@ public class Post implements PostInterface {
     //Increments likes count here to 
     //not use up resources with .size()
     }
-    public boolean disliking(String username) { //(Tyler)
+    public boolean dislikes(String username) { //(Tyler)
     // New Dislike System (possibly) Uses arraylist to store the usernames
     // of people that have disliked the post, removes there username if already in list (removing dislike)
     // or adds them if not (disliking post)
