@@ -74,7 +74,7 @@ public class Database implements DatabaseInterface{
 				}
 			}
 			bfr.close();
-			return false;
+			return true;
 		} catch (Exception ex) {
 			return false;
 		}
