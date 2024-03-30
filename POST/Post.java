@@ -34,6 +34,14 @@ public class Post implements PostInterface {
         this.textFile = new File(username + "_" + postNumber + ".txt");
         this.likesFile = new File(username + "_" + postNumber + "_likes.txt");
         this.dislikesFile = new File(username + "_" + postNumber + "_dislikes.txt");
+
+        try {
+            fr = new FileReader(textFile);
+            bfr = new BufferedReader(fr);
+            bfr.writeLine(text);
+        } catch (IOException e) {
+        //placeholder
+        }
     }
     
     public Post(String username, int postNumber) {
