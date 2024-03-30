@@ -114,7 +114,7 @@ public class Post implements PostInterface {
         }
 
     }
-    //(savni)
+    
     public String getText() {
         return text;
     }
