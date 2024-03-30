@@ -1,26 +1,49 @@
-//(savni)
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 public class PostTest {
 
-    public static void main(String[] args) {
-        // Create a new post
-        Post post = new Post("user123", "This is a test post.", 1);
+    @Test(timeout = 1000)
+    public void testConstructorWithText() {
+        Post post1 = new Post("user1", "Hello World!", "post1");
+        assertEquals("Hello World!", post1.getText());
+    }
 
-        // Test getting text
-        System.out.println("Post text: " + post.getText());
+    @Test(timeout = 1000)
+    public void testEditPost() {
+        Post post1 = new Post("user1", "Hello World!", "post1");
+        post1.editPost("Edited post1 text");
+        assertEquals("Edited post1 text", post1.getText());
+    }
 
-        // Test liking the post
-        System.out.println("Like status before liking: " + post.likes("user4")); // Should return false
-        System.out.println("Like status after liking: " + post.like("user4")); // Should return true
+    @Test(timeout = 1000)
+    public void testLikes() {
+        Post post1 = new Post("user1", "Hello World!", "post1");
+        assertTrue(post1.likes("user2"));
+    }
 
-        // Test disliking the post
-        System.out.println("Dislike status before disliking: " + post.dislikes("user5")); // Should return false
-        System.out.println("Dislike status after disliking: " + post.dislike("user5")); // Should return true
+    @Test(timeout = 1000)
+    public void testDislikes() {
+        Post post1 = new Post("user1", "Hello World!", "post1");
+        assertTrue(post1.dislikes("user3"));
+    }
 
-        // Test editing the post
-        post.editPost("This is an edited post.");
-        System.out.println("Edited post text: " + post.getText());
+    @Test(timeout = 1000)
+    public void testDeletePost() {
+        Post post1 = new Post("user1", "Hello World!", "post1");
+        assertTrue(post1.deletePost());
+    }
 
-        // Test deleting the post
-        System.out.println("Delete status: " + post.deletePost()); // Should return true
+    @Test(timeout = 1000)
+    public void testConstructorWithFile() {
+        Post post2 = new Post("user2", "post2");
+        assertNotNull(post2.getText());
+    }
+
+    @Test(timeout = 1000)
+    public void testHidePost() {
+        Post post2 = new Post("user2", "post2");
+        post2.hidePost();
+        assertTrue(post2.isHidden);
     }
 }
