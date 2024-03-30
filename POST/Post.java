@@ -94,44 +94,44 @@ public class Post implements PostInterface {
         time[6] = Integer.parseInt(ts1); //Milliseconds
         return time;
     }
-    public boolean likes(String username) { //(Tyler)
-    // New Like System (possibly) Uses arraylist to store the usernames
-    // of people that have liked the post, removes there username if already in list (removing like)
-    // or adds them if not (liking post)
-        //Also not sure when to return what -- (to be discussed)
-        /*
-        if (liked.contains(username)) {
-            liked.remove(username);
-            likes--;
-        } else {
-            liked.add(username);
-            likes++;
-        } */
-        //(Noah) see below comment ope
-        return liked.contains(username);
-    //Increments likes count here to 
-    //not use up resources with .size()
-    }
-    public boolean dislikes(String username) { //(Tyler)
-    // New Dislike System (possibly) Uses arraylist to store the usernames
-    // of people that have disliked the post, removes there username if already in list (removing dislike)
-    // or adds them if not (disliking post)
-        //Also not sure when to return what -- (to be discussed)
-        /*
-        if (disliked.contains(username)) {
-            disliked.remove(username);
-            dislikes--;
-        } else {
-            disliked.add(username);
-            dislikes++;
-        }
-         */
-        return disliked.contains(username); //(Noah)ok so i didn't realize that this was doing that sorry. but i
-        //think it does make more sense for adding a dislike and returning dislikes to be separate things so i just
-        //did that.
-    //Increments dislikes count here to 
-    //not use up resources with .size()
-    }
+    // public boolean likes(String username) { //(Tyler)
+    // // New Like System (possibly) Uses arraylist to store the usernames
+    // // of people that have liked the post, removes there username if already in list (removing like)
+    // // or adds them if not (liking post)
+    //     //Also not sure when to return what -- (to be discussed)
+    //     /*
+    //     if (liked.contains(username)) {
+    //         liked.remove(username);
+    //         likes--;
+    //     } else {
+    //         liked.add(username);
+    //         likes++;
+    //     } */
+    //     //(Noah) see below comment ope
+    //     return liked.contains(username);
+    // //Increments likes count here to 
+    // //not use up resources with .size()
+    // }
+    // public boolean dislikes(String username) { //(Tyler)
+    // // New Dislike System (possibly) Uses arraylist to store the usernames
+    // // of people that have disliked the post, removes there username if already in list (removing dislike)
+    // // or adds them if not (disliking post)
+    //     //Also not sure when to return what -- (to be discussed)
+    //     /*
+    //     if (disliked.contains(username)) {
+    //         disliked.remove(username);
+    //         dislikes--;
+    //     } else {
+    //         disliked.add(username);
+    //         dislikes++;
+    //     }
+    //      */
+    //     return disliked.contains(username); //(Noah)ok so i didn't realize that this was doing that sorry. but i
+    //     //think it does make more sense for adding a dislike and returning dislikes to be separate things so i just
+    //     //did that.
+    // //Increments dislikes count here to 
+    // //not use up resources with .size()
+    // }
     //Still need Methods to Write and Read Likes, Dislikes, 
     //and timestamp to store and retrieve them
 
