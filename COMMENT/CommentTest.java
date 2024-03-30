@@ -2,10 +2,10 @@ public class CommentTest {
 
     public static void main(String[] args) {
         // Create a parent post
-        Post parentPost = new Post("user123", "This is a parent post.", 1);
+        Post parentPost = new Post("user1", "This is a parent post.", 1);
 
         // Create a comment
-        Comment comment = new Comment("user456", "This is a comment.", 2, parentPost);
+        Comment comment = new Comment("user2", "This is a comment.", 2, parentPost);
 
         // Test getting text
         System.out.println("Comment text: " + comment.getText());
@@ -14,12 +14,12 @@ public class CommentTest {
         System.out.println("Parent post: " + comment.getParent().getText());
 
         // Test liking the comment
-        System.out.println("Like status before liking: " + comment.likes("user789")); // Should return false
-        System.out.println("Like status after liking: " + comment.like("user789")); // Should return true
+        System.out.println("Like status before liking: " + comment.likes("user3")); // Should return false
+        System.out.println("Like status after liking: " + comment.like("user3")); // Should return true
 
         // Test disliking the comment
-        System.out.println("Dislike status before disliking: " + comment.dislikes("user101")); // Should return false
-        System.out.println("Dislike status after disliking: " + comment.dislike("user101")); // Should return true
+        System.out.println("Dislike status before disliking: " + comment.dislikes("user4")); // Should return false
+        System.out.println("Dislike status after disliking: " + comment.dislike("user4")); // Should return true
 
         // Test editing the comment
         comment.editPost("This is an edited comment.");
