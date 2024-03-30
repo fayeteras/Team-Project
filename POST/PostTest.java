@@ -36,7 +36,7 @@ public class PostTest {
 
     @Test(timeout = 1000)
     public void testConstructorWithFile() {
-        Post post2 = new Post("user2", "post2");
+        Post post2 = new Post("user2", "post2","name");
         assertNotNull(post2.getText());
     }
 
@@ -55,7 +55,7 @@ public class PostTest {
 
     @Test(timeout = 1000)
     public void testHidePost() {
-        Post post2 = new Post("user2", "post2");
+        Post post2 = new Post("user2", "post2", "name");
         post2.hide("user2");
         assertTrue(post2.getHidden().contains("user2"));
         }
