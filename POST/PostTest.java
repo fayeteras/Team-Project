@@ -19,13 +19,13 @@ public class PostTest {
     @Test(timeout = 1000)
     public void testLikes() {
         Post post1 = new Post("user1", "Hello World!", "post1");
-        assertTrue(post1.likes("user2"));
+        assertTrue(post1.like("user2"));
     }
 
     @Test(timeout = 1000)
     public void testDislikes() {
         Post post1 = new Post("user1", "Hello World!", "post1");
-        assertTrue(post1.dislikes("user3"));
+        assertTrue(post1.dislike("user3"));
     }
 
     @Test(timeout = 1000)
