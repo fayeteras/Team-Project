@@ -5,8 +5,10 @@ public interface PostInterface {
     //(Savni) Takes a post and increments the like total of it
     public boolean like(String username);
 
+
     //(Savni) Takes a post and increments the dislike total of it
     public boolean dislike(String username);
+    public String getText();
 
     //(Savni) Takes a post and hides it from the user's feed
     //public void hidePost(Post post);
@@ -14,6 +16,7 @@ public interface PostInterface {
     //(Savni) Takes a post and deletes it
     //Note that this should only be done by the post owner
     public boolean deletePost();
+    public boolean hide(String username);
 
     //(Sean) Stringafies the fields of the Post class
     //Formatting can be seen in userPosts.txt
