@@ -1,11 +1,6 @@
-public interface serverInterface {
-        
-    //Start and stop server
-    //start will create a new port for each client as well as a thread
-    public boolean start();
-    public boolean stop();
-    
-    //Create new user -- Will communicate with User and database
+public interface clientInterface {
+    public boolean connect();
+    public boolean disconnect();
     public User createUser(String username);
 
     //Sign in -- will authenticate through database and create a new serversocket for the user
@@ -14,12 +9,12 @@ public interface serverInterface {
     //Search Methods
     public boolean userSearch(String search);
 
-    //User Methods - User + Database
-    public boolean viewProfile(User user);
-    public boolean friendUser(User user);
-    public boolean unfriendUser(User user);
-    public boolean blockUser(User user);
-    public boolean unblockUser(User user);
+    //User Methods - sends username to server
+    public boolean viewProfile(String username);
+    public boolean friendUser(String username);
+    public boolean unfriendUser(String username);
+    public boolean blockUser(String username);
+    public boolean unblockUser(String username);
     
     //Feed Methods
     public void showFeed();
@@ -33,8 +28,4 @@ public interface serverInterface {
     public boolean createComment(Post post, String commentText);
     public boolean likeComment(Comment comment);
     public boolean dislikeComment(Comment comment);
-
-
-
-
 }
