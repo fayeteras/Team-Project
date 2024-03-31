@@ -12,9 +12,6 @@ import java.io.*;
  */
 public class UserTest {
 
-
-
-
     @Test
     public void testCreateUser() {
         User user = new User("testUser");
