@@ -1,8 +1,16 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-//written by Faye :)
+
 import java.io.*;
+/**
+ * A program that tests the User class.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author Team 2
+ * @version Mon April 1st, 2024
+ */
 
 public class UserTest {
 
