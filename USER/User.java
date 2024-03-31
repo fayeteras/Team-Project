@@ -1,18 +1,22 @@
 import java.io.*;
 import java.util.ArrayList;
-
-//(Sean) NOTE: I finished this class really late so literally none
-//of it has been tested. you're welcome.
+/**
+ * User.java
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author Team 2
+ * @version Mon April 1st, 2024
+ */
 public class User implements UserInterface {
-    //fields
+    // Fields
     private final String username;
     private ArrayList<String> friendList;
     private ArrayList<String> blockList;
     private File friendsFile;
     private File blockedFile;
 
-
-    //constructor
+    // Constructor
     public User(String username) {
         this.username = username;
         this.friendList = new ArrayList<>();
@@ -21,38 +25,39 @@ public class User implements UserInterface {
         this.blockedFile = checkBlockedFile();
     }
 
-    //(Faye) When username is referenced, if the file has not been created yet will create the file. 
-    // If it has will initialize the array using the file.
+    // Method to check existence of friends file
     public File checkFriendsFile() {
         File file = new File(username + "_Friends.txt");
         if (file.exists()) {
             friendsFile = file;
             if (friendList.isEmpty()) {
-                readFile(friendsFile, friendList);
+                readFile(friendsFile, friendList); // Initialize friendList from file
             }
         } else {
-            friendsFile = createFile(file);
+            friendsFile = createFile(file); // Create the file if it doesn't exist
         }
         return friendsFile;
     }
-    
+
+    // Method to check existence of blocked users file
     public File checkBlockedFile() {
         File file = new File(username + "_Blocked.txt");
         if (file.exists()) {
             blockedFile = file;
             if (blockList.isEmpty()) {
-                readFile(blockedFile, blockList);
+                readFile(blockedFile, blockList); // Initialize blockList from file
             }
         } else {
-            blockedFile = createFile(file);
+            blockedFile = createFile(file); // Create the file if it doesn't exist
         }
         return blockedFile;
     }
-    
+
+    // Method to create a file
     private File createFile(File file) {
         try {
             if (file.createNewFile()) {
-                return file;
+                return file; // Return the created file
             } else {
                 System.err.println("Failed to create file: " + file.getName());
             }
@@ -61,213 +66,98 @@ public class User implements UserInterface {
         }
         return null;
     }
-    
 
+    // Getter for username
     public String getUsername() {
         return username;
     }
 
+    // Getter for friendList
     public ArrayList<String> getFriendList() {
         return friendList;
     }
 
+    // Getter for blockList
     public ArrayList<String> getBlockList() {
         return blockList;
     }
 
+    // Method to check if a user is a friend
     public boolean isFriend(String username) {
         return friendList.contains(username);
     }
 
+    // Method to check if a user is blocked
     public boolean isBlocked(String username) {
         return blockList.contains(username);
     }
 
-
-    //(Sean) I'm pretty sure createUser and searchUser interact with the user files, so
-    //I accessed the allUsers file directly for these.
-    //We will probably access the files differently later on, but idk.
-
-    /* (Noah) this should be in the database class.
-    public void createUser() {
-        //(Sean) Outputs toString() of current user to the allUsers file.
-        try {
-            File f = new File("allUsers.txt");
-            FileOutputStream fos = new FileOutputStream(f, true);
-            PrintWriter pw = new PrintWriter(fos);
-            pw.println(this.toString());
-            pw.flush();
-            pw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
-
-    //(Sean) These other people in the computer lab I'm in won't stop yapping
-    //I'm about to snap
-//    public String[] searchUsers(String searchText) {
-//        FileReader fr = null;
-//        int count = 0;
-//        String[] result = null;
-//        //(Sean) attempts to read from the allUsers file
-//        try {
-//            fr = new FileReader("allUsers.txt");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        BufferedReader bfr = new BufferedReader(fr);
-//        try {
-//            //(Sean) A temporary array will hold the values of users that
-//            //contain the user input in their username
-//            String line = bfr.readLine();
-//            String[] tempArray = new String[200000];
-//            boolean hasInputString;
-//            while (line != null) {
-//                //(Sean) line will contain the full line of the user from allUsers
-//                //alteredLine will be just the username from the full line
-//                //of the user.
-//                String alteredLine = "";
-//                //(Sean) alteredLine becomes just the username through this parsing
-//                int currentIndex = 0;
-//                while (!line.substring(currentIndex, currentIndex + 1).equals("|")) {
-//                    alteredLine = alteredLine + line.substring(currentIndex, currentIndex + 1);
-//                }
-//                //(Sean) alteredLine (the current username) is searched through
-//                //to see if the user's input matches a substring of alteredLine
-//                hasInputString = false;
-//                while (alteredLine.length() > searchText.length()) {
-//                    if (alteredLine.substring(0, searchText.length()).equals(searchText)) {
-//                        hasInputString = true;
-//                    }
-//                    alteredLine = alteredLine.substring(1);
-//                }
-//                //(Sean) if the current username contains the user's input,
-//                //The entire user string is added to the temporary array
-//                if (hasInputString) {
-//                    tempArray[count] = line;
-//                    count++;
-//                }
-//                line = bfr.readLine();
-//            }
-//            //(Sean) The array that will be returned is given the appropriate size
-//            //and filled with the contents of tempArray
-//            result = new String[count];
-//            for (int i = 0; i < result.length; i++) {
-//                result[i] = tempArray[i];
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (bfr != null) {
-//                try {
-//                    bfr.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        //(Sean) Returns full user string of all matching users
-//        //Will have to be changed, as passwords shouldn't be returned.
-//        //or null, if none are found.
-//        return result;
-//    }
-
-    //(Sean) Savni's code btw
-
-
-    //(Sean) Savni started this one, but I ruined everything she tried to do.
-
-    //METHODS
-    //(Faye) Should be easier to just add and remove from an arraylist, if returns false we'll show an error that this user
-    //is already added/isn't on the list
+    // Method to add a friend
     public boolean addFriend(String username) {
         if (!friendList.contains(username)) {
             friendList.add(username);
-            return writeFile(friendsFile, friendList);
+            return writeFile(friendsFile, friendList); // Write updated friendList to file
         }
         return false;
     }
 
+    // Method to remove a friend
     public boolean removeFriend(String username) {
         if (friendList.contains(username)) {
             friendList.remove(username);
-            return writeFile(friendsFile, friendList);
+            return writeFile(friendsFile, friendList); // Write updated friendList to file
         }
         return false;
     }
+
+    // Method to block a user
     public boolean blockUser(String username) {
         if (!blockList.contains(username)) {
             blockList.add(username);
-            return writeFile(blockedFile, blockList);
+            return writeFile(blockedFile, blockList); // Write updated blockList to file
         }
         return false;
     }
 
+    // Method to unblock a user
     public boolean unblockUser(String username) {
         if (blockList.contains(username)) {
             blockList.remove(username);
-            return writeFile(blockedFile, blockList);
+            return writeFile(blockedFile, blockList); // Write updated blockList to file
         }
         return false;
     }
 
-
-    //(Faye) Reads file to intitialize arrays when the server is started up again
-    //Every line is added to the array, which is returned to recreate the array
-    protected boolean readFile (File filename, ArrayList<String> array) {
-        
+    // Method to read data from file and initialize an ArrayList
+    protected boolean readFile(File filename, ArrayList<String> array) {
         if (filename.exists()) {
             try (FileReader fileReader = new FileReader(filename);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+                 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                array.add(line);
-            }
-            return true;
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    array.add(line); // Add each line from the file to the ArrayList
+                }
+                return true;
 
             } catch (IOException e) {
-            e.printStackTrace();
+                e.printStackTrace();
             }
         }
         return false;
     }
 
-    public boolean writeFile (File filename, ArrayList<String> array) {
+    // Method to write data to file from an ArrayList
+    public boolean writeFile(File filename, ArrayList<String> array) {
         try (FileOutputStream fos = new FileOutputStream(filename, false);
              PrintWriter writer = new PrintWriter(fos)) {
-            for (int i = 0; i < array.size(); i++) {
-                writer.write(array.get(i));
-                writer.println();
+            for (String item : array) {
+                writer.println(item); // Write each item in the ArrayList to the file
             }
-            writer.close();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
-
-
-//    public String toString() {
-//        String allFriends = "";
-//        String allBlocked = "";
-//        //(Sean) Takes every friend in the friendList array
-//        //and puts it in one single String
-//        for (int i = 0; i < friendList.length; i++) {
-//            allFriends = allFriends + friendList[i] + ";";
-//        }
-//        allFriends = allFriends.substring(0, allFriends.length() - 1);
-//        //(Sean) Same thing as above, except for blockList
-//        for (int i = 0; i < blockList.length; i++) {
-//            allBlocked = allBlocked + blockList[i] + ";";
-//        }
-//        allBlocked = allBlocked.substring(0, allBlocked.length() - 1);
-//
-//        return String.format("%s|%s|%s|%s", username, password, allFriends, allBlocked);
-//    }
-
-
-
 }
