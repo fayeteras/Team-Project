@@ -12,6 +12,9 @@ public class Database implements DatabaseInterface {
 
     // Add user to the database file
     public synchronized boolean addUser(String username, String password) {
+        if (userExists(username)) {
+            return false;
+        }
         try (FileWriter fw = new FileWriter(filename, true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter pw = new PrintWriter(bw)) {

@@ -1,5 +1,10 @@
 //(savni)
 import org.junit.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class DatabaseTest {
@@ -8,6 +13,8 @@ public class DatabaseTest {
     public void testAddUser() {
         Database database = new Database();
         assertTrue(database.addUser("TestUser", "TestPassword"));
+        //Only true on first run, otherwise will try to make duplicate in file
+        //and so returns false and prevents that - have to clear "allUsers" first
     }
     
     @Test(timeout = 1000)
@@ -24,5 +31,15 @@ public class DatabaseTest {
         database.addUser("TestUser", "TestPassword");
         assertTrue(database.authenticateUser("TestUser", "TestPassword"));
         assertFalse(database.authenticateUser("TestUser", "WrongPassword"));
+    }
+
+    @Test(timeout = 1000)
+    public void testWriteFile() {
+        ArrayList<String> Bob = new ArrayList<String>(
+                Arrays.asList("|Bob;", "Li@kes!", "His bananas."));
+        File file = new File("allUsers.txt");
+        Database database = new Database();
+        database.addUser("TestUser", "TestPassword");
+        assertTrue(database.writeFile(file, Bob));
     }
 }
