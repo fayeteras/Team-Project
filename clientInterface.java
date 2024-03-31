@@ -24,10 +24,12 @@ public interface clientInterface {
     public boolean likePost(Post post);
     public boolean dislikePost(Post post);
     public boolean hidePost(Post post);
+    public boolean editPost(Post post, String newText);
 
     //Comment Methods - Comment Class
     public boolean createComment(Post post, String commentText);
     public boolean likeComment(Comment comment);
     public boolean dislikeComment(Comment comment);
     public boolean hideComment(Comment comment);
+    public boolean editComment(Comment comment, String newText);
 }
