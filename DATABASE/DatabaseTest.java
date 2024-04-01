@@ -6,9 +6,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
-
+/**
+ * DatabaseTest.java
+ *
+ * Contains test cases/methods for testing Database.java
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Mon April 1st, 2024
+ */
 public class DatabaseTest {
-    
+
     @Test(timeout = 1000)
     public void testAddUser() {
         Database database = new Database();

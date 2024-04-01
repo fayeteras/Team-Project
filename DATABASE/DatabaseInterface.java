@@ -3,6 +3,18 @@ import java.io.*;
 //(Savni) not sure about this but this is one way in which it can be implemented
 //(Sean) a roadblock that may emerge is that we might be appending our input files in
 //these methods, which might be bad. One large output file may be needed.
+
+/**
+ * DatabaseInterface.java
+ *
+ * Interface for Database.java
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Mon April 1st, 2024
+ */
+
 public interface DatabaseInterface {
     //(Savni) The file used for this method is allUsers.txt
     //(Sean) this method will save all of the user's info to the 

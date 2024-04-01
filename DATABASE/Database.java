@@ -2,7 +2,17 @@
 //(savni_ - made a few changes to fix the methdds
 import java.io.*;
 import java.util.ArrayList;
-
+/**
+ * Database.java
+ *
+ * Database using file to store users, write to file, and check
+ * if the users exist.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Mon April 1st, 2024
+ */
 public class Database implements DatabaseInterface {
     private final String filename;
     
