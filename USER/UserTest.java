@@ -1,13 +1,16 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
-import java.util.ArrayList;
+import java.util.*;
 import java.io.*;
 /**
  * UserTest.java
  *
+ * This is our testing .java file to ensure that
+ * all the code within User.java is functioning as we expect.
+ *
  * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
  *
- * @author Team 2
+ * @author L04 - Team 2
  * @version Mon April 1st, 2024
  */
 public class UserTest {
