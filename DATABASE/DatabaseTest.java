@@ -1,4 +1,3 @@
-//(savni)
 import org.junit.Test;
 
 import java.io.File;
@@ -13,7 +12,7 @@ import static org.junit.Assert.*;
  *
  * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
  *
- * @author LO4-Team 2
+ * @author LO4-Team 2 - Savni
  * @version Mon April 1st, 2024
  */
 public class DatabaseTest {
