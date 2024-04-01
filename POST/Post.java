@@ -1,8 +1,6 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Post.java
@@ -37,12 +35,12 @@ public class Post implements PostInterface {
         this.text = text;
         likesCount = 0;
         dislikesCount = 0;
-        time = getCurrentTime(); //This Too <-
-        likesList = new ArrayList<String>(); //(Tyler) These still need to be written
-        dislikesList = new ArrayList<String>(); //To files to store (probably in Post Method)
+        time = getCurrentTime();
+        likesList = new ArrayList<String>();
+        dislikesList = new ArrayList<String>(); //To files to store
         hidden = new ArrayList<String>();
         edited = false;
-        //(Noah) added the part below, mostly just copy pasted from the User constructor because it's mostly the same thing.
+        //(Noah) added the part below
         this.textFile = new File(fileName + ".txt");
         this.likesFile = new File(fileName + "_likes.txt");
         this.dislikesFile = new File(fileName + "_dislikes.txt");
@@ -79,8 +77,6 @@ public class Post implements PostInterface {
                 this.likesList.add(line);
             }
         } catch(Exception ex) {
-            //(Noah) ok idk the best way to do this but it doesn't need to do a single thing here. feels weird having
-            //an empty thing here but i mean this should do it.
             //(Noah) Not printing stack trace because the exception occurs whenever they don't have any likes :(
             ex.printStackTrace();
         }
@@ -114,39 +110,39 @@ public class Post implements PostInterface {
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-        
+
 
     }
 
-         //GETTERS (Faye)
-         public String getUsername() {
-            return username;
-        }
-        public String getText() {
-            return text;
-        }
-        public int getLikesCount() {
-            return likesCount;
-        }
-        public int getDislikesCount() {
-            return dislikesCount;
-        }
-        public int[] getTime() {
-            return time;
-        }
-        public ArrayList<String> getLikesList() {
-            return likesList;
-        }
-        public ArrayList<String> getDislikesList() {
-            return dislikesList;
-        }
-        public ArrayList<String> getHidden() {
-            return hidden;
-        }
-        public boolean isEdited() {
-            return edited;
-        }
-    
+    //GETTERS (Faye)
+    public String getUsername() {
+        return username;
+    }
+    public String getText() {
+        return text;
+    }
+    public int getLikesCount() {
+        return likesCount;
+    }
+    public int getDislikesCount() {
+        return dislikesCount;
+    }
+    public int[] getTime() {
+        return time;
+    }
+    public ArrayList<String> getLikesList() {
+        return likesList;
+    }
+    public ArrayList<String> getDislikesList() {
+        return dislikesList;
+    }
+    public ArrayList<String> getHidden() {
+        return hidden;
+    }
+    public boolean isEdited() {
+        return edited;
+    }
+
     public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         //System.out.println("Timestamp : " + ts); <- Full TimeStamp
@@ -188,11 +184,11 @@ public class Post implements PostInterface {
             hidden.remove(username);
             Database.writeFile(hiddenFile, hidden);
         }
-            return false;
+        return false;
     }
 
-    public synchronized boolean like(String username) { //(Noah) so the way it works is a bit confusing but you give the user
-        //who's liking it as a parameter.
+    public synchronized boolean like(String username) { //(Noah) so the way it works is a bit confusing 
+        // but you give the user who's liking it as a parameter.
         if (!likesList.contains(username)) {
             likesList.add(username);
             Database.writeFile(likesFile, likesList);
