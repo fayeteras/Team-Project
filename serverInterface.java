@@ -1,10 +1,21 @@
+/**
+ * clientInterface.java
+ *
+ * This interface is for Server.java, which will not be created until Phase 2.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Sun Mar 31st, 2024
+ */
+
 public interface serverInterface {
-        
+
     //Start and stop server
     //start will create a new port for each client as well as a thread
     public boolean start();
     public boolean stop();
-    
+
     //Create new user -- Will communicate with User and database
     public User createUser(String username);
 
@@ -20,7 +31,7 @@ public interface serverInterface {
     public boolean unfriendUser(User user);
     public boolean blockUser(User user);
     public boolean unblockUser(User user);
-    
+
     //Feed Methods
     public void showFeed();
 
