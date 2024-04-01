@@ -4,6 +4,17 @@ import java.io.FileReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+/**
+ * Post.java
+ *
+ * Post methods used to create, read, add and remove likes and dislikes, and edit post objects
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Mon April 1st, 2024
+ */
+
 public class Post implements PostInterface {
     private final String username;
     private String text;
