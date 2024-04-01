@@ -12,10 +12,10 @@ import java.util.*;
  */
 
 public interface PostInterface {
-    //(Savni) Takes a post and increments the like total of it
+    //Takes a post and increments the like total of it
     public boolean like(String username);
 
-    //(Faye) getters
+    //getters
     public String getUsername();
     public int getLikesCount();
     public int getDislikesCount();
@@ -25,21 +25,21 @@ public interface PostInterface {
     public ArrayList<String> getHidden();
     public boolean isEdited();
 
-    //(Savni) Takes a post and increments the dislike total of it
+    //Takes a post and increments the dislike total of it
     public boolean dislike(String username);
     public String getText();
 
-    //(Savni) Takes a post and deletes it
+    //Takes a post and deletes it
     //Note that this should only be done by the post owner
     public boolean deletePost();
 
-    //(Savni) hides posts
+    //hides posts
     public boolean hide(String username);
 
-    //(Faye) gets current time stamp (method written by Tyler)
+    //gets current time stamp 
     public int[] getCurrentTime();
 
-    //(Faye) replaces old comment with new text (method written by Noah)
+    //replaces old comment with new text 
     public void editPost(String newText);
 
 }
