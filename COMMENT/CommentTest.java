@@ -1,6 +1,16 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
-
+/**
+ * CommentTest.java
+ *
+ * Testing class that uses the JUnit library to ensure that the multiple 
+ * Comment constructors and getParent() method function as intended.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Sat March 30th, 2024
+ */
 public class CommentTest {
 
     @Test(timeout = 1000)
