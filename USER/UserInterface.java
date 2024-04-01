@@ -7,7 +7,7 @@ import java.util.*;
  *
  * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
  *
- * @author Team 2
+ * @author L04 - Team 2
  * @version Mon April 1st, 2024
  */
 public interface UserInterface {
