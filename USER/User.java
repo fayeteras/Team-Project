@@ -1,11 +1,14 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 /**
  * User.java
  *
+ * This class keeps track of the friends and blocked Users of
+ * a User Object through ArrayLists and Files.
+ *
  * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
  *
- * @author Team 2
+ * @author L04 - Team 2
  * @version Mon April 1st, 2024
  */
 public class User implements UserInterface {
