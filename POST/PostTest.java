@@ -1,6 +1,18 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/**
+ * PostTest.java
+ *
+ * All the tests in this class use the JUnit library to 
+ * assert that the Post.java class is functioning how it should.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Sat March 30th, 2024
+ */
+
 public class PostTest {
 
     @Test(timeout = 1000)
@@ -62,6 +74,4 @@ public class PostTest {
         post2.hide("user2");
         assertTrue(post2.getHidden().contains("user2"));
     }
-
-    
 }
