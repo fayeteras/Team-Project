@@ -1,7 +1,9 @@
-import java.io.File;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 /**
  * UserInterface.java
+ *
+ * This is our interface for our User class.
  *
  * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
  *
