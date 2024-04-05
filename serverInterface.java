@@ -14,6 +14,7 @@ public interface serverInterface {
     //Start and stop server
     //start will create a new port for each client as well as a thread
     public boolean start();
+    public boolean clientConnect();
     public boolean stop();
 
     //Create new user -- Will communicate with User and database
