@@ -17,11 +17,13 @@ public class Client {
             //you WILL code sober
 
             //(Faye) For now just imput commands to terminal -- Will change to listeners later
-            //Every time you write to the server also include the username
-            Scanner input = new Scanner(System.in);
-            String command = input.nextLine() + username;
-            writer.write(command);
-            writer.println();
+            try (Scanner input = new Scanner(System.in)) {
+                while (input.hasNext()) {
+                    String command = input.nextLine();
+                    writer.write(command);
+                    writer.println();
+                }
+            }
 
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);

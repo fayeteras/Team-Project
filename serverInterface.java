@@ -11,12 +11,6 @@
 
 public interface serverInterface {
 
-    //Start and stop server
-    //start will create a new port for each client as well as a thread
-    public boolean start();
-    public boolean clientConnect();
-    public boolean stop();
-
     //Create new user -- Will communicate with User and database
     public User createUser(String username);
 
@@ -28,6 +22,7 @@ public interface serverInterface {
 
     //User Methods - User + Database
     public boolean viewProfile(User user);
+        //should include # of friends, maybe posts?, and their username
     public boolean friendUser(User user);
     public boolean unfriendUser(User user);
     public boolean blockUser(User user);

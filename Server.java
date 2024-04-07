@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Server implements Runnable {
 
@@ -15,7 +16,7 @@ public class Server implements Runnable {
     }
 
     public User createUser(String username) {
-        User result = new User("sugon.txt");
+        User result = new User(username);
         return result;
     }
     @Override
@@ -23,18 +24,21 @@ public class Server implements Runnable {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
+
+             //(Faye) just added this part so my stuff will work, but change it when you need to
+             String username = reader.readLine();
+             User user = createUser(username);
+             //Login needs to happen before anything, so i took it out of the switch
+
             while (true) {
                 String command = reader.readLine();
+
                 switch (command) {
-                    case "login": String username;
-                    String bean = reader.readLine();
-                        break;
                     case "logout":
                         break;
                     case "Get Feed":
-                        String user = reader.readLine()
-                        feed(user);
-                        break;
+                        //This will actually probably implement a getPosts and similar 
+                        //methods so I'll probably have to wait until that stuff is done
                 }
             }
         } catch (IOException e) {
@@ -57,11 +61,6 @@ public class Server implements Runnable {
         }
 
 
-    }
-
-    //(Faye) Feed stuffs
-    public void feed(User user) {
-        
     }
 
 }
