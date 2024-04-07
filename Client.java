@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.Scanner;
 
 public class Client {
     Scanner scan = new Scanner(System.in);
@@ -14,10 +15,19 @@ public class Client {
             //you WILL add a GUI
             //you WILL redo the client
             //you WILL code sober
+
+            //(Faye) For now just imput commands to terminal -- Will change to listeners later
+            //Every time you write to the server also include the username
+            Scanner input = new Scanner(System.in);
+            String command = input.nextLine() + username;
+            writer.write(command);
+            writer.println();
+
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 }

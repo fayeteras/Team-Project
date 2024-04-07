@@ -25,15 +25,15 @@ public class Server implements Runnable {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             while (true) {
                 String command = reader.readLine();
-                //you are here
                 switch (command) {
                     case "login": String username;
                     String bean = reader.readLine();
-
                         break;
                     case "logout":
                         break;
-                    case "oh":
+                    case "Get Feed":
+                        String user = reader.readLine()
+                        feed(user);
                         break;
                 }
             }
@@ -57,6 +57,11 @@ public class Server implements Runnable {
         }
 
 
+    }
+
+    //(Faye) Feed stuffs
+    public void feed(User user) {
+        
     }
 
 }
