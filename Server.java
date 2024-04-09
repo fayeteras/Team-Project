@@ -142,6 +142,20 @@ public class Server implements Runnable {
 
     }
 
+    public boolean likePost(Post post, String username) {
+        return post.like(username);
+    } //Need to Do
+
+    public boolean dislikePost(Post post, String username) {
+        return post.dislike(username);
+    }
+
+    public boolean hidePost(Post post, String username) {
+        post.hide(username);
+    }
+
+
+
     @Override
     public void run() {
         try {
@@ -149,6 +163,7 @@ public class Server implements Runnable {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             userArray.add(new User("Bobby"));
+            User currentUser = new User("Bobby");
             String command;
             while (true) {
                 writer.write("What would you like to do, User?");
@@ -172,6 +187,17 @@ public class Server implements Runnable {
                         break;
                     case "getFeed":
                         getFeed(db, reader, writer);
+                        break;
+                    case "likePost":
+                        likePost(post, currentUser);
+                        break;
+                    case "dislikePost":
+                        dislikePost(post, currentUser);
+                        break;
+                    case "hidePost":
+                        hidePost(post, currentUser);
+                        //(Tyler) Unsure where to get which post we're modifying from feel
+                        //like it has to do with the GUI and maybe recieving input from client
                         //(Faye) This will actually probably implement a getPosts and similar
                         //methods so I'll probably have to wait until that stuff is done
                         break;
