@@ -142,6 +142,11 @@ public class Server implements Runnable {
 
     }
 
+    public boolean createPost(String username, String postText) {
+        new Post(username, postText, "Post_" + Post.getTotalPosts());
+        //Can make return true or false if IO errors are thrown
+    }
+
     public boolean likePost(Post post, String username) {
         return post.like(username);
     } //Need to Do
@@ -151,7 +156,11 @@ public class Server implements Runnable {
     }
 
     public boolean hidePost(Post post, String username) {
-        post.hide(username);
+        return post.hide(username);
+    }
+
+    public boolean editPost(Post post, String newText) {
+        return post.editPost(newText);
     }
 
 
