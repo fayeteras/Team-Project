@@ -23,16 +23,20 @@ public class Post implements PostInterface {
     private ArrayList<String> dislikesList;
     private ArrayList<String> hidden;
     private boolean edited;
-    private final File textFile;
-    private final File likesFile;
-    private final File dislikesFile;
-    private final File hiddenFile;
-    private final File editedFile;
+    private int postNumber;
+    private static int totalPosts;
 
 
-    public Post(String username, String text, String fileName) {
+    public Post() { //(Noah) this is kind of weird but this one just sets the totalPosts.
+
+
+    }
+
+    public Post(String username, String text) {
         this.username = username;
         this.text = text;
+        this.postNumber = totalPosts + 1;
+        totalPosts++;
         likesCount = 0;
         dislikesCount = 0;
         time = getCurrentTime();
@@ -40,28 +44,17 @@ public class Post implements PostInterface {
         dislikesList = new ArrayList<String>(); //To files to store
         hidden = new ArrayList<String>();
         edited = false;
-        //(Noah) added the part below
-        this.textFile = new File(fileName + ".txt");
-        this.likesFile = new File(fileName + "_likes.txt");
-        this.dislikesFile = new File(fileName + "_dislikes.txt");
-        this.hiddenFile = new File(fileName + "_hidden.txt");
-        this.editedFile = new File(fileName + "_edited.txt");
     }
 
     //Written by Noah edited by Faye
-    public Post(String username, String fileName) {
+    public Post(String username, int postNumber) {
         this.username  = username;
         time = getCurrentTime();
         FileReader fr;
         BufferedReader bfr = null;
 
-        this.textFile = new File(fileName + ".txt");
-        this.likesFile = new File(fileName + "_likes.txt");
-        this.dislikesFile = new File(fileName + "_dislikes.txt");
-        this.hiddenFile = new File(fileName + "_hidden.txt");
-        this.editedFile = new File(fileName + "_edited.txt");
-
         try {
+            File textFile = new File("post_" + postNumber + "_text.txt");
             fr = new FileReader(textFile);
             bfr = new BufferedReader(fr);
             this.text = bfr.readLine();
@@ -71,6 +64,7 @@ public class Post implements PostInterface {
 
         String line;
         try {
+            File likesFile = new File("post_" + postNumber + "_likes.txt");
             fr = new FileReader(likesFile);
             bfr = new BufferedReader(fr);
             while((line = bfr.readLine()) != null) {
@@ -82,6 +76,7 @@ public class Post implements PostInterface {
         }
 
         try {
+            File dislikesFile = new File("post_" + postNumber + "_dislikes.txt");
             fr = new FileReader(dislikesFile);
             bfr = new BufferedReader(fr);
             while((line = bfr.readLine()) != null) {
@@ -92,6 +87,7 @@ public class Post implements PostInterface {
         } //this will occur whenever they don't have any dislikes :) so no need to print a stack trace.
 
         try {
+            File hiddenFile = new File("post_" + postNumber + "_hidden.txt");
             fr = new FileReader(hiddenFile);
             bfr = new BufferedReader(fr);
             while((line = bfr.readLine()) != null) {
@@ -102,6 +98,7 @@ public class Post implements PostInterface {
         }
 
         try {
+            File editedFile = new File("post_" + postNumber + "_edited.txt");
             fr = new FileReader(editedFile);
             bfr = new BufferedReader(fr);
             this.edited = Boolean.parseBoolean(bfr.readLine());
@@ -169,33 +166,33 @@ public class Post implements PostInterface {
         this.edited = true;
         ArrayList<String> edits = new ArrayList<String>();
         edits.add(Boolean.toString(edited));
-        Database.writeFile(editedFile, edits);
+        Database.writeFile(new File("post_" + postNumber + "_edited.txt"), edits);
         ArrayList<String> texts = new ArrayList<String>();
         texts.add(text);
-        Database.writeFile(textFile, texts);
+        Database.writeFile(new File("post_" + postNumber + "_edited.txt"), texts);
     }
 
     public boolean hide(String username) {
         if (!hidden.contains(username)) {
             hidden.add(username);
-            Database.writeFile(hiddenFile, hidden);
+            Database.writeFile(new File("post_" + postNumber + "_hidden.txt"), hidden);
             return true;
         } else if (hidden.contains(username)) {
             hidden.remove(username);
-            Database.writeFile(hiddenFile, hidden);
+            Database.writeFile(new File("post_" + postNumber + "_hidden.txt"), hidden);
         }
         return false;
     }
 
-    public synchronized boolean like(String username) { //(Noah) so the way it works is a bit confusing 
+    public synchronized boolean like(String username) { //(Noah) so the way it works is a bit confusing
         // but you give the user who's liking it as a parameter.
         if (!likesList.contains(username)) {
             likesList.add(username);
-            Database.writeFile(likesFile, likesList);
+            Database.writeFile(new File("post_" + postNumber + "_likes.txt"), likesList);
             likesCount++;
             if (dislikesList.contains(username)) {
                 dislikesList.remove(username);
-                Database.writeFile(dislikesFile, dislikesList);
+                Database.writeFile(new File("post_" + postNumber + "_dislikes.txt"), dislikesList);
                 dislikesCount--;
             }
             return true;
@@ -207,10 +204,10 @@ public class Post implements PostInterface {
         if (!dislikesList.contains(username)) {
             dislikesList.add(username);
             dislikesCount++;
-            Database.writeFile(dislikesFile, dislikesList);
+            Database.writeFile(new File("post_" + postNumber + "_dislikes.txt"), dislikesList);
             if (likesList.contains(username)) {
                 likesList.remove(username);
-                Database.writeFile(likesFile, likesList);
+                Database.writeFile(new File("post_" + postNumber + "_likes.txt"), likesList);
                 likesCount--;
             }
             return true;
@@ -220,8 +217,11 @@ public class Post implements PostInterface {
 
     public boolean deletePost() {
         try {
-            likesFile.delete();
-            dislikesFile.delete();
+            new File("post_" + postNumber + "_text.txt").delete();
+            new File("post_" + postNumber + "_likes.txt").delete();
+            new File("post_" + postNumber + "_dislikes.txt").delete();
+            new File("post_" + postNumber + "_hidden.txt").delete();
+            new File("post_" + postNumber + "_edited.txt").delete();
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
