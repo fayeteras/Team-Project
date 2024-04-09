@@ -197,14 +197,17 @@ public class Server implements Runnable {
                     case "getFeed":
                         getFeed(db, reader, writer);
                         break;
+                    case "createPost":
+                        createPost(currentUser.getUsername(), postText);
+                        //Need to get post Text from user/client/GUI
                     case "likePost":
-                        likePost(post, currentUser);
+                        likePost(post, currentUser.getUsername());
                         break;
                     case "dislikePost":
-                        dislikePost(post, currentUser);
+                        dislikePost(post, currentUser.getUsername());
                         break;
                     case "hidePost":
-                        hidePost(post, currentUser);
+                        hidePost(post, currentUser.getUsername());
                         //(Tyler) Unsure where to get which post we're modifying from feel
                         //like it has to do with the GUI and maybe recieving input from client
                         //(Faye) This will actually probably implement a getPosts and similar
