@@ -247,5 +247,9 @@ public class Post implements PostInterface {
         return false;
     }
 
+    public static int getTotalPosts() {
+        return totalPosts;
+    }
+
 
 }
