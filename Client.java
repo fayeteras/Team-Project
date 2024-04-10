@@ -140,6 +140,8 @@ public class Client {
                     case "userSearch":
                         userSearch(scan, reader, writer);
                         break;
+                    case "get feed":
+                        getFeed(scan, reader, writer);
                 }
                 //Forward-thinking is strongly encouraged
                 //you WILL add a GUI
@@ -151,5 +153,33 @@ public class Client {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            writer.write("get feed");
+            ArrayList<String[]> allPosts = new ArrayList<>();
+            String[] postInfo = new String[4];
+
+            //Reads information for each posts and adds an array of this infor to allPosts
+            int numOfPosts = Integer.parseInt(reader.readLine());
+            for (int p = 0; p < numOfPosts; p++) {
+                postInfo[1] = reader.readLine(); //Username
+                postInfo[2] = reader.readLine(); //Text
+                postInfo[3] = reader.readLine(); //Likes
+                postInfo[4] = reader.readLine(); //Dislikes
+                allPosts.add(postInfo);
+            }
+
+            //allPosts is an arrayList of arrays that contain the information for each post,
+            //which will be retrieved to show in the feed
+        
+        } catch (IOException e) {
+            System.out.println("Failed to retrieve feed");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+        
     }
 }

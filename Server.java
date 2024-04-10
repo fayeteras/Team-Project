@@ -174,8 +174,6 @@ public class Server implements Runnable {
                         break;
                     case "getFeed":
                         getFeed(db, reader, writer, user);
-                        //(Faye) This will actually probably implement a getPosts and similar
-                        //methods so I'll probably have to wait until that stuff is done
                         break;
                 }
             }
@@ -202,25 +200,41 @@ public class Server implements Runnable {
     }
 
     public void getFeed(Database db, BufferedReader reader, BufferedWriter writer, User user) {
+        //Get all of users friends
         String[] friendUsernames = (String[]) user.getFriendList().toArray();
-        User[] friends = new User[friendUsernames.length];
         
-        //convert each friend to user so we can fetch posts, likes, etc.
+        //convert each friend to user so we can fetch posts
+        User[] friends = new User[friendUsernames.length];
         for (int u = 0; u < friendUsernames.length; u++) {
             friends[u] = new User (friendUsernames[u]);
         }
 
-        ArrayList<String> userPosts = new ArrayList<>(); //each friend will have an ArrayList of their posts, which will include the text, likes, and dislikes
-        ArrayList<String>[] allPosts = new ArrayList[friends.length];
-
+        //Array of all posts of every friend
+        ArrayList<Post> allPosts = new ArrayList<>();
         for (int f = 0; f < friends.length; f++) {
-            while (friends[f].getPosts()) {
-                
-            //}
-            //implement a while loop that adds each post to the ArrayList
+            ArrayList<Post> userPosts = friends[f].getPostsList(); //need a way to fetch each post -- not the string but the object
+            for (int p = 0; p < userPosts.size(); p++) {
+                allPosts.add(userPosts.get(p));
+            }
+        }
+        
+        //Organizes posts by time posted (you can change this part however you want, i just created a framework)
+        for (int a = 0; a < allPosts.size(); a++) {
+            ArrayList<Post> organizedPosts = new ArrayList<>();
+            //will return allPosts, just reorganized
+            allPosts = organizedPosts;
+        }
 
-            //Need a way to retrieve posts and likes/dislikes
+        //Sends user who wrote the post, text content, likes, and dislikes to Client
+        writer.write(allPosts.size()); //tells user how many posts to read
+        for (int p = 0; p < allPosts.size(); p++) {
+            Post currentPost = allPosts.get(p);
+            writer.write(currentPost.getUsername());
+            writer.write(currentPost.getText());
+            writer.write(currentPost.getLikesCount());
+            writer.write(currentPost.getDislikesCount());
         }
     }
+
 
 }
