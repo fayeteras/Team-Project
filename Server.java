@@ -1,10 +1,13 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import javax.xml.crypto.Data;
 
 public class Server implements Runnable {
 
@@ -62,7 +65,6 @@ public class Server implements Runnable {
             throw new RuntimeException(e);
         }
     }
-
     public void signIn(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String yesOrNo = "Yes";
@@ -171,7 +173,7 @@ public class Server implements Runnable {
                         signOut(db, reader, writer);
                         break;
                     case "getFeed":
-                        getFeed(db, reader, writer);
+                        getFeed(db, reader, writer, user);
                         //(Faye) This will actually probably implement a getPosts and similar
                         //methods so I'll probably have to wait until that stuff is done
                         break;
@@ -197,6 +199,28 @@ public class Server implements Runnable {
         }
 
 
+    }
+
+    public void getFeed(Database db, BufferedReader reader, BufferedWriter writer, User user) {
+        String[] friendUsernames = (String[]) user.getFriendList().toArray();
+        User[] friends = new User[friendUsernames.length];
+        
+        //convert each friend to user so we can fetch posts, likes, etc.
+        for (int u = 0; u < friendUsernames.length; u++) {
+            friends[u] = new User (friendUsernames[u]);
+        }
+
+        ArrayList<String> userPosts = new ArrayList<>(); //each friend will have an ArrayList of their posts, which will include the text, likes, and dislikes
+        ArrayList<String>[] allPosts = new ArrayList[friends.length];
+
+        for (int f = 0; f < friends.length; f++) {
+            while (friends[f].getPosts()) {
+                
+            //}
+            //implement a while loop that adds each post to the ArrayList
+
+            //Need a way to retrieve posts and likes/dislikes
+        }
     }
 
 }
