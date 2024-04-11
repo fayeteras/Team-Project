@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
 import javax.xml.crypto.Data;
 
 public class Server implements Runnable {
@@ -16,6 +15,8 @@ public class Server implements Runnable {
     private static final int PORT = 620;
     private final Socket socket;
     private final ArrayList<User> userArray = new ArrayList<>();
+
+    private User user;
 
     public Server(Socket socket) {
         this.socket = socket;
@@ -144,9 +145,6 @@ public class Server implements Runnable {
 
     }
 
-    public void getFeed(Database db, BufferedReader reader, PrintWriter writer) {
-
-    }
 
     @Override
     public void run() {
@@ -200,11 +198,9 @@ public class Server implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
-    public void getFeed(Database db, BufferedReader reader, BufferedWriter writer, User user) throws IOException {
+    public void getFeed(Database db, BufferedReader reader, PrintWriter writer, User user) throws IOException {
         // Get all of user's friends
         String[] friendUsernames = user.getFriendList().toArray(new String[0]);
 
@@ -229,14 +225,14 @@ public class Server implements Runnable {
         });
 
         // Sends the number of posts to read to the client
-        writer.write(Integer.toString(allPosts.size()) + "\n");
+        writer.println(allPosts.size());
 
         // Sends user who wrote the post, text content, likes, and dislikes to Client
         for (Post currentPost : allPosts) {
-            writer.write(currentPost.getUsername() + "\n");
-            writer.write(currentPost.getText() + "\n");
-            writer.write(Integer.toString(currentPost.getLikesCount()) + "\n");
-            writer.write(Integer.toString(currentPost.getDislikesCount()) + "\n");
+            writer.println(currentPost.getUsername());
+            writer.println(currentPost.getText());
+            writer.println(currentPost.getLikesCount());
+            writer.println(currentPost.getDislikesCount());
         }
         writer.flush(); // Flush the buffer to ensure all data is sent
     }
