@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.xml.crypto.Data;
 
@@ -65,6 +67,7 @@ public class Server implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
     public void signIn(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String yesOrNo = "Yes";
@@ -96,6 +99,7 @@ public class Server implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
     public void userSearch(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String yesOrNo = "Yes";
@@ -183,6 +187,7 @@ public class Server implements Runnable {
 
 
     }
+
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server started and listening on port " + PORT);
@@ -199,42 +204,69 @@ public class Server implements Runnable {
 
     }
 
-    public void getFeed(Database db, BufferedReader reader, BufferedWriter writer, User user) {
-        //Get all of users friends
-        String[] friendUsernames = (String[]) user.getFriendList().toArray();
-        
-        //convert each friend to user so we can fetch posts
+    public void getFeed(Database db, BufferedReader reader, BufferedWriter writer, User user) throws IOException {
+        // Get all of user's friends
+        String[] friendUsernames = user.getFriendList().toArray(new String[0]);
+
+        // Convert each friend to a User so we can fetch posts
         User[] friends = new User[friendUsernames.length];
         for (int u = 0; u < friendUsernames.length; u++) {
-            friends[u] = new User (friendUsernames[u]);
+            friends[u] = new User(friendUsernames[u]);
         }
 
-        //Array of all posts of every friend
+        // Arraylist to hold all posts of every friend
         ArrayList<Post> allPosts = new ArrayList<>();
-        for (int f = 0; f < friends.length; f++) {
-            ArrayList<Post> userPosts = friends[f].getPostsList(); //need a way to fetch each post -- not the string but the object
-            for (int p = 0; p < userPosts.size(); p++) {
-                allPosts.add(userPosts.get(p));
-            }
-        }
-        
-        //Organizes posts by time posted (you can change this part however you want, i just created a framework)
-        for (int a = 0; a < allPosts.size(); a++) {
-            ArrayList<Post> organizedPosts = new ArrayList<>();
-            //will return allPosts, just reorganized
-            allPosts = organizedPosts;
+        for (User friend : friends) {
+            ArrayList<Post> userPosts = friend.getPostsList(); // Need a way to fetch each post -- not the string but the object
+            allPosts.addAll(userPosts);
         }
 
-        //Sends user who wrote the post, text content, likes, and dislikes to Client
-        writer.write(allPosts.size()); //tells user how many posts to read
-        for (int p = 0; p < allPosts.size(); p++) {
-            Post currentPost = allPosts.get(p);
-            writer.write(currentPost.getUsername());
-            writer.write(currentPost.getText());
-            writer.write(currentPost.getLikesCount());
-            writer.write(currentPost.getDislikesCount());
+        // Organize posts by time posted
+        Collections.sort(allPosts, new Comparator<Post>() {
+            public int compare(Post post1, Post post2) {
+                return compareTimestamps(post1.getCurrentTime(), post2.getCurrentTime());
+            }
+        });
+
+        // Sends the number of posts to read to the client
+        writer.write(Integer.toString(allPosts.size()) + "\n");
+
+        // Sends user who wrote the post, text content, likes, and dislikes to Client
+        for (Post currentPost : allPosts) {
+            writer.write(currentPost.getUsername() + "\n");
+            writer.write(currentPost.getText() + "\n");
+            writer.write(Integer.toString(currentPost.getLikesCount()) + "\n");
+            writer.write(Integer.toString(currentPost.getDislikesCount()) + "\n");
         }
+        writer.flush(); // Flush the buffer to ensure all data is sent
     }
 
-
+    private int compareTimestamps(int[] timestamp1, int[] timestamp2) {
+        // Compare year
+        if (timestamp1[0] != timestamp2[0]) {
+            return timestamp1[0] - timestamp2[0];
+        }
+        // Compare month
+        if (timestamp1[1] != timestamp2[1]) {
+            return timestamp1[1] - timestamp2[1];
+        }
+        // Compare day
+        if (timestamp1[2] != timestamp2[2]) {
+            return timestamp1[2] - timestamp2[2];
+        }
+        // Compare hour
+        if (timestamp1[3] != timestamp2[3]) {
+            return timestamp1[3] - timestamp2[3];
+        }
+        // Compare minute
+        if (timestamp1[4] != timestamp2[4]) {
+            return timestamp1[4] - timestamp2[4];
+        }
+        // Compare second
+        if (timestamp1[5] != timestamp2[5]) {
+            return timestamp1[5] - timestamp2[5];
+        }
+        // Compare millisecond
+        return timestamp1[6] - timestamp2[6];
+    }
 }
