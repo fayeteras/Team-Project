@@ -14,7 +14,7 @@ import java.util.*;
  */
 
 public class Post implements PostInterface {
-    private final String username;
+    private String username;
     private String text;
     private int likesCount;
     private int dislikesCount;
@@ -23,12 +23,26 @@ public class Post implements PostInterface {
     private ArrayList<String> dislikesList;
     private ArrayList<String> hidden;
     private boolean edited;
-    private final File textFile;
-    private final File likesFile;
-    private final File dislikesFile;
-    private final File hiddenFile;
-    private final File editedFile;
+    private int postNumber;
+    private static int totalPosts;
+    private File textFile;
+    private File likesFile;
+    private File dislikesFile;
+    private File hiddenFile;
+    private File editedFile;
 
+
+    public Post() { //(Noah) this is kind of weird but this one just sets the totalPosts.
+        try {
+        File f = new File("postCount.txt");
+        FileReader fr = new FileReader(f);
+        BufferedReader bfr = new BufferedReader(fr);
+        totalPosts = Integer.parseInt(bfr.readLine());
+        bfr.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public Post(String username, String text, String fileName) {
         this.username = username;
@@ -46,9 +60,10 @@ public class Post implements PostInterface {
         this.dislikesFile = new File(fileName + "_dislikes.txt");
         this.hiddenFile = new File(fileName + "_hidden.txt");
         this.editedFile = new File(fileName + "_edited.txt");
+        totalPosts++;
+        Database.writeFile(new File("postCount.txt"), totalPosts);
     }
 
-    //Written by Noah edited by Faye
     public Post(String username, String fileName) {
         this.username  = username;
         time = getCurrentTime();
@@ -187,7 +202,7 @@ public class Post implements PostInterface {
         return false;
     }
 
-    public synchronized boolean like(String username) { //(Noah) so the way it works is a bit confusing 
+    public synchronized boolean like(String username) { //(Noah) so the way it works is a bit confusing
         // but you give the user who's liking it as a parameter.
         if (!likesList.contains(username)) {
             likesList.add(username);
@@ -222,11 +237,18 @@ public class Post implements PostInterface {
         try {
             likesFile.delete();
             dislikesFile.delete();
+            hiddenFile.delete();
+            textFile.delete();
+            editedFile.delete();
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public static int getTotalPosts() {
+        return totalPosts;
     }
 
 
