@@ -111,6 +111,14 @@ public class Client {
                     writer.write(yesOrNo);
                     writer.println();
                     writer.flush();
+                    if (yesOrNo.equals("Yes")) {
+                        //(Sean) If this loop is entered, the user would like to
+                        //view the profile of the User whose username is the
+                        //string variable "searchAttempt" in this class.
+                        //please write and then call the viewProfile method below.
+                        //viewProfile();
+                        yesOrNo = "No";
+                    }
                 }
             }
         } catch (IOException e) {
@@ -148,6 +156,9 @@ public class Client {
                         break;
                     case "friendUser":
                         friendUser(scan, reader, writer);
+                        break;
+                    case "unfriendUser":
+                        unfriendUser(scan, reader, writer);
                         break;
                     case "blockUser":
                         blockuser(scan, reader, writer);
@@ -189,6 +200,25 @@ public class Client {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean viewProfile(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+    public static boolean friendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+    public static boolean unfriendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+    public static boolean blockuser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+    public static boolean unblockUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+
+
+
 
     public static boolean getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
@@ -248,7 +278,7 @@ public class Client {
             writer.write(scan.nextLine());
             writer.println();
             writer.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -258,7 +288,7 @@ public class Client {
             writer.write(scan.nextLine());
             writer.println();
             writer.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -268,7 +298,7 @@ public class Client {
             writer.write(scan.nextLine()); //Will probably be a button that has filename in GUI;
             writer.println();
             writer.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
