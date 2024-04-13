@@ -106,7 +106,7 @@ public class User implements UserInterface {
     public ArrayList<Post> getPostsList() {
         ArrayList<Post> posts = new ArrayList<Post>();
         for (int a = 0; a < postsList.size(); a++)  {
-            posts.add(new Post(username, "post_" + postsList.get(a));
+            posts.add(new Post(username, "post_" + postsList.get(a)));
         }
         return posts;
     }
