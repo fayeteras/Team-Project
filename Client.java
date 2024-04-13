@@ -156,7 +156,7 @@ public class Client {
                         unblockUser(scan, reader, writer);
                         break;
                     case "createPost":
-                         createPost(scan, reader, writer);
+                        createPost(scan, reader, writer);
                         break;
                     case "likePost":
                     case "likeComment":
@@ -166,7 +166,7 @@ public class Client {
                     case "dislikeComment":
                         dislike(scan, reader, writer);
                         break;
-                    case "hidePost": 
+                    case "hidePost":
                     case "hideComment":
                         hide(scan, reader, writer);
                         break;
@@ -192,32 +192,47 @@ public class Client {
 
     public static boolean getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
-            writer.write("get feed");
-            ArrayList<String[]> allPosts = new ArrayList<>();
-            String[] postInfo = new String[4];
+            String response = reader.readLine();
+            if (response.equals("get feed")) {
+                // Output the response directly if it's "get feed"
+                writer.println(response);
+                writer.flush();
+                return true;
+            } else {
+                // Parse the number of posts and handle accordingly
+                int numOfPosts = Integer.parseInt(response);
+                ArrayList<String[]> allPosts = new ArrayList<>();
+                String[] postInfo = new String[4];
 
-            //Reads information for each posts and adds an array of this infor to allPosts
-            int numOfPosts = Integer.parseInt(reader.readLine());
-            for (int p = 0; p < numOfPosts; p++) {
-                postInfo[1] = reader.readLine(); //Username
-                postInfo[2] = reader.readLine(); //Text
-                postInfo[3] = reader.readLine(); //Likes
-                postInfo[4] = reader.readLine(); //Dislikes
-                allPosts.add(postInfo);
+                // Read information for each post and add an array of this info to allPosts
+                for (int p = 0; p < numOfPosts; p++) {
+                    postInfo[0] = reader.readLine(); // Username
+                    postInfo[1] = reader.readLine(); // Text
+                    postInfo[2] = reader.readLine(); // Likes
+                    postInfo[3] = reader.readLine(); // Dislikes
+                    allPosts.add(postInfo);
+                }
+
+                // Output the response
+                writer.println(response);
+                writer.flush();
+
+                // Output all posts if necessary (not included in this code snippet)
             }
-
-            //allPosts is an arrayList of arrays that contain the information for each post,
-            //which will be retrieved to show in the feed
-        
         } catch (IOException e) {
             System.out.println("Failed to retrieve feed");
+            e.printStackTrace();
+            return false;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid response format: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
         return true;
     }
 
-        public static boolean createPost(Scanner scan, BufferedReader reader, PrintWriter writer) {
+
+    public static boolean createPost(Scanner scan, BufferedReader reader, PrintWriter writer) {
         String text = scan.nextLine(); //it's just going to have to be a single line for now. when we make the gui it can be multiple.
         writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
         writer.write((String) null);
