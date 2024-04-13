@@ -230,7 +230,6 @@ public class Server implements Runnable {
     }
 
     public boolean createPost(Database db, BufferedReader reader, PrintWriter writer) {
-        writer.write("What should the text of the post be?");
         String text = "";
         try {
             while(true) {
@@ -252,7 +251,6 @@ public class Server implements Runnable {
     }
 
     public boolean likePost(Database db, BufferedReader reader, PrintWriter writer){
-        writer.write("Enter post to like");
         try {
             String toLike = reader.readLine(); //I'm going to say that it'll give the filename
             Post post = new Post("a", toLike);
@@ -264,7 +262,6 @@ public class Server implements Runnable {
     }
 
     public boolean dislikePost(Database db, BufferedReader reader, PrintWriter writer){
-        writer.write("Enter post to dislike");
         try {
             String toDislike = reader.readLine(); //I'm going to say that it'll give the filename
             Post post = new Post("a", toDislike);
@@ -276,7 +273,6 @@ public class Server implements Runnable {
     }
 
     public boolean hidePost(Database db, BufferedReader reader, PrintWriter writer){
-        writer.write("Enter post to hide");
         try {
             String toHide = reader.readLine(); //I'm going to say that it'll give the filename
             Post post = new Post("a", toHide);
@@ -288,7 +284,6 @@ public class Server implements Runnable {
     }
 
     public boolean editPost(Database db, BufferedReader reader, PrintWriter writer){
-        writer.write("Enter post to edit");
         try {
             String toEdit = reader.readLine(); //I'm going to say that it'll give the filename
             Post post = new Post("a", toEdit);
@@ -310,7 +305,6 @@ public class Server implements Runnable {
     }
 
     public boolean createComment(Database db, BufferedReader reader, PrintWriter writer) {
-        writer.write("What should the text of the comment be?");
         String text = "";
         String parentNumber;
         try {
@@ -335,7 +329,6 @@ public class Server implements Runnable {
     }
 
     public boolean likeComment(Database db, BufferedReader reader, PrintWriter writer){
-        writer.write("Enter comment to like");
         try {
             String toLike = reader.readLine(); //I'm going to say that it'll give the filename
             Comment comment = new Comment("a", toLike, null);
@@ -347,7 +340,6 @@ public class Server implements Runnable {
     }
 
     public boolean dislikeComment(Database db, BufferedReader reader, PrintWriter writer){
-        writer.write("Enter comment to dislike");
         try {
             String toDislike = reader.readLine(); //I'm going to say that it'll give the filename
             Comment comment = new Comment("a", toDislike, null);
@@ -359,7 +351,6 @@ public class Server implements Runnable {
     }
 
     public boolean hideComment(Database db, BufferedReader reader, PrintWriter writer){
-        writer.write("Enter comment to hide");
         try {
             String toHide = reader.readLine(); //I'm going to say that it'll give the filename
             Comment comment = new Comment("a", toHide, null);
@@ -371,7 +362,6 @@ public class Server implements Runnable {
     }
 
     public boolean editComment(Database db, BufferedReader reader, PrintWriter writer){
-        writer.write("Enter comment to edit");
         try {
             String toEdit = reader.readLine(); //I'm going to say that it'll give the filename
             Comment comment = new Comment("a", toEdit, null);
