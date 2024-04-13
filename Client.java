@@ -243,6 +243,36 @@ public class Client {
         }
     }
 
+    public static void like(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            writer.write(scan.nextLine());
+            writer.println();
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void dislike(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            writer.write(scan.nextLine());
+            writer.println();
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void hide(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            writer.write(scan.nextLine()); //Will probably be a button that has filename in GUI;
+            writer.println();
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static boolean edit(Scanner scan, BufferedReader reader, PrintWriter writer) {
         String fileName = scan.nextLine(); //ig just enter the file name lmao
         writer.write(fileName);
