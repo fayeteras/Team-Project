@@ -86,6 +86,7 @@ public class Server implements Runnable {
                 if (db.authenticateUser(username, password)) {
                     yesOrNo = "No";
                     writer.write("Login successful. Welcome to hell " + username + "!");
+                    user = new User(username);
                     writer.println();
                     writer.flush();
                 } else {
@@ -142,7 +143,7 @@ public class Server implements Runnable {
     }
 
     public void signOut(Database db, BufferedReader reader, PrintWriter writer) {
-
+        this.user = null; //(Noah) yeah i think that's all that's needed here. 
     }
 
 
@@ -175,7 +176,50 @@ public class Server implements Runnable {
                         signOut(db, reader, writer);
                         break;
                     case "getFeed":
-                        getFeed(db, reader, writer, user);
+                        getFeed(db, reader, writer);
+                        break;
+                    //(Noah) added these below because they weren't in here but they're in the interface. might not be perfect though.
+                    case "viewProfile":
+                        viewProfile(db, reader, writer);
+                        break;
+                    case "friendUser":
+                        friendUser(db, reader, writer);
+                        break;
+                    case "blockUser":
+                        blockUser(db, reader, writer);
+                        break;
+                    case "unblockUser":
+                        unblockUser(db, reader, writer);
+                        break;
+                    case "createPost":
+                        createPost(db, reader, writer);
+                        break;
+                    case "likePost":
+                        likePost(db, reader, writer);
+                        break;
+                    case "dislikePost":
+                        dislikePost(db, reader, writer);
+                        break;
+                    case "hidePost": //(Noah)note: i'm sure not all of these need the db parameter but there's a lot to add
+                        hidePost(db, reader, writer);
+                        break;
+                    case "editPost":
+                        editPost(db, reader, writer);
+                        break;
+                    case "createComment":
+                        createComment(db, reader, writer);
+                        break;
+                    case "likeComment":
+                        likeComment(db, reader, writer);
+                        break;
+                    case "dislikeComment":
+                        dislikeComment(db, reader, writer);
+                        break;
+                    case "hideComment":
+                        hideComment(db, reader, writer);
+                        break;
+                    case "editComment":
+                        editComment(db, reader, writer);
                         break;
                 }
             }
@@ -200,7 +244,7 @@ public class Server implements Runnable {
         }
     }
 
-    public void getFeed(Database db, BufferedReader reader, PrintWriter writer, User user) throws IOException {
+    public void getFeed(Database db, BufferedReader reader, PrintWriter writer) throws IOException {
         // Get all of user's friends
         String[] friendUsernames = user.getFriendList().toArray(new String[0]);
 
