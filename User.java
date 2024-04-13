@@ -104,7 +104,11 @@ public class User implements UserInterface {
     }
 
     public ArrayList<String> getPostsList() {
-        return postsList;
+        ArrayList<Post> posts = new ArrayList<Post>();
+        for (int a = 0; a < postsList.size(); a++)  {
+            posts.add(new Post(username, "post_" + postsList.get(a));
+        }
+        return posts;
     }
 
     // Method to check if a user is a friend
