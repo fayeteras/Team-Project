@@ -16,16 +16,20 @@ public class User implements UserInterface {
     private final String username;
     private ArrayList<String> friendList;
     private ArrayList<String> blockList;
+    private ArrayList<String> postsList;
     private File friendsFile;
     private File blockedFile;
+    private File postsFile;
 
     // Constructor
     public User(String username) {
         this.username = username;
         this.friendList = new ArrayList<>();
         this.blockList = new ArrayList<>();
+        this.postsList = new ArrayList<>();
         this.friendsFile = checkFriendsFile();
         this.blockedFile = checkBlockedFile();
+        this.postsFile = checkPostsFile();
     }
 
     // Method to check existence of friends file
@@ -56,6 +60,20 @@ public class User implements UserInterface {
         return blockedFile;
     }
 
+    // Method to check existence of posts file
+    public File checkBlockedFile() {
+        File file = new File(username + "_Posts.txt");
+        if (file.exists()) {
+            postsFile = file;
+            if (postsList.isEmpty()) {
+                readFile(postsFile, postsList); // Initialize blockList from file
+            }
+        } else {
+            postsFile = createFile(file); // Create the file if it doesn't exist
+        }
+        return postsFile;
+    }
+
     // Method to create a file
     private File createFile(File file) {
         try {
@@ -83,6 +101,10 @@ public class User implements UserInterface {
     // Getter for blockList
     public ArrayList<String> getBlockList() {
         return blockList;
+    }
+
+    public ArrayList<String> getPostsList() {
+        return postsList;
     }
 
     // Method to check if a user is a friend
@@ -118,6 +140,15 @@ public class User implements UserInterface {
         if (!blockList.contains(username)) {
             blockList.add(username);
             return writeFile(blockedFile, blockList); // Write updated blockList to file
+        }
+        return false;
+    }
+
+    //Method to add a post id to the posts list
+    public boolean addPost(String postNumber) {
+        if (!postsList.contains(postNumber)) {
+            postsList.add(postNumber);
+            return writeFile(postsFile, postsList); // Write updated friendList to file
         }
         return false;
     }
