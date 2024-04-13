@@ -140,8 +140,51 @@ public class Client {
                     case "userSearch":
                         userSearch(scan, reader, writer);
                         break;
-                    case "get feed":
+                    case "getFeed":
                         getFeed(scan, reader, writer);
+                        break;
+                    case "viewProfile":
+                        viewProfile(scan, reader, writer);
+                        break;
+                    case "friendUser":
+                        friendUser(scan, reader, writer);
+                        break;
+                    case "blockUser":
+                        blockuser(scan, reader, writer);
+                        break;
+                    case "unblockUser":
+                        unblockUser(scan, reader, writer);
+                        break;
+                    case "createPost":
+                         createPost(scan, reader, writer);
+                        break;
+                    case "likePost":
+                        likePost(scan, reader, writer);
+                        break;
+                    case "dislikePost":
+                        dislikePost(scan, reader, writer);
+                        break;
+                    case "hidePost": 
+                        hidePost(scan, reader, writer);
+                        break;
+                    case "editPost":
+                        editPost(scan, reader, writer);
+                        break;
+                    case "createComment":
+                        createComment(scan, reader, writer);
+                        break;
+                    case "likeComment":
+                        likeComment(scan, reader, writer);
+                        break;
+                    case "dislikeComment":
+                        dislikeComment(scan, reader, writer);
+                        break;
+                    case "hideComment":
+                        hideComment(scan, reader, writer);
+                        break;
+                    case "editComment":
+                        editComment(scan, reader, writer);
+                        break;
                 }
                 //Forward-thinking is strongly encouraged
                 //you WILL add a GUI
@@ -180,6 +223,5 @@ public class Client {
             return false;
         }
         return true;
-        
     }
 }
