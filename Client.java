@@ -159,31 +159,23 @@ public class Client {
                          createPost(scan, reader, writer);
                         break;
                     case "likePost":
-                        likePost(scan, reader, writer);
+                    case "likeComment":
+                        like(scan, reader, writer);
                         break;
                     case "dislikePost":
-                        dislikePost(scan, reader, writer);
+                    case "dislikeComment":
+                        dislike(scan, reader, writer);
                         break;
                     case "hidePost": 
-                        hidePost(scan, reader, writer);
+                    case "hideComment":
+                        hide(scan, reader, writer);
                         break;
                     case "editPost":
-                        editPost(scan, reader, writer);
+                    case "editComment":
+                        edit(scan, reader, writer);
                         break;
                     case "createComment":
                         createComment(scan, reader, writer);
-                        break;
-                    case "likeComment":
-                        likeComment(scan, reader, writer);
-                        break;
-                    case "dislikeComment":
-                        dislikeComment(scan, reader, writer);
-                        break;
-                    case "hideComment":
-                        hideComment(scan, reader, writer);
-                        break;
-                    case "editComment":
-                        editComment(scan, reader, writer);
                         break;
                 }
                 //Forward-thinking is strongly encouraged
@@ -223,5 +215,42 @@ public class Client {
             return false;
         }
         return true;
+    }
+
+        public static boolean createPost(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        String text = scan.nextLine(); //it's just going to have to be a single line for now. when we make the gui it can be multiple.
+        writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
+        writer.write((String) null);
+        try {
+            return Boolean.parseBoolean(reader.readLine());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static boolean edit(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        String fileName = scan.nextLine(); //ig just enter the file name lmao
+        writer.write(fileName);
+        String text = scan.nextLine();
+        writer.write(text);
+        writer.write((String) null);
+        try {
+            return Boolean.parseBoolean(reader.readLine());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static boolean createComment(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        String text = scan.nextLine(); //it's just going to have to be a single line for now. when we make the gui it can be multiple.
+        writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
+        String parent = scan.nextLine();
+        writer.write(parent);
+        writer.write((String) null);
+        try {
+            return Boolean.parseBoolean(reader.readLine());
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
