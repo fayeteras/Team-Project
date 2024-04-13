@@ -155,6 +155,7 @@ public class Server implements Runnable {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             userArray.add(new User("Bobby"));
             String command;
+            boolean success; //check whether or not the command worked. Idk if this is the way to do it though
             while (true) {
                 writer.write("What would you like to do, User?");
                 writer.println();
@@ -226,8 +227,169 @@ public class Server implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public boolean createPost(Database db, BufferedReader reader, PrintWriter writer) {
+        writer.write("What should the text of the post be?");
+        String text = "";
+        try {
+            while(true) {
+                String line = reader.readLine();
+                if (line != null)
+                    text = text.concat(line);
+                else
+                    break;
+            }
+        } catch (IOException e) {
+            return false;
+        }
+        try {
+            new Post(user.getUsername(), text, "post_" + Post.getTotalPosts());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
+    public boolean likePost(Database db, BufferedReader reader, PrintWriter writer){
+        writer.write("Enter post to like");
+        try {
+            String toLike = reader.readLine(); //I'm going to say that it'll give the filename
+            Post post = new Post("a", toLike);
+            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
+            return post.like(user.getUsername());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean dislikePost(Database db, BufferedReader reader, PrintWriter writer){
+        writer.write("Enter post to dislike");
+        try {
+            String toDislike = reader.readLine(); //I'm going to say that it'll give the filename
+            Post post = new Post("a", toDislike);
+            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
+            return post.dislike(user.getUsername());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean hidePost(Database db, BufferedReader reader, PrintWriter writer){
+        writer.write("Enter post to hide");
+        try {
+            String toHide = reader.readLine(); //I'm going to say that it'll give the filename
+            Post post = new Post("a", toHide);
+            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
+            return post.hide(user.getUsername());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean editPost(Database db, BufferedReader reader, PrintWriter writer){
+        writer.write("Enter post to edit");
+        try {
+            String toEdit = reader.readLine(); //I'm going to say that it'll give the filename
+            Post post = new Post("a", toEdit);
+            writer.write("Enter new text");
+            String text = "";
+            while(true) {
+                String line = reader.readLine();
+                if (line != null)
+                    text = text.concat(line);
+                else
+                    break;
+            }
+            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
+            post.editPost(text);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean createComment(Database db, BufferedReader reader, PrintWriter writer) {
+        writer.write("What should the text of the comment be?");
+        String text = "";
+        String parentNumber;
+        try {
+            while(true) {
+                String line = reader.readLine();
+                if (line != null)
+                    text = text.concat(line);
+                else
+                    break;
+            }
+            writer.write("Enter the number for the parent post");
+            parentNumber = reader.readLine();
+        } catch (IOException e) {
+            return false;
+        }
+        try {
+            new Comment(user.getUsername(), text, "comment_" + parentNumber + Comment.getTotalComments(), null);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean likeComment(Database db, BufferedReader reader, PrintWriter writer){
+        writer.write("Enter comment to like");
+        try {
+            String toLike = reader.readLine(); //I'm going to say that it'll give the filename
+            Comment comment = new Comment("a", toLike, null);
+            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
+            return comment.like(user.getUsername());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean dislikeComment(Database db, BufferedReader reader, PrintWriter writer){
+        writer.write("Enter comment to dislike");
+        try {
+            String toDislike = reader.readLine(); //I'm going to say that it'll give the filename
+            Comment comment = new Comment("a", toDislike, null);
+            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
+            return comment.dislike(user.getUsername());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean hideComment(Database db, BufferedReader reader, PrintWriter writer){
+        writer.write("Enter comment to hide");
+        try {
+            String toHide = reader.readLine(); //I'm going to say that it'll give the filename
+            Comment comment = new Comment("a", toHide, null);
+            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
+            return comment.hide(user.getUsername());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean editComment(Database db, BufferedReader reader, PrintWriter writer){
+        writer.write("Enter comment to edit");
+        try {
+            String toEdit = reader.readLine(); //I'm going to say that it'll give the filename
+            Comment comment = new Comment("a", toEdit, null);
+            writer.write("Enter new text");
+            String text = "";
+            while(true) {
+                String line = reader.readLine();
+                if (line != null)
+                    text = text.concat(line);
+                else
+                    break;
+            }
+            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
+            comment.editPost(text);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     public static void main(String[] args) {
