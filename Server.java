@@ -1,14 +1,6 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import javax.xml.crypto.Data;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class Server implements Runnable {
 
@@ -115,20 +107,24 @@ public class Server implements Runnable {
                     writer.write("Here is the User you are looking for.");
                     writer.println();
                     writer.flush();
-                    //(Sean) I am unsure of what we are planning to display when
-                    //a user is searched up. Their posts? Their friends and/or blocked users?
-                    //I just have it returning the index of the User in the ArrayList as a placeholder.
-                    for (int i = 0; i < userArray.size(); i++) {
-                        if (userArray.get(i).getUsername().equals(username)) {
-                            writer.write("" + i);
-                            writer.println();
-                            writer.flush();
-                        }
-                    }
-                    writer.write("Look for another? (Yes or No)");
+                    //(Sean) If the user exists in the allUsers text file, then the server
+                    // will write back that the user has been found. and it will prompt the
+                    //User if it wants to view their profile.
+                    writer.write(username);
+                    writer.println();
+                    writer.flush();
+                    writer.write("Would you like to view their profile? (Yes or No)");
                     writer.println();
                     writer.flush();
                     yesOrNo = reader.readLine();
+                    if (yesOrNo.equals("Yes")) {
+                        //If this loop is entered, the user would like to
+                        //view the profile of the User whose username is the
+                        //string variable "username" in this class.
+                        //please write and then call the viewProfile method below.
+                        //viewProfile();
+                        yesOrNo = "No";
+                    }
                 } else {
                     writer.write("The user you are looking for does not exist." +
                             "\nLook for another? (Yes or No)");
@@ -186,6 +182,9 @@ public class Server implements Runnable {
                     case "friendUser":
                         friendUser(db, reader, writer);
                         break;
+                    case "unfriendUser":
+                        unfriendUser(db, reader, writer);
+                        break;
                     case "blockUser":
                         blockUser(db, reader, writer);
                         break;
@@ -229,6 +228,21 @@ public class Server implements Runnable {
         }
     }
 
+    public boolean viewProfile(Database db, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+    public boolean friendUser(Database db, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+    public boolean unfriendUser(Database db, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+    public boolean blockUser(Database db, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
+    public boolean unblockUser(Database db, BufferedReader reader, PrintWriter writer) {
+        return true;
+    }
     public boolean createPost(Database db, BufferedReader reader, PrintWriter writer) {
         String text = "";
         try {
