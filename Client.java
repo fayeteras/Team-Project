@@ -275,7 +275,8 @@ public class Client {
 
     public static void like(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
-            writer.write(scan.nextLine());
+            String filename = scan.nextLine();
+            writer.write(filename);
             writer.println();
             writer.flush();
         } catch (Exception e) {
@@ -285,7 +286,8 @@ public class Client {
 
     public static void dislike(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
-            writer.write(scan.nextLine());
+            String filename = scan.nextLine();
+            writer.write(filename);
             writer.println();
             writer.flush();
         } catch (Exception e) {
@@ -295,7 +297,8 @@ public class Client {
 
     public static void hide(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
-            writer.write(scan.nextLine()); //Will probably be a button that has filename in GUI;
+            String filename = scan.nextLine();
+            writer.write(filename); //Will probably be a button that has filename in GUI;
             writer.println();
             writer.flush();
         } catch (Exception e) {
