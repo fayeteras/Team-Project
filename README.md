@@ -2,22 +2,24 @@
 
 In order to do anything with our code, you must download it all first. In the "<> Code" section of our project, please click the dropdown arrow on the green "<> Code" button. Click on the button titled "Download ZIP" to download all of our project files to place into an editor of your choice. If you are using Vocareum, you will need to enter the command "javac {java class here}" for every one of the java files in our project to compile. Also, multiple java files in our project use JUnit testing, so be sure to add the current JUnit library to the classpath if not already done so. 
 
-At Phase 1, our project is not yet designed to run in its fullest, as client and server communication is to be set up in Phase 2, and GUI will be added in on Phase 3. As such, the current way to run our project is to run each of our four test case files and observe the inputs and outputs for future functionality that we will cover in later phases.
+At Phase 2, our project is not yet designed to run in its fullest, as GUI will be added in on Phase 3. As such, the current way to run our project is to utilize our basic terminal-based server-to-client communication and to run each of our five test cases files to understand our intended functionality.
 
-As of Phase 1, there are fourteen java classes, four of which are for test cases and six of which are interfaces that are implemented or will be implemented by the other java classes. 
+As of Phase 2, there are seventeen java classes, five of which are for test cases and six of which are interfaces that are implemented by the other java classes. 
 
 
 
 2. MEMBER SUBMISSION TIMESTAMPS
 
 April 1st, 2024 - Phase 1 Vocareum workspace submitted - Faye Teras
+April 15th, 2024 - Phase 2 Vocareum workspace submitted - Sean VandenBussche
 
 
 
 3. CLASS SUMMARY
 
-As of Phase 1, there are fourteen java classes, four of which are for test cases and six of which are interfaces that are implemented or will be implemented by the other java classes.
+As of Phase 2, there are seventeen java classes, five of which are for test cases and six of which are interfaces that are implemented by the other java classes. 
 
+PHASE 1 CLASSES
 
 Comment.java
 
@@ -107,20 +109,48 @@ The third test, testAddFriend(), creates a User Object and adds a friend to it t
 All of the tests return a success message to the terminal if the test assertions are all correct.
 
 
-clientInterface.java
+ClientInterface.java
 
-This interface is for Client.java, which will not be created until Phase 2. 
+This interface is for Client.java.
 
-These four methods will be for User connections and sign-ins: boolean connect(), boolean disconnect(), User createUser(String username), and boolean signIn(String username, String password). 
+All of the parameters for every method are the same, (Scanner scan, BufferedReader reader, PrintWriter writer), so I did not write these params in every one of them to save space.
 
-These next methods will be for the scrolling aspect of our social media platform. This will be all of the things a User can do to interact with other Users, like friending and blocking User Profiles, liking and disliking their posts, and even the User creating their own posts and comments.  There are quite a lot, but we want to make sure we cover everything just in case. Our current names for these methods are:  boolean userSearch(String search), boolean viewProfile(String username), boolean friendUser(String username), boolean unfriendUser(String username), boolean blockUser(String username), boolean unblockUser(String username), void showFeed(), boolean createPost(String postText), boolean likePost(Post post), boolean dislikePost(Post post), boolean createComment(Post post, String commentText), boolean likeComment(Comment comment), and boolean dislikeComment(Comment comment).
+These two methods will be for User creations and sign-ins: void createUser() and void signIn();
+
+The next six methods are for interactions with Users on our social media platform, like searching, friending, and blocking Users. These methods are: void userSearch(), void viewProfile(), boolean friendUser(), boolean unfriendUser(), boolean blockUser(), and boolean unblockUser().
+
+There are also six methods that will be used for the User to interact with Posts and Comments. These include: boolean createPost(), boolean createComment(), boolean like(), boolean dislike(), boolean hide(), and boolean edit().
+
+The final method is used to gather the entire social media feed for the User currently signed in. Its name is boolean getFeed().
 
 
-serverInterface.java
+ServerInterface.java
 
-This interface is for Server.java, which will not be created until Phase 2. Since all of the data will be processed in the server side, we have many methods planned for the creation of this class in Phase 2, as it does not hurt to be over-prepared. 
+This interface is for Server.java.
 
-The first two methods specified in this interface are boolean start() and boolean stop(), which are for starting and stopping the server. 
+All of the parameters for almost every method are the same, (Database db, BufferedReader reader, PrintWriter writer), so I did not write these params in every one of them to save space. There is one method that has different parameters, so I filled in its parentheses.
 
-The next methods involved all of the input processing for the User's interactions with the server, including, but not limited to, their requests for posting and commenting, liking and disliking posts and comments, viewing, adding, and blocking Users, and more. Our names for these methods are: User createUser(String username), boolean signIn(String username, String password), boolean userSearch(String search), boolean viewProfile(String username), boolean friendUser(String username), boolean unfriendUser(String username), boolean blockUser(String username), boolean unblockUser(String username), void showFeed(), boolean createPost(String postText), boolean likePost(Post post), boolean dislikePost(Post post), boolean createComment(Post post, String commentText), boolean likeComment(Comment comment), and boolean dislikeComment(Comment comment).
+These two methods will be for User creations and sign-ins: void createUser() and void signIn();
+
+The next six methods are for interactions with Users on our social media platform, like searching, friending, and blocking Users. These methods are: void userSearch(), boolean viewProfile(Database db, BufferedReader reader, PrintWriter writer, String username), boolean friendUser(), boolean unfriendUser(), boolean blockUser(), and boolean unblockUser().
+
+There are also five methods that will be used for the User to interact with Posts. These include: boolean createPost(), boolean likePost(), boolean dislikePost(), boolean hidePost(), and boolean editPost(). Similarly, there are five methods that will be used for the User to interact with Comments. These include: boolean createComment(), boolean likeComment(), boolean dislikeComment(), boolean hideComment(), and boolean editComment().
+
+The final method is used to gather the entire social media feed for the User currently signed in. Its name is boolean getFeed().
+
+PHASE 2 CLASSES
+
+Client.java
+
+This is the class for the client that connects to the social media server. The client can issue several input commands (will be turned into GUI actions in Phase 3) to be sent to the Server class and processed. The client can request to friend and block Users, like and dislike posts and comments, and create posts and comments. These are a few of the many options availible for the current connected user to do.
+
+Server.java
+
+This is the class for the Server that permanently runs to accept the multiple clients that will interact with the social media platform. This class uses the methods from the previous classes (Database, User, Post, Comment) to help the user interact with the platform. This server houses methods to create Users and request they sign in, along with calculating the Users, Posts, and Comments in the Database to respond to the many prompts possible from Client.
+
+ClientTest.java
+
+To make sure our client-to-server interaction is working as intended, this test class will test several commands to ensure that the many possible inputs from the User can be handled by our code.
+
+The first test, testCreateUser(), will attempt to create a test User to be test added to the allUsers.txt file. 
 
