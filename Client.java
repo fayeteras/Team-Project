@@ -352,7 +352,7 @@ public class Client {
     public static boolean createPost(Scanner scan, BufferedReader reader, PrintWriter writer) {
         String text = scan.nextLine(); //it's just going to have to be a single line for now. when we make the gui it can be multiple.
         writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
-        writer.write((String) null);
+        writer.write("END");
         try {
             return Boolean.parseBoolean(reader.readLine());
         } catch (IOException e) {
@@ -398,7 +398,7 @@ public class Client {
         writer.write(fileName);
         String text = scan.nextLine();
         writer.write(text);
-        writer.write((String) null);
+        writer.write("END");
         try {
             return Boolean.parseBoolean(reader.readLine());
         } catch (IOException e) {
@@ -411,7 +411,7 @@ public class Client {
         writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
         String parent = scan.nextLine();
         writer.write(parent);
-        writer.write((String) null);
+        writer.write("END");
         try {
             return Boolean.parseBoolean(reader.readLine());
         } catch (IOException e) {
