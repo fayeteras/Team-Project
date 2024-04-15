@@ -5,8 +5,8 @@ import java.util.*;
  * Server.java
  *
  * Server that permanently runs to accept the multiple clients that
- * will interact with the social media platform. Performs the calculations
- * for all the inputs from the clients.
+ * will interact with the social media platform. Uses the methods from
+ * the previous classes to help the user interact with the platform.
  *
  * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
  *
