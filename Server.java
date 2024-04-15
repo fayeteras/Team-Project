@@ -118,6 +118,7 @@ public class Server implements Runnable {
                     writer.flush();
                     yesOrNo = reader.readLine();
                     if (yesOrNo.equals("Yes")) {
+                        viewProfile(db, reader, writer, username);
                         //If this loop is entered, the user would like to
                         //view the profile of the User whose username is the
                         //string variable "username" in this class.
@@ -177,7 +178,7 @@ public class Server implements Runnable {
                         break;
                     //(Noah) added these below because they weren't in here but they're in the interface. might not be perfect though.
                     case "viewProfile":
-                        viewProfile(db, reader, writer);
+                        viewProfile(db, reader, writer, username);
                         break;
                     case "friendUser":
                         friendUser(db, reader, writer);
@@ -228,21 +229,130 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean viewProfile(Database db, BufferedReader reader, PrintWriter writer) {
-        return true;
+    public boolean viewProfile(Database db, BufferedReader reader, PrintWriter writer, String username) {
+        if (db.userExists(username)){
+            writer.println(username);
+            User viewUser = new User(username);
+            int friendsCount = viewUser.getFriendList().size();
+            writer.println(friendsCount);
+            writer.flush();
+            ArrayList<Post> posts = viewUser.getPostsList();
+            for (int p = 0; p < posts.size(); p++) {
+                sendPosts(db, reader, writer, posts.get(p));
+            }
+            writer.flush();
+            return true;
+        }
+        return false;
     }
     public boolean friendUser(Database db, BufferedReader reader, PrintWriter writer) {
-        return true;
+        String username;
+        try {
+            username = reader.readLine();
+            if (db.userExists(username)) {
+                if (user.isFriend(username)) {
+                    writer.write("REPEAT");
+                    writer.println();
+                    writer.flush();
+                    return false;
+                }
+                if (user.isBlocked(username)) {
+                    writer.write("BLOCKED");
+                    writer.println();
+                    writer.flush();
+                    return false;
+                }
+                user.addFriend(username);
+                writer.write(username + "SUCCESS");
+                writer.println();
+                writer.flush();
+                return true;
+            } else {
+                writer.write("FAILED");
+                writer.println();
+                writer.flush();
+                return false;
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }        
     }
+    
     public boolean unfriendUser(Database db, BufferedReader reader, PrintWriter writer) {
-        return true;
+        String username;
+        try {
+            username = reader.readLine();
+            if (db.userExists(username) && user.isFriend(username)) {
+                writer.write("SUCCESS");
+                writer.println();
+                writer.flush();
+            }
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            writer.write("FAILED");
+            writer.println();
+            writer.flush();
+            return false;
+        }
+        
     }
+
     public boolean blockUser(Database db, BufferedReader reader, PrintWriter writer) {
-        return true;
+        try {
+            String username = reader.readLine();
+            if (db.userExists(username)) {
+                if (user.isBlocked(username)) {
+                    writer.write("REPEAT");
+                    writer.println();
+                    writer.flush();
+                    return false;
+                }
+                if (user.isFriend(username)) {
+                    writer.write("FRIEND");
+                    writer.println();
+                    writer.flush();
+                    return false;
+                }
+                user.blockUser(username);
+                writer.write("SUCCESS");
+                writer.println();
+                writer.flush();
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            writer.write("FAILED");
+            writer.println();
+            writer.flush();
+            return false;
+        }
+        return false;
     }
+
     public boolean unblockUser(Database db, BufferedReader reader, PrintWriter writer) {
+        String username;
+        try {
+            username = reader.readLine();
+            if (db.userExists(username) && user.isBlocked(username)) {
+                user.unblockUser(username);
+                writer.write("SUCCESS");
+                writer.println();
+                writer.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            writer.write("FAILED");
+            writer.println();
+            writer.flush();
+            return false;
+        }
+        
         return true;
     }
+
     public boolean createPost(Database db, BufferedReader reader, PrintWriter writer) {
         String text = "";
         try {
@@ -439,12 +549,16 @@ public class Server implements Runnable {
 
         // Sends user who wrote the post, text content, likes, and dislikes to Client
         for (Post currentPost : allPosts) {
-            writer.println(currentPost.getUsername());
-            writer.println(currentPost.getText());
-            writer.println(currentPost.getLikesCount());
-            writer.println(currentPost.getDislikesCount());
+            sendPosts(db, reader, writer, currentPost);
         }
         writer.flush(); // Flush the buffer to ensure all data is sent
+    }
+
+    private void sendPosts(Database db, BufferedReader reader, PrintWriter writer, Post post) {
+        writer.println(post.getUsername());
+        writer.println(post.getText());
+        writer.println(post.getLikesCount());
+        writer.println(post.getDislikesCount());
     }
 
     private int compareTimestamps(int[] timestamp1, int[] timestamp2) {

@@ -201,19 +201,97 @@ public class Client {
         }
     }
 
-    public static boolean viewProfile(Scanner scan, BufferedReader reader, PrintWriter writer) {
-        return true;
+    public static void viewProfile(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            String username = reader.readLine();
+            System.out.println("Profile: " + username);
+            int friendsCount = Integer.parseInt(reader.readLine());
+            System.out.println("Friends: " + friendsCount);
+            String line;
+            ArrayList<String[]> allPosts = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                allPosts.add(readPost(scan, reader, writer));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public static boolean friendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        System.out.println("Who would you like to friend?");
+        String username = scan.nextLine();
+        writer.write(username);
+        try {
+            switch (reader.readLine()) {
+                case "REPEAT" :
+                    System.out.println("You are already friends with " + username);
+                    break;
+                case "BLOCKED" :
+                    System.out.println(username + " is blocked!");
+                    break;
+                case "SUCCESS" :
+                    System.out.println("You have added " + username + " as a friend!");
+                    break;
+                case "FAILED" :
+                    System.out.println("Error friending " + username);
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }    
         return true;
     }
     public static boolean unfriendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        System.out.println("Who would you like to unfriend?");
+        String username = scan.nextLine();
+        writer.write(username);
+        try {
+            if (reader.readLine().equals("SUCCESS")) {
+                System.out.println("You have removed " + username + " as a friend.");
+            } else {
+                System.out.println("There was an error removing " + username + " as a friend.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }    
         return true;
     }
     public static boolean blockuser(Scanner scan, BufferedReader reader, PrintWriter writer) {
-        return true;
-    }
+        System.out.println("Who would you like to block?");
+        String username = scan.nextLine();
+        writer.write(username);
+        try {
+            switch (reader.readLine()) {
+                case "REPEAT" :
+                    System.out.println("You have already blocked " + username);
+                case "FRIEND" :
+                    System.out.println("You cannot block " + username + " while they are your friend!");
+                case "SUCCESS" :
+                    System.out.println("You have blocked " + username);
+                case "FAILED" :
+                    System.out.println("Error blocking " + username);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }    
+        return true;    }
+
     public static boolean unblockUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        System.out.println("Who would you like to unblock?");
+        String username = scan.nextLine();
+        writer.write(username);
+        try {
+            if (reader.readLine().equals("SUCCESS")) {
+                System.out.println("You have unblocked " + username);
+            } else {
+                System.out.println("There was an error unblocking " + username);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }    
         return true;
     }
 
@@ -232,15 +310,10 @@ public class Client {
                 // Parse the number of posts and handle accordingly
                 int numOfPosts = Integer.parseInt(response);
                 ArrayList<String[]> allPosts = new ArrayList<>();
-                String[] postInfo = new String[4];
 
                 // Read information for each post and add an array of this info to allPosts
                 for (int p = 0; p < numOfPosts; p++) {
-                    postInfo[0] = reader.readLine(); // Username
-                    postInfo[1] = reader.readLine(); // Text
-                    postInfo[2] = reader.readLine(); // Likes
-                    postInfo[3] = reader.readLine(); // Dislikes
-                    allPosts.add(postInfo);
+                    allPosts.add(readPost(scan, reader, writer));
                 }
 
                 // Output the response
@@ -259,6 +332,20 @@ public class Client {
             return false;
         }
         return true;
+    }
+
+    private static String[] readPost (Scanner scan, BufferedReader reader, PrintWriter writer) {
+        String[] postInfo = new String[4];
+        try {
+            postInfo[0] = reader.readLine(); // Username
+            postInfo[1] = reader.readLine(); // Text
+            postInfo[2] = reader.readLine(); // Likes
+            postInfo[3] = reader.readLine(); // Dislikes
+            return postInfo;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
