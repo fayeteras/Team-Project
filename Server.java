@@ -1,17 +1,107 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
-public class Server implements Runnable {
+/**
+ * Server.java
+ *
+ * Server that permanently runs to accept the multiple clients that
+ * will interact with the social media platform. Performs the calculations
+ * for all the inputs from the clients.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Mon April 15th, 2024
+ */
+public class Server implements Runnable, ServerInterface {
 
     private static final int PORT = 620;
     private final Socket socket;
     private final ArrayList<User> userArray = new ArrayList<>();
-
     private User user;
-
     public Server(Socket socket) {
         this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+        try {
+            Database db = new Database();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            userArray.add(new User("Bobby"));
+            String command;
+            boolean success; //check whether or not the command worked. Idk if this is the way to do it though
+            while (true) {
+                writer.write("What would you like to do, User?");
+                writer.println();
+                writer.flush();
+                command = reader.readLine();
+                //(Sean) I readded login as part of the switch.
+                // I only saw Faye's terminal edits after finishing my part. srry Faye
+                switch (command) {
+                    case "createUser":
+                        createUser(db, reader, writer);
+                        break;
+                    case "signIn":
+                        signIn(db, reader, writer);
+                        break;
+                    case "userSearch":
+                        userSearch(db, reader, writer);
+                        break;
+                    case "signOut":
+                        signOut(db, reader, writer);
+                        break;
+                    case "getFeed":
+                        getFeed(db, reader, writer);
+                        break;
+                    case "friendUser":
+                        friendUser(db, reader, writer);
+                        break;
+                    case "unfriendUser":
+                        unfriendUser(db, reader, writer);
+                        break;
+                    case "blockUser":
+                        blockUser(db, reader, writer);
+                        break;
+                    case "unblockUser":
+                        unblockUser(db, reader, writer);
+                        break;
+                    case "createPost":
+                        createPost(db, reader, writer);
+                        break;
+                    case "likePost":
+                        likePost(db, reader, writer);
+                        break;
+                    case "dislikePost":
+                        dislikePost(db, reader, writer);
+                        break;
+                    case "hidePost": //(Noah)note: i'm sure not all of these need the db parameter but there's a lot to add
+                        hidePost(db, reader, writer);
+                        break;
+                    case "editPost":
+                        editPost(db, reader, writer);
+                        break;
+                    case "createComment":
+                        createComment(db, reader, writer);
+                        break;
+                    case "likeComment":
+                        likeComment(db, reader, writer);
+                        break;
+                    case "dislikeComment":
+                        dislikeComment(db, reader, writer);
+                        break;
+                    case "hideComment":
+                        hideComment(db, reader, writer);
+                        break;
+                    case "editComment":
+                        editComment(db, reader, writer);
+                        break;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //(Sean) I experienced some difficulties making methods that function outside of run.
@@ -118,12 +208,10 @@ public class Server implements Runnable {
                     writer.flush();
                     yesOrNo = reader.readLine();
                     if (yesOrNo.equals("Yes")) {
-                        viewProfile(db, reader, writer, username);
                         //If this loop is entered, the user would like to
                         //view the profile of the User whose username is the
                         //string variable "username" in this class.
-                        //please write and then call the viewProfile method below.
-                        //viewProfile();
+                        viewProfile(db, reader, writer, username);
                         yesOrNo = "No";
                     }
                 } else {
@@ -140,93 +228,7 @@ public class Server implements Runnable {
     }
 
     public void signOut(Database db, BufferedReader reader, PrintWriter writer) {
-        this.user = null; //(Noah) yeah i think that's all that's needed here. 
-    }
-
-
-    @Override
-    public void run() {
-        try {
-            Database db = new Database();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
-            userArray.add(new User("Bobby"));
-            String command;
-            boolean success; //check whether or not the command worked. Idk if this is the way to do it though
-            while (true) {
-                writer.write("What would you like to do, User?");
-                writer.println();
-                writer.flush();
-                command = reader.readLine();
-                //(Sean) I readded login as part of the switch.
-                // I only saw Faye's terminal edits after finishing my part. srry Faye
-                switch (command) {
-                    case "createUser":
-                        createUser(db, reader, writer);
-                        break;
-                    case "signIn":
-                        signIn(db, reader, writer);
-                        break;
-                    case "userSearch":
-                        userSearch(db, reader, writer);
-                        break;
-                    case "signOut":
-                        signOut(db, reader, writer);
-                        break;
-                    case "getFeed":
-                        getFeed(db, reader, writer);
-                        break;
-                    //(Noah) added these below because they weren't in here but they're in the interface. might not be perfect though.
-                    case "viewProfile":
-                        viewProfile(db, reader, writer, username);
-                        break;
-                    case "friendUser":
-                        friendUser(db, reader, writer);
-                        break;
-                    case "unfriendUser":
-                        unfriendUser(db, reader, writer);
-                        break;
-                    case "blockUser":
-                        blockUser(db, reader, writer);
-                        break;
-                    case "unblockUser":
-                        unblockUser(db, reader, writer);
-                        break;
-                    case "createPost":
-                        createPost(db, reader, writer);
-                        break;
-                    case "likePost":
-                        likePost(db, reader, writer);
-                        break;
-                    case "dislikePost":
-                        dislikePost(db, reader, writer);
-                        break;
-                    case "hidePost": //(Noah)note: i'm sure not all of these need the db parameter but there's a lot to add
-                        hidePost(db, reader, writer);
-                        break;
-                    case "editPost":
-                        editPost(db, reader, writer);
-                        break;
-                    case "createComment":
-                        createComment(db, reader, writer);
-                        break;
-                    case "likeComment":
-                        likeComment(db, reader, writer);
-                        break;
-                    case "dislikeComment":
-                        dislikeComment(db, reader, writer);
-                        break;
-                    case "hideComment":
-                        hideComment(db, reader, writer);
-                        break;
-                    case "editComment":
-                        editComment(db, reader, writer);
-                        break;
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.user = null; //(Noah) yeah i think that's all that's needed here.
     }
 
     public boolean viewProfile(Database db, BufferedReader reader, PrintWriter writer, String username) {
@@ -273,13 +275,13 @@ public class Server implements Runnable {
                 writer.flush();
                 return false;
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }        
+        }
     }
-    
+
     public boolean unfriendUser(Database db, BufferedReader reader, PrintWriter writer) {
         String username;
         try {
@@ -297,7 +299,7 @@ public class Server implements Runnable {
             writer.flush();
             return false;
         }
-        
+
     }
 
     public boolean blockUser(Database db, BufferedReader reader, PrintWriter writer) {
@@ -349,7 +351,7 @@ public class Server implements Runnable {
             writer.flush();
             return false;
         }
-        
+
         return true;
     }
 
@@ -374,7 +376,7 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean likePost(Database db, BufferedReader reader, PrintWriter writer){
+    public boolean likePost(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String toLike = reader.readLine(); //I'm going to say that it'll give the filename
             Post post = new Post("a", toLike);
@@ -385,7 +387,7 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean dislikePost(Database db, BufferedReader reader, PrintWriter writer){
+    public boolean dislikePost(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String toDislike = reader.readLine(); //I'm going to say that it'll give the filename
             Post post = new Post("a", toDislike);
@@ -396,7 +398,7 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean hidePost(Database db, BufferedReader reader, PrintWriter writer){
+    public boolean hidePost(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String toHide = reader.readLine(); //I'm going to say that it'll give the filename
             Post post = new Post("a", toHide);
@@ -407,7 +409,7 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean editPost(Database db, BufferedReader reader, PrintWriter writer){
+    public boolean editPost(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String toEdit = reader.readLine(); //I'm going to say that it'll give the filename
             Post post = new Post("a", toEdit);
@@ -452,7 +454,7 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean likeComment(Database db, BufferedReader reader, PrintWriter writer){
+    public boolean likeComment(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String toLike = reader.readLine(); //I'm going to say that it'll give the filename
             Comment comment = new Comment("a", toLike, null);
@@ -463,7 +465,7 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean dislikeComment(Database db, BufferedReader reader, PrintWriter writer){
+    public boolean dislikeComment(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String toDislike = reader.readLine(); //I'm going to say that it'll give the filename
             Comment comment = new Comment("a", toDislike, null);
@@ -474,7 +476,7 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean hideComment(Database db, BufferedReader reader, PrintWriter writer){
+    public boolean hideComment(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String toHide = reader.readLine(); //I'm going to say that it'll give the filename
             Comment comment = new Comment("a", toHide, null);
@@ -485,7 +487,7 @@ public class Server implements Runnable {
         }
     }
 
-    public boolean editComment(Database db, BufferedReader reader, PrintWriter writer){
+    public boolean editComment(Database db, BufferedReader reader, PrintWriter writer) {
         try {
             String toEdit = reader.readLine(); //I'm going to say that it'll give the filename
             Comment comment = new Comment("a", toEdit, null);
@@ -506,21 +508,7 @@ public class Server implements Runnable {
         }
     }
 
-    public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server started and listening on port " + PORT);
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                Server server = new Server(clientSocket);
-                new Thread(server).start();
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void getFeed(Database db, BufferedReader reader, PrintWriter writer) throws IOException {
+    public void getFeed(Database db, BufferedReader reader, PrintWriter writer) {
         // Get all of user's friends
         String[] friendUsernames = user.getFriendList().toArray(new String[0]);
 
@@ -588,5 +576,19 @@ public class Server implements Runnable {
         }
         // Compare millisecond
         return timestamp1[6] - timestamp2[6];
+    }
+
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server started and listening on port " + PORT);
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                Server server = new Server(clientSocket);
+                new Thread(server).start();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
