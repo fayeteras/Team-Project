@@ -177,6 +177,22 @@ public class ClientTest {
     }
 
     @Test (timeout = 1000)
+    public void testCreatePost() {
+        String systemIn = "Test String";
+        Scanner scan = new Scanner(systemIn);
+        StringWriter sw = new StringWriter();
+        PrintWriter writer = new PrintWriter(sw);
+        BufferedReader br = new BufferedReader(new StringReader("True"));
+        try {
+            Client testClient = new Client();
+            boolean tester = testClient.createPost(scan, br, writer);
+            assertTrue(tester);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test (timeout = 1000)
     public void testLike() {
         String systemIn = "filename";
         Scanner scan = new Scanner(systemIn);
@@ -218,6 +234,38 @@ public class ClientTest {
         try {
             Client testClient = new Client();
             boolean tester = testClient.hide(scan, null, writer);
+            assertTrue(tester);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test (timeout = 1000)
+    public void testEdit() {
+        String systemIn = "filename" + System.lineSeparator() + "Text";
+        Scanner scan = new Scanner(systemIn);
+        StringWriter sw = new StringWriter();
+        PrintWriter writer = new PrintWriter(sw);
+        BufferedReader br = new BufferedReader(new StringReader("True"));
+        try {
+            Client testClient = new Client();
+            boolean tester = testClient.edit(scan, br, writer);
+            assertTrue(tester);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test (timeout = 1000)
+    public void testCreateComment() {
+        String systemIn = "filename" + System.lineSeparator() + "Parent" + System.lineSeparator() + "Text";
+        Scanner scan = new Scanner(systemIn);
+        StringWriter sw = new StringWriter();
+        PrintWriter writer = new PrintWriter(sw);
+        BufferedReader br = new BufferedReader(new StringReader("True"));
+        try {
+            Client testClient = new Client();
+            boolean tester = testClient.createPost(scan, br, writer);
             assertTrue(tester);
         } catch (Exception e) {
             e.printStackTrace();
