@@ -1,12 +1,98 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
-public class Client {
+/**
+ * Client.java
+ *
+ * Client that connects to the social media server. Uses the methods from
+ * the previous classes to help the user interact with the platform.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Mon April 15th, 2024
+ */
+public class Client implements ClientInterface {
     private static String host = "localhost";
     private static int port = 620;
 
-    public static void createUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        try (Socket socket = new Socket(host, port)) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            Client testClient = new Client();
+            while (true) {
+                String commandPrompt = reader.readLine();
+                System.out.println(commandPrompt);
+                String commandResponse = scan.nextLine();
+                writer.write(commandResponse);
+                writer.println();
+                writer.flush();
+                switch (commandResponse) {
+                    case "createUser":
+                        testClient.createUser(scan, reader, writer);
+                        break;
+                    case "signIn":
+                        testClient.signIn(scan, reader, writer);
+                        break;
+                    case "userSearch":
+                        testClient.userSearch(scan, reader, writer);
+                        break;
+                    case "getFeed":
+                        testClient.getFeed(scan, reader, writer);
+                        break;
+                    case "viewProfile":
+                        testClient.viewProfile(scan, reader, writer);
+                        break;
+                    case "friendUser":
+                        testClient.friendUser(scan, reader, writer);
+                        break;
+                    case "unfriendUser":
+                        testClient.unfriendUser(scan, reader, writer);
+                        break;
+                    case "blockUser":
+                        testClient.blockUser(scan, reader, writer);
+                        break;
+                    case "unblockUser":
+                        testClient.unblockUser(scan, reader, writer);
+                        break;
+                    case "createPost":
+                        testClient.createPost(scan, reader, writer);
+                        break;
+                    case "likePost":
+                    case "likeComment":
+                        testClient.like(scan, reader, writer);
+                        break;
+                    case "dislikePost":
+                    case "dislikeComment":
+                        testClient.dislike(scan, reader, writer);
+                        break;
+                    case "hidePost":
+                    case "hideComment":
+                        testClient.hide(scan, reader, writer);
+                        break;
+                    case "editPost":
+                    case "editComment":
+                        testClient.edit(scan, reader, writer);
+                        break;
+                    case "createComment":
+                        testClient.createComment(scan, reader, writer);
+                        break;
+                }
+                //Forward-thinking is strongly encouraged
+                //you WILL add a GUI
+                //you WILL redo the client
+                //you WILL code sober
+            }
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void createUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             String yesOrNo = "Yes";
             while (yesOrNo.equals("Yes")) {
@@ -49,7 +135,7 @@ public class Client {
         }
     }
 
-    public static void signIn(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public void signIn(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             String yesOrNo = "Yes";
             while (yesOrNo.equals("Yes")) {
@@ -83,7 +169,7 @@ public class Client {
         }
     }
 
-    public static void userSearch(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public void userSearch(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             String yesOrNo = "Yes";
             while (yesOrNo.equals("Yes")) {
@@ -115,8 +201,7 @@ public class Client {
                         //(Sean) If this loop is entered, the user would like to
                         //view the profile of the User whose username is the
                         //string variable "searchAttempt" in this class.
-                        //please write and then call the viewProfile method below.
-                        //viewProfile();
+                        viewProfile(scan, reader, writer);
                         yesOrNo = "No";
                     }
                 }
@@ -126,82 +211,7 @@ public class Client {
         }
     }
 
-    public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
-        try (Socket socket = new Socket(host, port)) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
-            while (true) {
-                String commandPrompt = reader.readLine();
-                System.out.println(commandPrompt);
-                String commandResponse = scan.nextLine();
-                writer.write(commandResponse);
-                writer.println();
-                writer.flush();
-                switch (commandResponse) {
-                    case "createUser":
-                        createUser(scan, reader, writer);
-                        break;
-                    case "signIn":
-                        signIn(scan, reader, writer);
-                        break;
-                    case "userSearch":
-                        userSearch(scan, reader, writer);
-                        break;
-                    case "getFeed":
-                        getFeed(scan, reader, writer);
-                        break;
-                    case "viewProfile":
-                        viewProfile(scan, reader, writer);
-                        break;
-                    case "friendUser":
-                        friendUser(scan, reader, writer);
-                        break;
-                    case "unfriendUser":
-                        unfriendUser(scan, reader, writer);
-                        break;
-                    case "blockUser":
-                        blockuser(scan, reader, writer);
-                        break;
-                    case "unblockUser":
-                        unblockUser(scan, reader, writer);
-                        break;
-                    case "createPost":
-                        createPost(scan, reader, writer);
-                        break;
-                    case "likePost":
-                    case "likeComment":
-                        like(scan, reader, writer);
-                        break;
-                    case "dislikePost":
-                    case "dislikeComment":
-                        dislike(scan, reader, writer);
-                        break;
-                    case "hidePost":
-                    case "hideComment":
-                        hide(scan, reader, writer);
-                        break;
-                    case "editPost":
-                    case "editComment":
-                        edit(scan, reader, writer);
-                        break;
-                    case "createComment":
-                        createComment(scan, reader, writer);
-                        break;
-                }
-                //Forward-thinking is strongly encouraged
-                //you WILL add a GUI
-                //you WILL redo the client
-                //you WILL code sober
-            }
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void viewProfile(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public void viewProfile(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             String username = reader.readLine();
             System.out.println("Profile: " + username);
@@ -216,7 +226,7 @@ public class Client {
             e.printStackTrace();
         }
     }
-    public static boolean friendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean friendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         System.out.println("Who would you like to friend?");
         String username = scan.nextLine();
         writer.write(username);
@@ -238,10 +248,10 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }    
+        }
         return true;
     }
-    public static boolean unfriendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean unfriendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         System.out.println("Who would you like to unfriend?");
         String username = scan.nextLine();
         writer.write(username);
@@ -254,10 +264,10 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }    
+        }
         return true;
     }
-    public static boolean blockuser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean blockUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         System.out.println("Who would you like to block?");
         String username = scan.nextLine();
         writer.write(username);
@@ -275,10 +285,10 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }    
+        }
         return true;    }
 
-    public static boolean unblockUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean unblockUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         System.out.println("Who would you like to unblock?");
         String username = scan.nextLine();
         writer.write(username);
@@ -291,14 +301,14 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }    
+        }
         return true;
     }
 
 
 
 
-    public static boolean getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             String response = reader.readLine();
             if (response.equals("get feed")) {
@@ -334,7 +344,7 @@ public class Client {
         return true;
     }
 
-    private static String[] readPost (Scanner scan, BufferedReader reader, PrintWriter writer) {
+    private String[] readPost (Scanner scan, BufferedReader reader, PrintWriter writer) {
         String[] postInfo = new String[4];
         try {
             postInfo[0] = reader.readLine(); // Username
@@ -349,7 +359,7 @@ public class Client {
     }
 
 
-    public static boolean createPost(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean createPost(Scanner scan, BufferedReader reader, PrintWriter writer) {
         String text = scan.nextLine(); //it's just going to have to be a single line for now. when we make the gui it can be multiple.
         writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
         writer.write("END");
@@ -360,40 +370,43 @@ public class Client {
         }
     }
 
-    public static void like(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean like(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             String filename = scan.nextLine();
             writer.write(filename);
             writer.println();
             writer.flush();
+            return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
-    public static void dislike(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean dislike(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             String filename = scan.nextLine();
             writer.write(filename);
             writer.println();
             writer.flush();
+            return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
-    public static void hide(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean hide(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             String filename = scan.nextLine();
             writer.write(filename); //Will probably be a button that has filename in GUI;
             writer.println();
             writer.flush();
+            return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
-    public static boolean edit(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean edit(Scanner scan, BufferedReader reader, PrintWriter writer) {
         String fileName = scan.nextLine(); //ig just enter the file name lmao
         writer.write(fileName);
         String text = scan.nextLine();
@@ -406,7 +419,7 @@ public class Client {
         }
     }
 
-    public static boolean createComment(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public boolean createComment(Scanner scan, BufferedReader reader, PrintWriter writer) {
         String text = scan.nextLine(); //it's just going to have to be a single line for now. when we make the gui it can be multiple.
         writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
         String parent = scan.nextLine();
