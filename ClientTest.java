@@ -1,13 +1,19 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.*;
 import java.io.*;
-import java.util.Scanner;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-public class ClientUserTest {
+import java.util.*;
+import org.junit.*;
+/**
+ * ClientTest.java
+ *
+ * Testing class that uses the JUnit library to ensure that the many methods
+ * within the client class interact correctly with a mock Server.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Sun Apr 14th, 2024
+ */
+public class ClientTest {
     //(Sean) Code from a previous HW test case that helped me with the inputs and outputs
     private final PrintStream originalOutput = System.out;
     private final InputStream originalSysin = System.in;
