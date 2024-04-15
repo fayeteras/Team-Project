@@ -4,8 +4,9 @@ import java.util.*;
 /**
  * Client.java
  *
- * Client that connects to the social media server. Uses the methods from
- * the previous classes to help the user interact with the platform.
+ * Client that connects to the social media server. The client writes input
+ * to the Server class where it will calculate and return the user's experience on
+ * the social media platform.
  *
  * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
  *
