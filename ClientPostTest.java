@@ -15,7 +15,8 @@ public class ClientPostTest {
 
     @Test (timeout = 1000)
     public void testLike() {
-        Scanner scan = new Scanner(System.in);
+        String systemIn = "filename";
+        Scanner scan = new Scanner(systemIn);
         StringWriter sw = new StringWriter();
         PrintWriter writer = new PrintWriter(sw);
 
@@ -25,6 +26,35 @@ public class ClientPostTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    @Test (timeout = 1000)
+    public void testDislike() {
+        String systemIn = "filename";
+        Scanner scan = new Scanner(systemIn);
+        StringWriter sw = new StringWriter();
+        PrintWriter writer = new PrintWriter(sw);
+
+        try {
+            boolean tester = Client.dislike(scan, null, writer);
+            assertTrue(tester);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test (timeout = 1000)
+    public void testHide() {
+        String systemIn = "filename";
+        Scanner scan = new Scanner(systemIn);
+        StringWriter sw = new StringWriter();
+        PrintWriter writer = new PrintWriter(sw);
+
+        try {
+            boolean tester = Client.hide(scan, null, writer);
+            assertTrue(tester);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
