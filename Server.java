@@ -360,7 +360,7 @@ public class Server implements Runnable, ServerInterface {
         try {
             while(true) {
                 String line = reader.readLine();
-                if (line != null)
+                if (!line.equals("END"))
                     text = text.concat(line);
                 else
                     break;
@@ -417,7 +417,7 @@ public class Server implements Runnable, ServerInterface {
             String text = "";
             while(true) {
                 String line = reader.readLine();
-                if (line != null)
+                if (!line.equals("END"))
                     text = text.concat(line);
                 else
                     break;
@@ -436,7 +436,7 @@ public class Server implements Runnable, ServerInterface {
         try {
             while(true) {
                 String line = reader.readLine();
-                if (line != null)
+                if (!line.equals("END"))
                     text = text.concat(line);
                 else
                     break;
@@ -495,7 +495,7 @@ public class Server implements Runnable, ServerInterface {
             String text = "";
             while(true) {
                 String line = reader.readLine();
-                if (line != null)
+                if (!line.equals("END"))
                     text = text.concat(line);
                 else
                     break;
