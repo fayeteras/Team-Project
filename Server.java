@@ -44,7 +44,7 @@ public class Server implements Runnable {
                         //an ArrayList of them. Idk if that's helpful at all.
                         userArray.add(newUser);
                         yesOrNo = "No";
-                        writer.write("Account creation successful. Welcome to hell " + username + "!");
+                        writer.write("Account creation successful. Welcome " + username + "!");
                         writer.println();
                         writer.flush();
                     } else {
@@ -70,14 +70,14 @@ public class Server implements Runnable {
                 writer.flush();
                 String username;
                 username = reader.readLine();
-                writer.write("Please enter a password.");
+                writer.write("Please enter your password.");
                 writer.println();
                 writer.flush();
                 String password;
                 password = reader.readLine();
                 if (db.authenticateUser(username, password)) {
                     yesOrNo = "No";
-                    writer.write("Login successful. Welcome to hell " + username + "!");
+                    writer.write("Login successful. Welcome " + username + "!");
                     user = new User(username);
                     writer.println();
                     writer.flush();
