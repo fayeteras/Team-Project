@@ -29,9 +29,19 @@ public class Server implements Runnable, ServerInterface {
             Database db = new Database();
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
-            userArray.add(new User("Bobby"));
+            //userArray.add(new User("Bobby"));
             String command;
             boolean success; //check whether or not the command worked. Idk if this is the way to do it though
+            //(Sean) the following code is for the user to sign in or sign up
+            //before being able to access any of the features of the social media platform.
+            //If this messes with your code, just comment this all out.
+            String inOrUp = reader.readLine();
+            if (inOrUp.equals("in")) {
+                signIn(db, reader, writer);
+            } else {
+                createUser(db, reader, writer);
+            }
+            //Everything below should be the same as Phase 2
             while (true) {
                 writer.write("What would you like to do, User?");
                 writer.println();
@@ -133,6 +143,7 @@ public class Server implements Runnable, ServerInterface {
                         //(Sean) I am unsure what to do with the new User object, so I made
                         //an ArrayList of them. Idk if that's helpful at all.
                         userArray.add(newUser);
+                        user = newUser;
                         yesOrNo = "No";
                         writer.write("Account creation successful. Welcome " + username + "!");
                         writer.println();
@@ -194,13 +205,7 @@ public class Server implements Runnable, ServerInterface {
                 String username;
                 username = reader.readLine();
                 if (db.userExists(username)) {
-                    writer.write("Here is the User you are looking for.");
-                    writer.println();
-                    writer.flush();
-                    //(Sean) If the user exists in the allUsers text file, then the server
-                    // will write back that the user has been found. and it will prompt the
-                    //User if it wants to view their profile.
-                    writer.write(username);
+                    writer.write("The user has been found!.");
                     writer.println();
                     writer.flush();
                     writer.write("Would you like to view their profile? (Yes or No)");
