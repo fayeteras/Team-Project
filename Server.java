@@ -205,7 +205,7 @@ public class Server implements Runnable, ServerInterface {
                 String username;
                 username = reader.readLine();
                 if (db.userExists(username)) {
-                    writer.write("The user has been found!.");
+                    writer.write("The user has been found!");
                     writer.println();
                     writer.flush();
                     writer.write("Would you like to view their profile? (Yes or No)");
