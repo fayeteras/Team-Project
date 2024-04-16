@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -24,9 +25,25 @@ public class Client implements ClientInterface {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             Client testClient = new Client();
             while (true) {
-                String commandPrompt = reader.readLine();
-                System.out.println(commandPrompt);
-                String commandResponse = scan.nextLine();
+                //(Sean) The do-while loop below is also newly created GUI.
+                //If you find that this does not allow your code to work,
+                //I have left the Phase 2 system commented out below the loop.
+
+                //(Sean) This will run after the user signs in; I didn't work on signIn yet
+                String commandResponse;
+                do {
+                    commandResponse = JOptionPane.showInputDialog(null,
+                            reader.readLine(), "Social Media Platform",
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (commandResponse == null || commandResponse.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Enter a valid option", "Page Searcher",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } while (commandResponse == null || commandResponse.isEmpty());
+                //String commandPrompt = reader.readLine();
+                //System.out.println(commandPrompt);
+                //String commandResponse = scan.nextLine();
                 writer.write(commandResponse);
                 writer.println();
                 writer.flush();
@@ -95,39 +112,76 @@ public class Client implements ClientInterface {
 
     public void createUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
-            String yesOrNo = "Yes";
-            while (yesOrNo.equals("Yes")) {
-                String usernamePrompt = reader.readLine();
-                System.out.println(usernamePrompt);
-                String usernameResponse = scan.nextLine();
+            int yesOrNo = JOptionPane.YES_OPTION;
+            String usernameResponse;
+            String passwordResponse;
+            while (yesOrNo == JOptionPane.YES_OPTION) {
+                do {
+                    usernameResponse = JOptionPane.showInputDialog(null,
+                            reader.readLine(), "Social Media Platform",
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (usernameResponse == null || usernameResponse.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Enter a valid username", "Social Media Platform",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } while (usernameResponse == null || usernameResponse.isEmpty());
                 writer.write(usernameResponse);
                 writer.println();
                 writer.flush();
                 String passwordPrompt = reader.readLine();
-                System.out.println(passwordPrompt);
                 if (passwordPrompt.equals("Sorry, that username is already taken.")) {
-                    String tryUsernameAgain = reader.readLine();
-                    System.out.println(tryUsernameAgain);
-                    yesOrNo = scan.nextLine();
-                    writer.write(yesOrNo);
-                    writer.println();
-                    writer.flush();
+                    JOptionPane.showMessageDialog(null,
+                            passwordPrompt, "Social Media Platform",
+                            JOptionPane.ERROR_MESSAGE);
+                    yesOrNo = JOptionPane.showConfirmDialog(null,
+                            reader.readLine(),
+                            "Social Media Platform", JOptionPane.YES_NO_OPTION);
+                    if (yesOrNo == JOptionPane.YES_OPTION) {
+                        writer.write("Yes");
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        writer.write("No");
+                        writer.println();
+                        writer.flush();
+                    }
                 } else {
-                    String passwordResponse = scan.nextLine();
+                    do {
+                        passwordResponse = JOptionPane.showInputDialog(null,
+                                passwordPrompt, "Social Media Platform",
+                                JOptionPane.QUESTION_MESSAGE);
+                        if (passwordResponse == null || passwordResponse.isEmpty()) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Enter a valid password", "Social Media Platform",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    } while (passwordResponse == null || passwordResponse.isEmpty());
                     writer.write(passwordResponse);
                     writer.println();
                     writer.flush();
                     String accountCreation = reader.readLine();
-                    System.out.println(accountCreation);
                     if (!accountCreation.contains("Account creation successful.")) {
-                        String tryCreationAgain = reader.readLine();
-                        System.out.println(tryCreationAgain);
-                        yesOrNo = scan.nextLine();
-                        writer.write(yesOrNo);
-                        writer.println();
-                        writer.flush();
+                        JOptionPane.showMessageDialog(null,
+                                accountCreation, "Social Media Platform",
+                                JOptionPane.ERROR_MESSAGE);
+                        yesOrNo = JOptionPane.showConfirmDialog(null,
+                                reader.readLine(),
+                                "Social Media Platform", JOptionPane.YES_NO_OPTION);
+                        if (yesOrNo == JOptionPane.YES_OPTION) {
+                            writer.write("Yes");
+                            writer.println();
+                            writer.flush();
+                        } else {
+                            writer.write("No");
+                            writer.println();
+                            writer.flush();
+                        }
                     } else {
-                        yesOrNo = "No";
+                        JOptionPane.showMessageDialog(null,
+                                accountCreation, "Social Media Platform",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        yesOrNo = JOptionPane.NO_OPTION;
                     }
                 }
             }
