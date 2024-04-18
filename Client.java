@@ -17,6 +17,7 @@ import java.util.*;
 public class Client implements ClientInterface {
     private static String host = "localhost";
     private static int port = 620;
+    GUI GUI;
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
@@ -45,6 +46,7 @@ public class Client implements ClientInterface {
                 writer.println();
                 writer.flush();
                 testClient.createUser(scan, reader, writer);
+                GUI GUI = new GUI(null);
             }
             while (true) {
                 //(Sean) The do-while loop below is also newly created GUI.

@@ -10,33 +10,48 @@ public class GUI extends JPanel {
     JTextField searchField;
     JButton usernameButton;
     JScrollPane postsPanel;
-    JPanel feedPanel;
+    JScrollPane panel;
+    
 
     //Testing for now
+
     public static void main(String[] args) {
-        Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
-        Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
-        Post[] testPosts = new Post[2];
-        testPosts[0] = testPost;
-        testPosts[1] = testPost2;
-
-        testPost.like("james");
-        testPost.dislike("lucas");
-        testPost.like("Karina");
-
+        // Run GUI initialization on the Event Dispatch Thread (EDT)
         SwingUtilities.invokeLater(() -> {
-            GUI panel = new GUI(); // Create an instance of Panels
-            JFrame frame = panel.HomeScreen(panel.AllPostsPanel(testPosts)); // Create a JFrame and get the home screen panel
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();
-            frame.setSize(800, 600); // Set frame size
-            frame.setVisible(true); // Make the frame visible
+            // Create an instance of the GUI class
+            GUI gui = new GUI(null);
+
+            // Create test posts and add them to an array
+            Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
+            Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
+            Post[] testPosts = new Post[] { testPost, testPost2 };
+
+            // Perform actions on the test posts
+            testPost.like("james");
+            testPost.dislike("lucas");
+            testPost.like("Karina");
+
+            // Create a JScrollPane with all test posts using the GUI instance
+            JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
+
+            // Set the panel in the GUI instance and add it to the home screen
+            gui.panel = postsPanel;
+            gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
+
+            // Make the home screen frame visible and set default close operation
+            gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            gui.homeScreen.setVisible(true);
         });
     }
 
+    
+
+
     //HOME SCREEN
-    public JFrame HomeScreen(JScrollPane feedPanel) {
+    //Takes feed panel -- whatever needs to be shown on the screen
+    public GUI(JScrollPane panel) {
         //Frame
+        this.panel = panel;
         homeScreen.setLayout(new BorderLayout());
         homeScreen.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
@@ -69,8 +84,7 @@ public class GUI extends JPanel {
 
         //Put it all together
         homeScreen.add(banner, BorderLayout.NORTH); // Add the banner panel to the frame
-        homeScreen.add(feedPanel, BorderLayout.CENTER);
-        return homeScreen;
+        homeScreen.add(panel, BorderLayout.CENTER);
     }
 
 
