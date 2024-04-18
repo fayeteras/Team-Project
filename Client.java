@@ -46,26 +46,27 @@ public class Client implements ClientInterface {
                 writer.println();
                 writer.flush();
                 testClient.createUser(scan, reader, writer);
-                GUI GUI = new GUI(null);
-            }
-            while (true) {
-                //(Sean) The do-while loop below is also newly created GUI.
-                //If you find that this does not allow your code to work,
-                //I have left the Phase 2 system commented out below the loop.
 
-                //(Sean) This will run after the user signs in or signs up
-                String commandPrompt = reader.readLine();
-                String commandResponse;
-                do {
-                    commandResponse = JOptionPane.showInputDialog(null,
-                            commandPrompt, "Social Media Platform",
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (commandResponse == null || commandResponse.isEmpty()) {
-                        JOptionPane.showMessageDialog(null,
-                                "Enter a valid option", "Page Searcher",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                } while (commandResponse == null || commandResponse.isEmpty());
+            }
+            GUI gui = new GUI();
+            while (true) {
+            //     //(Sean) The do-while loop below is also newly created GUI.
+            //     //If you find that this does not allow your code to work,
+            //     //I have left the Phase 2 system commented out below the loop.
+
+            //     //(Sean) This will run after the user signs in or signs up
+            //     String commandPrompt = reader.readLine();
+            //     String commandResponse;
+            //     do {
+            //         commandResponse = JOptionPane.showInputDialog(null,
+            //                 commandPrompt, "Social Media Platform",
+            //                 JOptionPane.QUESTION_MESSAGE);
+            //         if (commandResponse == null || commandResponse.isEmpty()) {
+            //             JOptionPane.showMessageDialog(null,
+            //                     "Enter a valid option", "Page Searcher",
+            //                     JOptionPane.ERROR_MESSAGE);
+            //         }
+            //     } while (commandResponse == null || commandResponse.isEmpty());
                 //System.out.println(commandPrompt);
                 //String commandResponse = scan.nextLine();
                 writer.write(commandResponse);
