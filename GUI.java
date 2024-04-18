@@ -127,13 +127,19 @@ public class GUI extends JPanel {
         bottomPanel.add(likesDislikesPanel, BorderLayout.WEST);
 
         // View comments and edit buttons
-        JPanel commentsAndEdit = new JPanel(new GridLayout(1, 2));
-        JButton viewCommentsButton = new JButton("Comments");
+        JPanel commentsAndEdit = new JPanel(new GridLayout(1, 3));
+        JButton viewCommentsButton = new JButton("View Comments");
         viewCommentsButton.addActionListener(e -> {
+            // Display comments in a dialog
+            displayComments(post);
+        });
+        commentsAndEdit.add(viewCommentsButton);
+        JButton addCommentButton = new JButton("Add Comment");
+        addCommentButton.addActionListener(e -> {
             // Open a dialog for adding comments
             openCommentDialog(post);
         });
-        commentsAndEdit.add(viewCommentsButton);
+        commentsAndEdit.add(addCommentButton);
         if (post.getUsername().equals(user)) {
             JButton editButton = new JButton("Edit");
             commentsAndEdit.add(editButton);
@@ -146,7 +152,6 @@ public class GUI extends JPanel {
 
         return postPanel;
     }
-
 
     // Method to open comment dialog
     public void openCommentDialog(Post post) {
@@ -191,7 +196,31 @@ public class GUI extends JPanel {
 
         // Set dialog size and visibility
         commentDialog.setSize(400, 200);
-        commentDialog.setLocationRelativeTo(null);
+        commentDialog.setLocationRelativeTo(homeScreen);
         commentDialog.setVisible(true);
+    }
+
+    // Method to display comments in a separate dialog
+    public void displayComments(Post post) {
+        // Create a new dialog to display comments
+        JDialog commentsDialog = new JDialog(homeScreen, "Comments for " + post, true);
+        commentsDialog.setLayout(new BorderLayout());
+
+        // Create a text area to display comments
+        JTextArea commentsTextArea = new JTextArea();
+        commentsTextArea.setEditable(false); // Make it non-editable
+        JScrollPane commentsScrollPane = new JScrollPane(commentsTextArea);
+        commentsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        commentsDialog.add(commentsScrollPane, BorderLayout.CENTER);
+
+        // Add each comment to the text area
+        for (String comment : post.getComments()) {
+            commentsTextArea.append(comment + "\n"); // Add each comment with a newline
+        }
+
+        // Set dialog size and visibility
+        commentsDialog.setSize(400, 300); // Adjust size as needed
+        commentsDialog.setLocationRelativeTo(homeScreen);
+        commentsDialog.setVisible(true);
     }
 }
