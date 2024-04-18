@@ -56,6 +56,7 @@ public class Post implements PostInterface {
         dislikesList = new ArrayList<String>(); //To files to store
         hidden = new ArrayList<String>();
         edited = false;
+        comments = new ArrayList<>(); //intialize comments ArrayList
         //(Noah) added the part below
         this.textFile = new File(fileName + ".txt");
         this.likesFile = new File(fileName + "_likes.txt");
@@ -207,6 +208,10 @@ public class Post implements PostInterface {
         ArrayList<String> texts = new ArrayList<String>();
         texts.add(text);
         Database.writeFile(textFile, texts);
+    }
+
+    public synchronized void addComment(String comment) {
+        comments.add(comment);
     }
 
     public boolean hide(String username) {
