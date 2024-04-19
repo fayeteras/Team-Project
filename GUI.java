@@ -171,7 +171,7 @@ public class GUI extends JPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton submitButton = new JButton("Submit");
         submitButton.addActionListener(new ActionListener() {
-            @Override
+            
             public void actionPerformed(ActionEvent e) {
                 // Get the comment text
                 String commentText = commentTextArea.getText();
@@ -184,7 +184,7 @@ public class GUI extends JPanel {
 
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
-            @Override
+            
             public void actionPerformed(ActionEvent e) {
                 // Close the dialog
                 commentDialog.dispose();
