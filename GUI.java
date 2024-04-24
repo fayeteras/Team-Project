@@ -70,7 +70,7 @@ public class GUI extends JPanel {
         bottomBanner.setBackground(Color.LIGHT_GRAY);
         bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
 
-        // Initialize and configure homeButton
+        
         homeButton = new JButton("Home");
         homeButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
         homeButton.setForeground(Color.BLUE);
@@ -135,11 +135,11 @@ public class GUI extends JPanel {
         likesDislikesPanel.add(dislikeButton);
         bottomPanel.add(likesDislikesPanel, BorderLayout.WEST);
 
-        // View comments and edit buttons
+        // view + edit
         JPanel commentsAndEdit = new JPanel(new GridLayout(1, 2));
         JButton commentButton = new JButton("Comments");
         commentButton.addActionListener(e -> {
-            // Create a pop-up with options to add comment or view comments
+            // add + view
             JFrame popup = new JFrame("Comment Options");
             JPanel popupPanel = new JPanel(new GridLayout(0, 1));
             JLabel username = new JLabel("Username: " + user.getUsername());
