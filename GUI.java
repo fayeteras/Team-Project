@@ -1,47 +1,51 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.util.ArrayList;
 
 public class GUI extends JPanel {
     User user = new User("testUser");
 
     JFrame homeScreen = new JFrame(); // Initialize homeScreen frame object
     JPanel banner;
+    JPanel bottomBanner;
     JButton homeButton;
     JTextField searchField;
     JButton usernameButton;
     JScrollPane postsPanel;
     JScrollPane panel;
 
+    
+
     // Main method
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // Create test posts
-            Post testPost1 = new Post("John Doe", "This is a test post.", "TestPost1");
-            Post testPost2 = new Post("Jane Smith", "Another test post here.", "TestPost2");
+            // Create test posts and add them to an array
+            Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
+            Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
+            Post[] testPosts = new Post[] { testPost, testPost2 };
+
+            // Perform actions on the test posts
+            testPost.like("james");
+            testPost.dislike("lucas");
+            testPost.like("Karina");
 
             // Create an instance of the GUI class
             GUI gui = new GUI();
 
+            // Create a JScrollPane with all test posts using the GUI instance
+            JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
 
-            // Create a JPanel to hold all posts
-            JPanel postsPanel = new JPanel();
-            postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+            // Assign the postsPanel to the panel property of the GUI instance
+            gui.panel = postsPanel;
 
-            // Add test posts and comments to the posts panel
-            postsPanel.add(gui.UserPostPanel(testPost1));
-            postsPanel.add(gui.UserPostPanel(testPost2));
+            // Add the panel to the homeScreen frame
+            gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
 
-            // Create a scroll pane with the posts panel
-            JScrollPane scrollPane = new JScrollPane(postsPanel);
-            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            // Set the default close operation
+            gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            // Create the homeScreen frame
-            JFrame homeScreen = new JFrame("Home Screen");
-            homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            homeScreen.getContentPane().add(scrollPane);
-            homeScreen.pack();
-            homeScreen.setVisible(true);
+            // Make the homeScreen frame visible
+            gui.homeScreen.setVisible(true);
         });
     }
 
@@ -60,6 +64,11 @@ public class GUI extends JPanel {
         banner = new JPanel(new BorderLayout());
         banner.setBackground(Color.LIGHT_GRAY);
         banner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 50));
+
+        // Initialize bottom panel
+        bottomBanner = new JPanel(new BorderLayout());
+        bottomBanner.setBackground(Color.LIGHT_GRAY);
+        bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
 
         // Initialize and configure homeButton
         homeButton = new JButton("Home");
@@ -127,19 +136,9 @@ public class GUI extends JPanel {
         bottomPanel.add(likesDislikesPanel, BorderLayout.WEST);
 
         // View comments and edit buttons
-        JPanel commentsAndEdit = new JPanel(new GridLayout(1, 3));
-        JButton viewCommentsButton = new JButton("View Comments");
-        viewCommentsButton.addActionListener(e -> {
-            // Display comments in a dialog
-            displayComments(post);
-        });
+        JPanel commentsAndEdit = new JPanel(new GridLayout(1, 2));
+        JButton viewCommentsButton = new JButton("Comments");
         commentsAndEdit.add(viewCommentsButton);
-        JButton addCommentButton = new JButton("Add Comment");
-        addCommentButton.addActionListener(e -> {
-            // Open a dialog for adding comments
-            openCommentDialog(post);
-        });
-        commentsAndEdit.add(addCommentButton);
         if (post.getUsername().equals(user)) {
             JButton editButton = new JButton("Edit");
             commentsAndEdit.add(editButton);
@@ -153,74 +152,22 @@ public class GUI extends JPanel {
         return postPanel;
     }
 
-    // Method to open comment dialog
-    public void openCommentDialog(Post post) {
-        // Create a new dialog
-        JDialog commentDialog = new JDialog(homeScreen, "Add Comment", true);
-        commentDialog.setLayout(new BorderLayout());
+    // All Posts Panel method
+    public JScrollPane AllPostsPanel(Post[] allPosts) {
+        JPanel postsPanel = new JPanel();
+        postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
 
-        // Create a panel for comment input
-        JPanel commentInputPanel = new JPanel(new BorderLayout());
-        JTextArea commentTextArea = new JTextArea();
-        JScrollPane commentScrollPane = new JScrollPane(commentTextArea);
-        commentScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        commentInputPanel.add(commentScrollPane, BorderLayout.CENTER);
-        commentDialog.add(commentInputPanel, BorderLayout.CENTER);
-
-        // Create a panel for buttons
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        JButton submitButton = new JButton("Submit");
-        submitButton.addActionListener(new ActionListener() {
-            
-            public void actionPerformed(ActionEvent e) {
-                // Get the comment text
-                String commentText = commentTextArea.getText();
-                // Add the comment to the post
-                post.addComment(commentText);
-                // Close the dialog
-                commentDialog.dispose();
-            }
-        });
-
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            
-            public void actionPerformed(ActionEvent e) {
-                // Close the dialog
-                commentDialog.dispose();
-            }
-        });
-        buttonPanel.add(submitButton);
-        buttonPanel.add(cancelButton);
-        commentDialog.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Set dialog size and visibility
-        commentDialog.setSize(400, 200);
-        commentDialog.setLocationRelativeTo(homeScreen);
-        commentDialog.setVisible(true);
-    }
-
-    // Method to display comments in a separate dialog
-    public void displayComments(Post post) {
-        // Create a new dialog to display comments
-        JDialog commentsDialog = new JDialog(homeScreen, "Comments for " + post, true);
-        commentsDialog.setLayout(new BorderLayout());
-
-        // Create a text area to display comments
-        JTextArea commentsTextArea = new JTextArea();
-        commentsTextArea.setEditable(false); // Make it non-editable
-        JScrollPane commentsScrollPane = new JScrollPane(commentsTextArea);
-        commentsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        commentsDialog.add(commentsScrollPane, BorderLayout.CENTER);
-
-        // Add each comment to the text area
-        for (String comment : post.getComments()) {
-            commentsTextArea.append(comment + "\n"); // Add each comment with a newline
+        // Get each individual post and add it to the posts panel
+        for (int i = 0; i < allPosts.length; i++) {
+            JPanel thisPost = UserPostPanel(allPosts[i];
+            postsPanel.add(thisPost);
         }
 
-        // Set dialog size and visibility
-        commentsDialog.setSize(400, 300); // Adjust size as needed
-        commentsDialog.setLocationRelativeTo(homeScreen);
-        commentsDialog.setVisible(true);
+        // Create a scroll pane with the posts panel
+        JScrollPane scrollPane = new JScrollPane(postsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        return scrollPane;
     }
+    
 }
