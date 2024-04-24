@@ -14,7 +14,7 @@ public class GUI extends JPanel {
     JScrollPane postsPanel;
     JScrollPane panel;
 
-    
+
 
     // Main method
     public static void main(String[] args) {
@@ -137,8 +137,72 @@ public class GUI extends JPanel {
 
         // View comments and edit buttons
         JPanel commentsAndEdit = new JPanel(new GridLayout(1, 2));
-        JButton viewCommentsButton = new JButton("Comments");
-        commentsAndEdit.add(viewCommentsButton);
+        JButton commentButton = new JButton("Comments");
+        commentButton.addActionListener(e -> {
+            // Create a pop-up with options to add comment or view comments
+            JFrame popup = new JFrame("Comment Options");
+            JPanel popupPanel = new JPanel(new GridLayout(0, 1));
+            JLabel username = new JLabel("Username: " + user.getUsername());
+            popupPanel.add(username);
+            JButton addCommentButton = new JButton("Add Comment");
+            JButton viewCommentsButton = new JButton("View Comments");
+
+            addCommentButton.addActionListener(ev -> {
+                // Create a text field for entering the comment
+                JTextField commentField = new JTextField(20);
+                JButton submitButton = new JButton("Submit");
+                submitButton.addActionListener(submitEvent -> {
+                    // Get the text from the comment field and process it (e.g., add it to the post)
+                    String commentText = commentField.getText();
+                    // Here you can add the comment to the post or perform any other action
+                    System.out.println("Comment submitted by " + user.getUsername() + ": " + commentText);
+                    // Close the popup after submitting the comment
+                    popup.dispose();
+                });
+
+                // Add comment field and submit button to the popup panel
+                popupPanel.removeAll();
+                popupPanel.add(usernameLabel);
+                popupPanel.add(commentField);
+                popupPanel.add(submitButton);
+                popup.pack();
+            });
+
+            viewCommentsButton.addActionListener(ev -> {
+                // Create a dialog to display comments
+                JDialog commentsDialog = new JDialog(homeScreen, "Comments for Post", true);
+                commentsDialog.setLayout(new BorderLayout());
+
+                // Create a panel to hold comments
+                JPanel commentsPanel = new JPanel();
+                commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
+
+                // Add each comment to the panel
+                for (String comment : post.getComments()) {
+                    JLabel commentLabel = new JLabel(comment);
+                    commentsPanel.add(commentLabel);
+                }
+
+                // Create a scroll pane for comments
+                JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
+
+                // Add the scroll pane to the dialog
+                commentsDialog.add(commentsScrollPane, BorderLayout.CENTER);
+
+                // Set dialog properties
+                commentsDialog.setSize(400, 300);
+                commentsDialog.setLocationRelativeTo(null);
+                commentsDialog.setVisible(true);
+            });
+
+            popupPanel.add(addCommentButton);
+            popupPanel.add(viewCommentsButton);
+            popup.add(popupPanel);
+            popup.pack();
+            popup.setLocationRelativeTo(null);
+            popup.setVisible(true);
+        });
+        commentsAndEdit.add(commentButton);
         if (post.getUsername().equals(user)) {
             JButton editButton = new JButton("Edit");
             commentsAndEdit.add(editButton);
@@ -151,6 +215,8 @@ public class GUI extends JPanel {
 
         return postPanel;
     }
+
+
 
     // All Posts Panel method
     public JScrollPane AllPostsPanel(Post[] allPosts) {
@@ -169,5 +235,5 @@ public class GUI extends JPanel {
 
         return scrollPane;
     }
-    
+
 }
