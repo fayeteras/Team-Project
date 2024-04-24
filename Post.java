@@ -68,7 +68,9 @@ public class Post implements PostInterface {
         ArrayList<String> totalPostsString = new ArrayList<String>();
         totalPostsString.add(Integer.toString(totalPosts)); //yes i know this is ridiculous
         Database.writeFile(new File("postCount.txt"), totalPostsString);
-        Database.writeFile(textFile, text);
+        ArrayList<String> textList = new ArrayList<String>();
+        textList.add(text);
+        Database.writeFile(textFile, textList);
     }
 
     public Post(String username, String fileName) {
