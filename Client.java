@@ -68,7 +68,7 @@ public class Client implements ClientInterface {
             //         }
             //     } while (commandResponse == null || commandResponse.isEmpty());
                 //System.out.println(commandPrompt);
-                //String commandResponse = scan.nextLine();
+                String commandResponse = scan.nextLine();
                 writer.write(commandResponse);
                 writer.println();
                 writer.flush();
