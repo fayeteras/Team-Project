@@ -70,7 +70,7 @@ public class GUI extends JPanel {
         bottomBanner.setBackground(Color.LIGHT_GRAY);
         bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
 
-        
+        // Initialize and configure homeButton
         homeButton = new JButton("Home");
         homeButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
         homeButton.setForeground(Color.BLUE);
@@ -135,79 +135,89 @@ public class GUI extends JPanel {
         likesDislikesPanel.add(dislikeButton);
         bottomPanel.add(likesDislikesPanel, BorderLayout.WEST);
 
-        // view + edit
-        JPanel commentsAndEdit = new JPanel(new GridLayout(1, 2));
-        JButton commentButton = new JButton("Comments");
+        // View comments, add comment, and edit buttons
+        JPanel commentsAddEdit = new JPanel(new GridLayout(1, 3));
+        JButton commentButton = new JButton("View Comments");
         commentButton.addActionListener(e -> {
-            // add + view
-            JFrame popup = new JFrame("Comment Options");
-            JPanel popupPanel = new JPanel(new GridLayout(0, 1));
-            JLabel username = new JLabel("Username: " + user.getUsername());
-            popupPanel.add(username);
-            JButton addCommentButton = new JButton("Add Comment");
-            JButton viewCommentsButton = new JButton("View Comments");
+            // Create a dialog to display comments
+            JDialog commentsDialog = new JDialog(homeScreen, "Comments for Post", true);
+            commentsDialog.setLayout(new BorderLayout());
 
-            addCommentButton.addActionListener(ev -> {
-                // Create a text field for entering the comment
-                JTextField commentField = new JTextField(20);
-                JButton submitButton = new JButton("Submit");
-                submitButton.addActionListener(submitEvent -> {
-                    // Get the text from the comment field and process it (e.g., add it to the post)
-                    String commentText = commentField.getText();
-                    // Here you can add the comment to the post or perform any other action
-                    System.out.println("Comment submitted by " + user.getUsername() + ": " + commentText);
-                    // Close the popup after submitting the comment
-                    popup.dispose();
-                });
+            // Create a panel to hold comments
+            JPanel commentsPanel = new JPanel();
+            commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
 
-                // Add comment field and submit button to the popup panel
-                popupPanel.removeAll();
-                popupPanel.add(usernameLabel);
-                popupPanel.add(commentField);
-                popupPanel.add(submitButton);
-                popup.pack();
-            });
+            // Add each comment to the panel
+            for (String comment : post.getComments()) {
+                JPanel commentEntry = new JPanel(new BorderLayout());
+                JLabel commentLabel = new JLabel(comment);
+                commentEntry.add(commentLabel, BorderLayout.CENTER);
 
-            viewCommentsButton.addActionListener(ev -> {
-                // Create a dialog to display comments
-                JDialog commentsDialog = new JDialog(homeScreen, "Comments for Post", true);
-                commentsDialog.setLayout(new BorderLayout());
-
-                // Create a panel to hold comments
-                JPanel commentsPanel = new JPanel();
-                commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
-
-                // Add each comment to the panel
-                for (String comment : post.getComments()) {
-                    JLabel commentLabel = new JLabel(comment);
-                    commentsPanel.add(commentLabel);
+                // Create delete button for the comment (visible only to the user who wrote it or the post owner)
+                if (comment.startsWith(user.getUsername()) || post.getUsername().equals(user.getUsername())) {
+                    JButton deleteButton = new JButton("Delete");
+                    deleteButton.addActionListener(deleteEv -> {
+                        // Perform delete operation here
+                        post.getComments().remove(comment); // Assuming post.getComments() returns a modifiable list
+                        commentsPanel.remove(commentEntry);
+                        commentsDialog.pack();
+                    });
+                    commentEntry.add(deleteButton, BorderLayout.EAST);
                 }
 
-                // Create a scroll pane for comments
-                JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
+                commentsPanel.add(commentEntry);
+            }
 
-                // Add the scroll pane to the dialog
-                commentsDialog.add(commentsScrollPane, BorderLayout.CENTER);
+            // Create a scroll pane for comments
+            JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
 
-                // Set dialog properties
-                commentsDialog.setSize(400, 300);
-                commentsDialog.setLocationRelativeTo(null);
-                commentsDialog.setVisible(true);
+            // Add the scroll pane to the dialog
+            commentsDialog.add(commentsScrollPane, BorderLayout.CENTER);
+
+            // Set dialog properties
+            commentsDialog.setSize(400, 300);
+            commentsDialog.setLocationRelativeTo(null);
+            commentsDialog.setVisible(true);
+        });
+        commentsAddEdit.add(commentButton);
+
+        // Add comment button
+        JButton addCommentButton = new JButton("Add Comment");
+        addCommentButton.addActionListener(e -> {
+            // Create a dialog to add a comment
+            JDialog addCommentDialog = new JDialog(homeScreen, "Add Comment", true);
+            addCommentDialog.setLayout(new BorderLayout());
+
+            // Text field to enter comment
+            JTextField commentField = new JTextField(20);
+            JButton submitButton = new JButton("Submit");
+            submitButton.addActionListener(submitEv -> {
+                // Get the text from the comment field and add it to the post
+                String commentText = commentField.getText();
+                post.addComment(user.getUsername() + ": " + commentText); // Assuming addComment method appends username to comment
+                addCommentDialog.dispose();
             });
 
-            popupPanel.add(addCommentButton);
-            popupPanel.add(viewCommentsButton);
-            popup.add(popupPanel);
-            popup.pack();
-            popup.setLocationRelativeTo(null);
-            popup.setVisible(true);
+            // Add components to the dialog
+            JPanel addCommentPanel = new JPanel();
+            addCommentPanel.add(new JLabel("Enter your comment: "));
+            addCommentPanel.add(commentField);
+            addCommentPanel.add(submitButton);
+            addCommentDialog.add(addCommentPanel, BorderLayout.CENTER);
+
+            // Set dialog properties
+            addCommentDialog.setSize(300, 150);
+            addCommentDialog.setLocationRelativeTo(null);
+            addCommentDialog.setVisible(true);
         });
-        commentsAndEdit.add(commentButton);
+        commentsAddEdit.add(addCommentButton);
+
+        // Edit button (visible only to the owner of the post)
         if (post.getUsername().equals(user)) {
             JButton editButton = new JButton("Edit");
-            commentsAndEdit.add(editButton);
+            commentsAddEdit.add(editButton);
         }
-        bottomPanel.add(commentsAndEdit, BorderLayout.EAST);
+        bottomPanel.add(commentsAddEdit, BorderLayout.EAST);
         postPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // Set maximum size of the post panel
@@ -215,6 +225,7 @@ public class GUI extends JPanel {
 
         return postPanel;
     }
+
 
 
 
