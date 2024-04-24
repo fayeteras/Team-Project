@@ -101,13 +101,9 @@ public class Client implements ClientInterface {
             //         }
             //     } while (commandResponse == null || commandResponse.isEmpty());
                 //System.out.println(commandPrompt);
-<<<<<<< HEAD
                 //String commandResponse = scan.nextLine();
 
                 String commandResponse = null;
-=======
-                String commandResponse = scan.nextLine();
->>>>>>> 4d80ac7c0f171a5d42e6d4b321dfd63e5ed5094b
                 writer.write(commandResponse);
                 writer.println();
                 writer.flush();
