@@ -71,6 +71,9 @@ public class Post implements PostInterface {
         ArrayList<String> textList = new ArrayList<String>();
         textList.add(text);
         Database.writeFile(textFile, textList);
+        ArrayList<String> editedList = new ArrayList<String>();
+        editedList.add("false");
+        Database.writeFile(editedFile, editedList);
     }
 
     public Post(String username, String fileName) {
@@ -103,7 +106,7 @@ public class Post implements PostInterface {
             }
         } catch(Exception ex) {
             //(Noah) Not printing stack trace because the exception occurs whenever they don't have any likes :(
-            ex.printStackTrace();
+            System.out.println("no likes");
         }
 
         try {
@@ -113,7 +116,7 @@ public class Post implements PostInterface {
                 this.dislikesList.add(line);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("no dislikes");
         } //this will occur whenever they don't have any dislikes :) so no need to print a stack trace.
 
         try {
@@ -123,7 +126,7 @@ public class Post implements PostInterface {
                 this.hidden.add(line);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("nobody hid it");
         }
 
         try {
@@ -143,7 +146,7 @@ public class Post implements PostInterface {
                 this.comments.add(line);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("no comments");
         }
 
 
