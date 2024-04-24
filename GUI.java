@@ -157,17 +157,60 @@ public class GUI extends JPanel {
         JPanel postsPanel = new JPanel();
         postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
 
-        // Get each individual post and add it to the posts panel
-        for (int i = 0; i < allPosts.length; i++) {
-            JPanel thisPost = UserPostPanel(allPosts[i];
-            postsPanel.add(thisPost);
+        // Create a panel for buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                // Get the comment text
+                String commentText = commentTextArea.getText();
+                // Add the comment to the post
+                post.addComment(commentText);
+                // Close the dialog
+                commentDialog.dispose();
+            }
+        });
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                // Close the dialog
+                commentDialog.dispose();
+            }
+        });
+        buttonPanel.add(submitButton);
+        buttonPanel.add(cancelButton);
+        commentDialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Set dialog size and visibility
+        commentDialog.setSize(400, 200);
+        commentDialog.setLocationRelativeTo(homeScreen);
+        commentDialog.setVisible(true);
+    }
+
+    // Method to display comments in a separate dialog
+    public void displayComments(Post post) {
+        // Create a new dialog to display comments
+        JDialog commentsDialog = new JDialog(homeScreen, "Comments for " + post, true);
+        commentsDialog.setLayout(new BorderLayout());
+
+        // Create a text area to display comments
+        JTextArea commentsTextArea = new JTextArea();
+        commentsTextArea.setEditable(false); // Make it non-editable
+        JScrollPane commentsScrollPane = new JScrollPane(commentsTextArea);
+        commentsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        commentsDialog.add(commentsScrollPane, BorderLayout.CENTER);
+
+        // Add each comment to the text area
+        for (String comment : post.getComments()) {
+            commentsTextArea.append(comment + "\n"); // Add each comment with a newline
         }
 
-        // Create a scroll pane with the posts panel
-        JScrollPane scrollPane = new JScrollPane(postsPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        return scrollPane;
+        // Set dialog size and visibility
+        commentsDialog.setSize(400, 300); // Adjust size as needed
+        commentsDialog.setLocationRelativeTo(homeScreen);
+        commentsDialog.setVisible(true);
     }
-    
 }
