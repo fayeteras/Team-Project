@@ -1,4 +1,6 @@
 import javax.swing.*;
+
+import java.awt.BorderLayout;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -48,7 +50,38 @@ public class Client implements ClientInterface {
                 testClient.createUser(scan, reader, writer);
 
             }
-            GUI gui = new GUI();
+            SwingUtilities.invokeLater(() -> {
+                System.out.println("Here 1");
+                // Create test posts and add them to an array
+                Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
+                Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
+                Post[] testPosts = new Post[] { testPost, testPost2 };
+    
+                // Perform actions on the test posts
+                testPost.like("james");
+                testPost.dislike("lucas");
+                testPost.like("Karina");
+    
+                // Create an instance of the GUI class
+                GUI gui = new GUI();
+    
+                // Create a JScrollPane with all test posts using the GUI instance
+                JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
+    
+                // Assign the postsPanel to the panel property of the GUI instance
+                gui.panel = postsPanel;
+    
+                // Add the panel to the homeScreen frame
+                gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
+    
+                // Set the default close operation
+                gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+                // Make the homeScreen frame visible
+                gui.homeScreen.setVisible(true);
+            });
+            System.out.println("Here 2");
+
             while (true) {
             //     //(Sean) The do-while loop below is also newly created GUI.
             //     //If you find that this does not allow your code to work,
@@ -68,7 +101,13 @@ public class Client implements ClientInterface {
             //         }
             //     } while (commandResponse == null || commandResponse.isEmpty());
                 //System.out.println(commandPrompt);
+<<<<<<< HEAD
+                //String commandResponse = scan.nextLine();
+
+                String commandResponse = null;
+=======
                 String commandResponse = scan.nextLine();
+>>>>>>> 4d80ac7c0f171a5d42e6d4b321dfd63e5ed5094b
                 writer.write(commandResponse);
                 writer.println();
                 writer.flush();
