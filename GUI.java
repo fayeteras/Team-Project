@@ -247,4 +247,63 @@ public class GUI extends JPanel {
         return scrollPane;
     }
 
+    public JPanel viewProfilePanel(User viewUser) { //The user we are viewing (not finished/tested)
+        JPanel profilePanel = new JPanel(new BorderLayout());
+        profilePanel.setPreferredSize(new Dimension(600, 150));
+        profilePanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+
+        // Username label
+        JLabel usernameLabel = new JLabel(" " + viewUser.getUsername());
+        usernameLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
+        usernameLabel.setForeground(Color.BLUE);
+        profilePanel.add(usernameLabel, BorderLayout.NORTH);
+
+        // Friends list
+        JLabel friendsList = new JLabel(viewUser.getFriendList().toString());
+        friendsList.setVerticalAlignment(JLabel.TOP);
+        friendsList.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+        JScrollPane postScrollPane = new JScrollPane(friendsList);
+        profilePanel.add(postScrollPane, BorderLayout.CENTER);
+
+        // Bottom panel for block and unblock
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+
+        // Likes and dislikes buttons panel
+        JPanel blockPanel = new JPanel(new GridLayout(1, 1));
+        String text;
+        if (user.isBlocked(viewUser.getUsername())) {
+            text = "Unblock";
+        } else {
+            text = "Block";
+        }
+        JButton blockButton = new JButton(text);
+        
+        blockPanel.add(blockButton);
+        
+        bottomPanel.add(blockPanel, BorderLayout.WEST);
+
+        // View friends and add friend buttons 
+        JPanel friendsPanel = new JPanel(new GridLayout(1, 2));
+        JButton viewFriendsButton = new JButton("Friends");
+        friendsPanel.add(viewFriendsButton);
+
+        if (user.isFriend(viewUser.getUsername())) { //(TODO)
+            text = "Remove Friend";
+        } else {
+            text = "Add Friend";
+        }
+
+        JButton addFriendButton = new JButton(text);
+            friendsPanel.add(addFriendButton);
+        bottomPanel.add(friendsPanel, BorderLayout.EAST);
+        profilePanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        // Set maximum size of the post panel
+        profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+
+        return profilePanel;
+    }
 }
