@@ -11,7 +11,7 @@ import java.io.File;
 
 
 public class GUI extends JPanel {
-    User user;
+    User user = new User("testUser");
 
     JFrame homeScreen = new JFrame(); // Initialize homeScreen frame object
     JPanel banner;
@@ -38,7 +38,7 @@ public class GUI extends JPanel {
             testPost.like("Karina");
 
             // Create an instance of the GUI class
-            GUI gui = new GUI("testUser");
+            GUI gui = new GUI();
 
             // Create a JScrollPane with all test posts using the GUI instance
             JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
@@ -58,8 +58,7 @@ public class GUI extends JPanel {
     }
 
     // Constructor for GUI
-    public GUI(String username) {
-        this.user = new User(username);
+    public GUI() {
         // Initialize the homeScreen frame object
         homeScreen = new JFrame("Home Screen");
 
@@ -104,7 +103,7 @@ public class GUI extends JPanel {
         // Add banner to the top of the homeScreen frame
         homeScreen.add(banner, BorderLayout.NORTH);
     }
-
+    
     // Individual Post Panel method
     public void viewComment() {
         try (BufferedReader fileReader = new BufferedReader(new FileReader("userComments.txt"))) {
