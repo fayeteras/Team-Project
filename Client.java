@@ -33,24 +33,26 @@ public class Client implements ClientInterface {
             String inOrUp;
             String[] loginOptions = {"Sign In", "Sign Up"};
             String username;
-            int result = JOptionPane.showOptionDialog(null, "Welcome to [social media platform]",
-                    "Social Media Platform",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, loginOptions, loginOptions[1]);
-            if (result == JOptionPane.YES_OPTION) {
-                inOrUp = "in";
-                writer.write(inOrUp);
-                writer.println();
-                writer.flush();
-                username = testClient.signIn(scan, reader, writer);
-            } else {
-                inOrUp = "up";
-                writer.write(inOrUp);
-                writer.println();
-                writer.flush();
-                username = testClient.createUser(scan, reader, writer);
-
-            }
+            do {
+                int result = JOptionPane.showOptionDialog(null, "Welcome to [social media platform]",
+                        "Social Media Platform",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        null, loginOptions, loginOptions[1]);
+                if (result == JOptionPane.YES_OPTION) {
+                    inOrUp = "in";
+                    writer.write(inOrUp);
+                    writer.println();
+                    writer.flush();
+                    username = testClient.signIn(scan, reader, writer);
+                } else {
+                    inOrUp = "up";
+                    writer.write(inOrUp);
+                    writer.println();
+                    writer.flush();
+                    username = testClient.createUser(scan, reader, writer);
+                }
+            } while(username == null);
+            String finalUsername = username;
             SwingUtilities.invokeLater(() -> {
                 System.out.println("Here 1");
                 // Create test posts and add them to an array
@@ -64,7 +66,7 @@ public class Client implements ClientInterface {
                 testPost.like("Karina");
     
                 // Create an instance of the GUI class
-                GUI gui = new GUI(username);
+                GUI gui = new GUI(finalUsername);
     
                 // Create a JScrollPane with all test posts using the GUI instance
                 JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
@@ -303,6 +305,7 @@ public class Client implements ClientInterface {
                         writer.write("No");
                         writer.println();
                         writer.flush();
+                        usernameResponse = null;
                     }
                 } else {
                     JOptionPane.showMessageDialog(null,
