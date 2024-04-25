@@ -11,7 +11,7 @@ import java.io.File;
 
 
 public class GUI extends JPanel {
-    User user = new User("testUser");
+    User user;
 
     JFrame homeScreen = new JFrame(); // Initialize homeScreen frame object
     JPanel banner;
@@ -38,7 +38,7 @@ public class GUI extends JPanel {
             testPost.like("Karina");
 
             // Create an instance of the GUI class
-            GUI gui = new GUI();
+            GUI gui = new GUI("testUser");
 
             // Create a JScrollPane with all test posts using the GUI instance
             JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
@@ -58,7 +58,8 @@ public class GUI extends JPanel {
     }
 
     // Constructor for GUI
-    public GUI() {
+    public GUI(String username) {
+        this.user = new User(username);
         // Initialize the homeScreen frame object
         homeScreen = new JFrame("Home Screen");
 
