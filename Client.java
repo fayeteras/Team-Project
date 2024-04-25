@@ -32,6 +32,7 @@ public class Client implements ClientInterface {
             //If this messes with your code, just comment this all out.
             String inOrUp;
             String[] loginOptions = {"Sign In", "Sign Up"};
+            String username;
             int result = JOptionPane.showOptionDialog(null, "Welcome to [social media platform]",
                     "Social Media Platform",
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
@@ -41,13 +42,13 @@ public class Client implements ClientInterface {
                 writer.write(inOrUp);
                 writer.println();
                 writer.flush();
-                testClient.signIn(scan, reader, writer);
+                username = testClient.signIn(scan, reader, writer);
             } else {
                 inOrUp = "up";
                 writer.write(inOrUp);
                 writer.println();
                 writer.flush();
-                testClient.createUser(scan, reader, writer);
+                username = testClient.createUser(scan, reader, writer);
 
             }
             SwingUtilities.invokeLater(() -> {
@@ -63,7 +64,7 @@ public class Client implements ClientInterface {
                 testPost.like("Karina");
     
                 // Create an instance of the GUI class
-                GUI gui = new GUI();
+                GUI gui = new GUI(username);
     
                 // Create a JScrollPane with all test posts using the GUI instance
                 JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
@@ -170,10 +171,10 @@ public class Client implements ClientInterface {
         }
     }
 
-    public void createUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public String createUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             int yesOrNo = JOptionPane.YES_OPTION;
-            String usernameResponse;
+            String usernameResponse = null;
             String passwordResponse;
             while (yesOrNo == JOptionPane.YES_OPTION) {
                 String usernamePrompt = reader.readLine();
@@ -246,15 +247,16 @@ public class Client implements ClientInterface {
                     }
                 }
             }
+            return usernameResponse;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void signIn(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public String signIn(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
             int yesOrNo = JOptionPane.YES_OPTION;
-            String usernameResponse;
+            String usernameResponse = null;
             String passwordResponse;
             while (yesOrNo == JOptionPane.YES_OPTION) {
                 String usernamePrompt = reader.readLine();
@@ -309,6 +311,7 @@ public class Client implements ClientInterface {
                     yesOrNo = JOptionPane.NO_OPTION;
                 }
             }
+            return usernameResponse;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
