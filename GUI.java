@@ -162,7 +162,7 @@ public class GUI extends JPanel {
     }
 
     public void recordLikeDislike(String commentText, String action) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("commentslikeDislikeRecord.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikeComments.txt", true))) {
             writer.write(commentText + "," + action + "\n");
         } catch (IOException e) {
             e.printStackTrace();
