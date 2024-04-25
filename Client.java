@@ -53,6 +53,7 @@ public class Client implements ClientInterface {
                 }
             } while(username == null);
             String finalUsername = username;
+            String finalUsername1 = username;
             SwingUtilities.invokeLater(() -> {
                 System.out.println("Here 1");
                 // Create test posts and add them to an array
@@ -66,7 +67,7 @@ public class Client implements ClientInterface {
                 testPost.like("Karina");
 
                 // Create an instance of the GUI class
-                GUI gui = new GUI();
+                GUI gui = new GUI(finalUsername1);
 
                 // Create a JScrollPane with all test posts using the GUI instance
                 JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
