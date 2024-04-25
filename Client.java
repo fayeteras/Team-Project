@@ -59,50 +59,50 @@ public class Client implements ClientInterface {
                 Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
                 Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
                 Post[] testPosts = new Post[] { testPost, testPost2 };
-    
+
                 // Perform actions on the test posts
                 testPost.like("james");
                 testPost.dislike("lucas");
                 testPost.like("Karina");
-    
+
                 // Create an instance of the GUI class
-                GUI gui = new GUI(finalUsername);
-    
+                GUI gui = new GUI();
+
                 // Create a JScrollPane with all test posts using the GUI instance
                 JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
-    
+
                 // Assign the postsPanel to the panel property of the GUI instance
                 gui.panel = postsPanel;
-    
+
                 // Add the panel to the homeScreen frame
                 gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
-    
+
                 // Set the default close operation
                 gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
+
                 // Make the homeScreen frame visible
                 gui.homeScreen.setVisible(true);
             });
             System.out.println("Here 2");
 
             while (true) {
-            //     //(Sean) The do-while loop below is also newly created GUI.
-            //     //If you find that this does not allow your code to work,
-            //     //I have left the Phase 2 system commented out below the loop.
+                //     //(Sean) The do-while loop below is also newly created GUI.
+                //     //If you find that this does not allow your code to work,
+                //     //I have left the Phase 2 system commented out below the loop.
 
-            //     //(Sean) This will run after the user signs in or signs up
-            //     String commandPrompt = reader.readLine();
-            //     String commandResponse;
-            //     do {
-            //         commandResponse = JOptionPane.showInputDialog(null,
-            //                 commandPrompt, "Social Media Platform",
-            //                 JOptionPane.QUESTION_MESSAGE);
-            //         if (commandResponse == null || commandResponse.isEmpty()) {
-            //             JOptionPane.showMessageDialog(null,
-            //                     "Enter a valid option", "Page Searcher",
-            //                     JOptionPane.ERROR_MESSAGE);
-            //         }
-            //     } while (commandResponse == null || commandResponse.isEmpty());
+                //     //(Sean) This will run after the user signs in or signs up
+                //     String commandPrompt = reader.readLine();
+                //     String commandResponse;
+                //     do {
+                //         commandResponse = JOptionPane.showInputDialog(null,
+                //                 commandPrompt, "Social Media Platform",
+                //                 JOptionPane.QUESTION_MESSAGE);
+                //         if (commandResponse == null || commandResponse.isEmpty()) {
+                //             JOptionPane.showMessageDialog(null,
+                //                     "Enter a valid option", "Page Searcher",
+                //                     JOptionPane.ERROR_MESSAGE);
+                //         }
+                //     } while (commandResponse == null || commandResponse.isEmpty());
                 //System.out.println(commandPrompt);
                 //String commandResponse = scan.nextLine();
 
