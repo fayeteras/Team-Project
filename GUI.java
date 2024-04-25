@@ -112,8 +112,30 @@ public class GUI extends JPanel {
             commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
             while ((line = fileReader.readLine()) != null) {
                 JPanel commentEntry = new JPanel(new BorderLayout());
+                commentEntry.setPreferredSize(new Dimension(600, 70)); // Increase height to accommodate buttons
                 JLabel commentLabel = new JLabel(line);
                 commentEntry.add(commentLabel, BorderLayout.CENTER);
+
+                // Create panel for like and dislike buttons
+                JPanel likeDislikePanel = new JPanel(new GridLayout(2, 1));
+
+                // Create like button for the comment
+                JButton likeButton = new JButton("Like");
+                likeButton.addActionListener(likeEv -> {
+                    String commentText = commentLabel.getText();
+                    recordLikeDislike(commentText, "like"); // Record the like action
+                });
+                likeDislikePanel.add(likeButton);
+
+                // Create dislike button for the comment
+                JButton dislikeButton = new JButton("Dislike");
+                dislikeButton.addActionListener(dislikeEv -> {
+                    String commentText = commentLabel.getText();
+                    recordLikeDislike(commentText, "dislike"); // Record the dislike action
+                });
+                likeDislikePanel.add(dislikeButton);
+
+                commentEntry.add(likeDislikePanel, BorderLayout.EAST);
 
                 // Create delete button for the comment (visible only to the user who wrote it or the post owner)
                 JButton deleteButton = new JButton("Delete");
@@ -128,7 +150,7 @@ public class GUI extends JPanel {
                         JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 });
-                commentEntry.add(deleteButton, BorderLayout.EAST);
+                commentEntry.add(deleteButton, BorderLayout.WEST);
 
                 commentsPanel.add(commentEntry);
             }
@@ -138,6 +160,15 @@ public class GUI extends JPanel {
             e.printStackTrace();
         }
     }
+
+    public void recordLikeDislike(String commentText, String action) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("commentslikeDislikeRecord.txt", true))) {
+            writer.write(commentText + "," + action + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public boolean createComment(String commentText, String username) {
         try (FileWriter fileWriter = new FileWriter("userComments.txt", true)) {
