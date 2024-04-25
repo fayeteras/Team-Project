@@ -11,10 +11,10 @@ import java.util.*;
  * @version Sun Mar 31st, 2024
  */
 public interface ClientInterface {
-    public void createUser(Scanner scan, BufferedReader reader, PrintWriter writer);
+    public String createUser(Scanner scan, BufferedReader reader, PrintWriter writer);
 
     //Sign in -- will authenticate through database and create a new serversocket for the user
-    public void signIn(Scanner scan, BufferedReader reader, PrintWriter writer);
+    public String signIn(Scanner scan, BufferedReader reader, PrintWriter writer);
 
     //Search Methods
     public void userSearch(Scanner scan, BufferedReader reader, PrintWriter writer);
@@ -34,6 +34,7 @@ public interface ClientInterface {
 
     //Comment Methods - Comment Class
     public boolean createComment(Scanner scan, BufferedReader reader, PrintWriter writer);
+
 
     //Comment + Post interaction methods
     public boolean like(Scanner scan, BufferedReader reader, PrintWriter writer);
