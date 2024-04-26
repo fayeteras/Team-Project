@@ -19,13 +19,16 @@ import java.util.*;
 public class Client implements ClientInterface {
     private static String host = "localhost";
     private static int port = 620;
+
+    private static BufferedReader reader;
+    private static PrintWriter writer;
     GUI GUI;
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         try (Socket socket = new Socket(host, port)) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new PrintWriter(socket.getOutputStream());
             Client testClient = new Client();
             //(Sean) the following code is for the user to sign in or sign up
             //before being able to access any of the features of the social media platform.
@@ -151,7 +154,6 @@ public class Client implements ClientInterface {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public String createUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
@@ -309,11 +311,11 @@ public class Client implements ClientInterface {
                 String usernamePrompt = reader.readLine();
                 do {
                     usernameResponse = JOptionPane.showInputDialog(null,
-                            usernamePrompt, "Social Media Platform",
+                            usernamePrompt, "HELLo",
                             JOptionPane.QUESTION_MESSAGE);
                     if (usernameResponse == null || usernameResponse.isEmpty()) {
                         JOptionPane.showMessageDialog(null,
-                                "Enter a valid username", "Social Media Platform",
+                                "Enter a valid username", "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } while (usernameResponse == null || usernameResponse.isEmpty());
@@ -323,11 +325,11 @@ public class Client implements ClientInterface {
                 String searchAttempt = reader.readLine();
                 if (!searchAttempt.contains("The user has")) {
                     JOptionPane.showMessageDialog(null,
-                            searchAttempt, "Social Media Platform",
+                            searchAttempt, "HELLo",
                             JOptionPane.ERROR_MESSAGE);
                     yesOrNo = JOptionPane.showConfirmDialog(null,
                             reader.readLine(),
-                            "Social Media Platform", JOptionPane.YES_NO_OPTION);
+                            "HELLo", JOptionPane.YES_NO_OPTION);
                     if (yesOrNo == JOptionPane.YES_OPTION) {
                         writer.write("Yes");
                         writer.println();
@@ -339,11 +341,11 @@ public class Client implements ClientInterface {
                     }
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            searchAttempt, "Social Media Platform",
+                            searchAttempt, "HELLo",
                             JOptionPane.INFORMATION_MESSAGE);
                     yesOrNo = JOptionPane.showConfirmDialog(null,
                             reader.readLine(),
-                            "Social Media Platform", JOptionPane.YES_NO_OPTION);
+                            "HELLo", JOptionPane.YES_NO_OPTION);
                     if (yesOrNo == JOptionPane.YES_OPTION) {
                         writer.write("Yes");
                         writer.println();
@@ -442,6 +444,21 @@ public class Client implements ClientInterface {
         }
         return true;    }
 
+    public boolean createPost(String username, String text) {
+        System.out.println("aeioru");
+        writer.write("createPost");
+        writer.println();
+        writer.flush();
+        writer.write(text);
+        writer.println();
+        writer.flush();
+        try {
+            return Boolean.parseBoolean(reader.readLine());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     public boolean unblockUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         System.out.println("Who would you like to unblock?");
         String username = scan.nextLine();
@@ -512,17 +529,6 @@ public class Client implements ClientInterface {
         }
     }
 
-
-    public boolean createPost(Scanner scan, BufferedReader reader, PrintWriter writer) {
-        String text = scan.nextLine(); //it's just going to have to be a single line for now. when we make the gui it can be multiple.
-        writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
-        writer.write("END");
-        try {
-            return Boolean.parseBoolean(reader.readLine());
-        } catch (IOException e) {
-            return false;
-        }
-    }
 
     public boolean like(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {

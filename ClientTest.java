@@ -185,7 +185,7 @@ public class ClientTest {
         BufferedReader br = new BufferedReader(new StringReader("True"));
         try {
             Client testClient = new Client();
-            boolean tester = testClient.createPost(scan, br, writer);
+            boolean tester = testClient.createPost("testUser", "text");
             assertTrue(tester);
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,7 +265,7 @@ public class ClientTest {
         BufferedReader br = new BufferedReader(new StringReader("True"));
         try {
             Client testClient = new Client();
-            boolean tester = testClient.createPost(scan, br, writer);
+            boolean tester = testClient.createPost("testUser", "text");
             assertTrue(tester);
         } catch (Exception e) {
             e.printStackTrace();

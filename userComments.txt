@@ -1,5 +1,5 @@
 //format here
-Username|PostID|Content
+Username|PostID|CommentID|Content|LikeCount|DislikeCount|
 //examples here
-Seanski|1|You are so h!
-SealedFayte|2|I LOVE CODINF!!!
+Seanski|1|1|You are so h!|6|0|
+SealedFayte|1|2|I LOVE CODINF!!!|1|20|

@@ -15,9 +15,11 @@ import java.io.*;
  * @author LO4-Team 2
  * @version Fri April 26th, 2024
  */
+
 public class GUI extends JPanel {
     User user;
     Client client;
+
     JFrame homeScreen = new JFrame(); // Initialize homeScreen frame object
     JPanel banner;
     JPanel bottomBanner;
@@ -27,7 +29,6 @@ public class GUI extends JPanel {
     JButton usernameButton;
     JScrollPane postsPanel;
     JScrollPane panel;
-
 
 
 
@@ -45,7 +46,7 @@ public class GUI extends JPanel {
             testPost.like("Karina");
 
             // Create an instance of the GUI class
-            GUI gui = new GUI("testUser");
+            GUI gui = new GUI("testUser", new Client());
 
             // Create a JScrollPane with all test posts using the GUI instance
             JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
@@ -65,8 +66,9 @@ public class GUI extends JPanel {
     }
 
     // Constructor for GUI
-    public GUI(String username) {
+    public GUI(String username, Client client) {
         this.user = new User(username);
+        this.client = client;
         // Initialize the homeScreen frame object
         homeScreen = new JFrame("Home Screen");
 
@@ -116,9 +118,8 @@ public class GUI extends JPanel {
         // Add banner to the top of the homeScreen frame
         homeScreen.add(banner, BorderLayout.NORTH);
     }
-
+    
     // Individual Post Panel method
-    //viewing comments
     public synchronized void viewComments(Post post, User currentUser) {
         try (BufferedReader fileReader = new BufferedReader(new FileReader("userComments.txt"))) {
             String line;
@@ -188,7 +189,6 @@ public class GUI extends JPanel {
         }
     }
 
-    //saving comments to a text file
     public synchronized void recordLikeDislike(String commentText, String action) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikeComments.txt", true))) {
             writer.write(commentText + "," + action + "\n");
@@ -197,7 +197,7 @@ public class GUI extends JPanel {
         }
     }
 
-    //creating comments method
+
     public synchronized boolean createComment(String commentText, String username, Post parentPost) {
         try (FileWriter fileWriter = new FileWriter("userComments.txt", true)) {
             fileWriter.write(username + "|" + parentPost.getPostID() + "|" + commentText + "\n");
@@ -208,9 +208,6 @@ public class GUI extends JPanel {
         }
     }
 
-
-
-    //deleting comments method
     public synchronized boolean deleteComment(String commentText, String currentUser) {
         try {
             File inputFile = new File("userComments.txt");
@@ -233,13 +230,14 @@ public class GUI extends JPanel {
                         continue;
                     }
                 }
+            }
                 // Write the current line to the temp file
                 writer.write(currentLine + System.getProperty("line.separator"));
-            }
 
             // Close readers and writers
             writer.close();
             reader.close();
+
 
             // Delete the original file and rename the temp file to the original file name
             if (inputFile.delete()) {
@@ -253,8 +251,6 @@ public class GUI extends JPanel {
             return false;
         }
     }
-
-
 
     public JPanel UserPostPanel(Post post) {
         JPanel postPanel = new JPanel(new BorderLayout());
@@ -314,7 +310,6 @@ public class GUI extends JPanel {
                 // Get the text from the comment field and add it to the post
                 String commentText = commentField.getText();
                 boolean commentAdded = createComment(commentField.getText(), user.getUsername(), post);
-
                 if (commentAdded) {
                     JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -366,6 +361,23 @@ public class GUI extends JPanel {
         // Create a scroll pane with the posts panel
         JScrollPane scrollPane = new JScrollPane(postsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        JButton postButton = new JButton("Create Post");
+        postButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
+        postButton.setForeground(Color.BLUE);
+        postsPanel.add(postButton, "South");
+
+        postButton.addActionListener( a -> {
+            String postText = JOptionPane.showInputDialog(null,
+                    "Enter post text", "Social Media Platform",
+                    JOptionPane.QUESTION_MESSAGE);
+            boolean success = client.createPost(user.getUsername(), postText);
+            if (success) {
+                JOptionPane.showMessageDialog(null, "Post successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Failure posting", "Failure", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
 
         return scrollPane;
     }
@@ -429,7 +441,6 @@ public class GUI extends JPanel {
 
         return profilePanel;
     }
-
     //(Sean) userSearch GUI implementation
     ActionListener searchListener = new ActionListener() {
         @Override

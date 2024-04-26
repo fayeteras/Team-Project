@@ -30,8 +30,7 @@ public interface ClientInterface {
     public boolean getFeed(Scanner scan, BufferedReader reader, PrintWriter writer);
 
     //Post Methods - Post Class
-    public boolean createPost(Scanner scan, BufferedReader reader, PrintWriter writer);
-
+    public boolean createPost(String username, String text);
     //Comment Methods - Comment Class
     public boolean createComment(Scanner scan, BufferedReader reader, PrintWriter writer);
 

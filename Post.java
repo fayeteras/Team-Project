@@ -15,8 +15,6 @@ import java.util.*;
 
 public class Post implements PostInterface {
     private String username;
-
-    private int postID;
     private String text;
     private int likesCount;
     private int dislikesCount;
@@ -34,7 +32,7 @@ public class Post implements PostInterface {
     private File hiddenFile;
     private File editedFile;
     private File commentsFile;
-
+    private int postID;
     private static final String POST_COUNT_FILE = "postCount.txt";
 
 
@@ -68,16 +66,21 @@ public class Post implements PostInterface {
         this.hiddenFile = new File(fileName + "_hidden.txt");
         this.editedFile = new File(fileName + "_edited.txt");
         this.commentsFile = new File(fileName + "_comments.txt");
+        int postNumber =  totalPosts;
         totalPosts++;
+
         ArrayList<String> totalPostsString = new ArrayList<String>();
         totalPostsString.add(Integer.toString(totalPosts)); //yes i know this is ridiculous
         Database.writeFile(new File("postCount.txt"), totalPostsString);
+
         ArrayList<String> textList = new ArrayList<String>();
         textList.add(text);
         Database.writeFile(textFile, textList);
+
         ArrayList<String> editedList = new ArrayList<String>();
         editedList.add("false");
         Database.writeFile(editedFile, editedList);
+
         this.postID = ++totalPosts;
         saveTotalPosts();
         writePostToFile();
@@ -87,6 +90,8 @@ public class Post implements PostInterface {
         this.username = username;
         this.postID = postID;
         readPostFromFile();
+
+        new User(username).addPost(Integer.toString(postNumber));
     }
 
     public Post(String username, String fileName) {
@@ -164,52 +169,6 @@ public class Post implements PostInterface {
 
 
     }
-
-
-    public synchronized void saveTotalPosts() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(POST_COUNT_FILE))) {
-            writer.write(String.valueOf(totalPosts));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public synchronized void writePostToFile() {
-        String fileName = "userPosts.txt";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            String postInfo = String.format("%s|%d|%s|%d|%d\n", username, postID, text, likesCount, dislikesCount);
-            writer.write(postInfo);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public synchronized int getPostID() {
-        return postID;
-    }
-
-
-    public synchronized void readPostFromFile() {
-        String fileName = "userPosts.txt";
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                if (parts.length == 5) {
-                    int id = Integer.parseInt(parts[1]);
-                    if (id == postID) {
-                        this.text = parts[2];
-                        this.likesCount = Integer.parseInt(parts[3]);
-                        this.dislikesCount = Integer.parseInt(parts[4]);
-                        break;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     //GETTERS (Faye)
     public String getUsername() {
@@ -339,6 +298,52 @@ public class Post implements PostInterface {
     public static int getTotalPosts() {
         return totalPosts;
     }
+
+
+    public synchronized void saveTotalPosts() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(POST_COUNT_FILE))) {
+            writer.write(String.valueOf(totalPosts));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void writePostToFile() {
+        String fileName = "userPosts.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            String postInfo = String.format("%s|%d|%s|%d|%d\n", username, postID, text, likesCount, dislikesCount);
+            writer.write(postInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized int getPostID() {
+        return postID;
+    }
+
+
+    public synchronized void readPostFromFile() {
+        String fileName = "userPosts.txt";
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 5) {
+                    int id = Integer.parseInt(parts[1]);
+                    if (id == postID) {
+                        this.text = parts[2];
+                        this.likesCount = Integer.parseInt(parts[3]);
+                        this.dislikesCount = Integer.parseInt(parts[4]);
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

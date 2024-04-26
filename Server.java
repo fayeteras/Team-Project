@@ -26,6 +26,7 @@ public class Server implements Runnable, ServerInterface {
     @Override
     public void run() {
         try {
+            System.out.println("please");
             Database db = new Database();
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -38,17 +39,22 @@ public class Server implements Runnable, ServerInterface {
             String inOrUp = reader.readLine();
             if (inOrUp.equals("in")) {
                 signIn(db, reader, writer);
+                System.out.println("signed in");
             } else {
                 createUser(db, reader, writer);
             }
             //Everything below should be the same as Phase 2
             while (true) {
+                /* (Noah) i don't think we need this
                 writer.write("What would you like to do, User?");
                 writer.println();
                 writer.flush();
+                */
+
                 command = reader.readLine();
-                //(Sean) I readded login as part of the switch.
-                // I only saw Faye's terminal edits after finishing my part. srry Faye
+                System.out.println("ae");
+                //(Sean) I read login as part of the switch.
+                // I only saw Faye's terminal edits after finishing my part. sorry Faye
                 switch (command) {
                     case "createUser":
                         createUser(db, reader, writer);
@@ -78,6 +84,7 @@ public class Server implements Runnable, ServerInterface {
                         unblockUser(db, reader, writer);
                         break;
                     case "createPost":
+                        System.out.println("aeroiu");
                         createPost(db, reader, writer);
                         break;
                     case "likePost":
@@ -145,7 +152,7 @@ public class Server implements Runnable, ServerInterface {
                         userArray.add(newUser);
                         user = newUser;
                         yesOrNo = "No";
-                        writer.write("Account created. Welcome " + username + "! Loading our platform now...");
+                        writer.write("Account creation successful. Welcome " + username + "!");
                         writer.println();
                         writer.flush();
                     } else {
@@ -178,7 +185,7 @@ public class Server implements Runnable, ServerInterface {
                 password = reader.readLine();
                 if (db.authenticateUser(username, password)) {
                     yesOrNo = "No";
-                    writer.write("Login successful. Welcome " + username + "! Loading our platform now...");
+                    writer.write("Login successful. Welcome " + username + "!");
                     user = new User(username);
                     writer.println();
                     writer.flush();
@@ -361,20 +368,18 @@ public class Server implements Runnable, ServerInterface {
     }
 
     public boolean createPost(Database db, BufferedReader reader, PrintWriter writer) {
-        String text = "";
+        String text = null;
         try {
-            while(true) {
-                String line = reader.readLine();
-                if (!line.equals("END"))
-                    text = text.concat(line);
-                else
-                    break;
-            }
+            text = reader.readLine();
+            System.out.println("aaaaaaa");
         } catch (IOException e) {
-            return false;
+            throw new RuntimeException(e);
         }
         try {
             new Post(user.getUsername(), text, "post_" + Post.getTotalPosts());
+            writer.write("True");
+            writer.println();
+            writer.flush();
             return true;
         } catch (Exception e) {
             return false;
