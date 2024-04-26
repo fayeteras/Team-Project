@@ -145,7 +145,7 @@ public class Server implements Runnable, ServerInterface {
                         userArray.add(newUser);
                         user = newUser;
                         yesOrNo = "No";
-                        writer.write("Account creation successful. Welcome " + username + "!");
+                        writer.write("Account created. Welcome " + username + "! Loading our platform now...");
                         writer.println();
                         writer.flush();
                     } else {
@@ -178,7 +178,7 @@ public class Server implements Runnable, ServerInterface {
                 password = reader.readLine();
                 if (db.authenticateUser(username, password)) {
                     yesOrNo = "No";
-                    writer.write("Login successful. Welcome " + username + "!");
+                    writer.write("Login successful. Welcome " + username + "! Loading our platform now...");
                     user = new User(username);
                     writer.println();
                     writer.flush();
