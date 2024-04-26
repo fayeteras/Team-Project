@@ -106,7 +106,7 @@ public class GUI extends JPanel {
     }
     
     // Individual Post Panel method
-    public void viewComment() {
+    public synchronized void viewComment() {
         try (BufferedReader fileReader = new BufferedReader(new FileReader("userComments.txt"))) {
             String line;
             JPanel commentsPanel = new JPanel();
@@ -162,7 +162,7 @@ public class GUI extends JPanel {
         }
     }
 
-    public void recordLikeDislike(String commentText, String action) {
+    public synchronized void recordLikeDislike(String commentText, String action) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikeComments.txt", true))) {
             writer.write(commentText + "," + action + "\n");
         } catch (IOException e) {
@@ -171,7 +171,7 @@ public class GUI extends JPanel {
     }
 
 
-    public boolean createComment(String commentText, String username) {
+    public synchronized boolean createComment(String commentText, String username) {
         try (FileWriter fileWriter = new FileWriter("userComments.txt", true)) {
             fileWriter.write(username + ": " + commentText + "\n");
             return true;
@@ -181,7 +181,7 @@ public class GUI extends JPanel {
         }
     }
 
-    public boolean deleteComment(String commentText) {
+    public synchronized boolean deleteComment(String commentText) {
         try {
             File inputFile = new File("userComments.txt");
             File tempFile = new File("temp.txt");
