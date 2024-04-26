@@ -15,6 +15,8 @@ import java.util.*;
 
 public class Post implements PostInterface {
     private String username;
+
+    private int postID;
     private String text;
     private int likesCount;
     private int dislikesCount;
@@ -32,6 +34,8 @@ public class Post implements PostInterface {
     private File hiddenFile;
     private File editedFile;
     private File commentsFile;
+
+    private static final String POST_COUNT_FILE = "postCount.txt";
 
 
     public Post() { //(Noah) this is kind of weird but this one just sets the totalPosts.
@@ -74,6 +78,15 @@ public class Post implements PostInterface {
         ArrayList<String> editedList = new ArrayList<String>();
         editedList.add("false");
         Database.writeFile(editedFile, editedList);
+        this.postID = ++totalPosts;
+        saveTotalPosts();
+        writePostToFile();
+    }
+
+    public Post(String username, int postID) {
+        this.username = username;
+        this.postID = postID;
+        readPostFromFile();
     }
 
     public Post(String username, String fileName) {
@@ -151,6 +164,52 @@ public class Post implements PostInterface {
 
 
     }
+
+
+    public synchronized void saveTotalPosts() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(POST_COUNT_FILE))) {
+            writer.write(String.valueOf(totalPosts));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void writePostToFile() {
+        String fileName = "userPosts.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            String postInfo = String.format("%s|%d|%s|%d|%d\n", username, postID, text, likesCount, dislikesCount);
+            writer.write(postInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized int getPostID() {
+        return postID;
+    }
+
+
+    public synchronized void readPostFromFile() {
+        String fileName = "userPosts.txt";
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 5) {
+                    int id = Integer.parseInt(parts[1]);
+                    if (id == postID) {
+                        this.text = parts[2];
+                        this.likesCount = Integer.parseInt(parts[3]);
+                        this.dislikesCount = Integer.parseInt(parts[4]);
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     //GETTERS (Faye)
     public String getUsername() {
