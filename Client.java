@@ -32,146 +32,126 @@ public class Client implements ClientInterface {
             //If this messes with your code, just comment this all out.
             String inOrUp;
             String[] loginOptions = {"Sign In", "Sign Up"};
-            String username;
-            do {
-                int result = JOptionPane.showOptionDialog(null, "Welcome to [social media platform]",
-                        "Social Media Platform",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-                        null, loginOptions, loginOptions[1]);
-                if (result == JOptionPane.YES_OPTION) {
-                    inOrUp = "in";
-                    writer.write(inOrUp);
-                    writer.println();
-                    writer.flush();
-                    username = testClient.signIn(scan, reader, writer);
-                } else {
-                    inOrUp = "up";
-                    writer.write(inOrUp);
-                    writer.println();
-                    writer.flush();
-                    username = testClient.createUser(scan, reader, writer);
-                }
-            } while(username == null);
-            String finalUsername = username;
-            String finalUsername1 = username;
-            SwingUtilities.invokeLater(() -> {
-                System.out.println("Here 1");
-                // Create test posts and add them to an array
-                Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
-                Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
-                Post[] testPosts = new Post[] { testPost, testPost2 };
-
-                // Perform actions on the test posts
-                testPost.like("james");
-                testPost.dislike("lucas");
-                testPost.like("Karina");
-
-                // Create an instance of the GUI class
-                GUI gui = new GUI(finalUsername1);
-
-                // Create a JScrollPane with all test posts using the GUI instance
-                JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
-
-                // Assign the postsPanel to the panel property of the GUI instance
-                gui.panel = postsPanel;
-
-                // Add the panel to the homeScreen frame
-                gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
-
-                // Set the default close operation
-                gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-                // Make the homeScreen frame visible
-                gui.homeScreen.setVisible(true);
-            });
-            System.out.println("Here 2");
-
-            while (true) {
-                //     //(Sean) The do-while loop below is also newly created GUI.
-                //     //If you find that this does not allow your code to work,
-                //     //I have left the Phase 2 system commented out below the loop.
-
-                //     //(Sean) This will run after the user signs in or signs up
-                //     String commandPrompt = reader.readLine();
-                //     String commandResponse;
-                //     do {
-                //         commandResponse = JOptionPane.showInputDialog(null,
-                //                 commandPrompt, "Social Media Platform",
-                //                 JOptionPane.QUESTION_MESSAGE);
-                //         if (commandResponse == null || commandResponse.isEmpty()) {
-                //             JOptionPane.showMessageDialog(null,
-                //                     "Enter a valid option", "Page Searcher",
-                //                     JOptionPane.ERROR_MESSAGE);
-                //         }
-                //     } while (commandResponse == null || commandResponse.isEmpty());
-                //System.out.println(commandPrompt);
-                //String commandResponse = scan.nextLine();
-
-                String commandResponse = null;
-                writer.write(commandResponse);
+            String username = null;
+            int result = JOptionPane.showOptionDialog(null,
+                    "                                        Welcome to HELLo!" +
+                            "\nBefore you can access our platform, you either need to sign in or sign up." +
+                            "\n                                   Please choose an option.",
+                    "HELLo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, loginOptions, loginOptions[1]);
+            if (result == JOptionPane.YES_OPTION) {
+                inOrUp = "in";
+                writer.write(inOrUp);
                 writer.println();
                 writer.flush();
-                switch (commandResponse) {
-                    case "createUser":
-                        testClient.createUser(scan, reader, writer);
-                        break;
-                    case "signIn":
-                        testClient.signIn(scan, reader, writer);
-                        break;
-                    case "userSearch":
-                        testClient.userSearch(scan, reader, writer);
-                        break;
-                    case "getFeed":
-                        testClient.getFeed(scan, reader, writer);
-                        break;
-                    case "viewProfile":
-                        testClient.viewProfile(scan, reader, writer);
-                        break;
-                    case "friendUser":
-                        testClient.friendUser(scan, reader, writer);
-                        break;
-                    case "unfriendUser":
-                        testClient.unfriendUser(scan, reader, writer);
-                        break;
-                    case "blockUser":
-                        testClient.blockUser(scan, reader, writer);
-                        break;
-                    case "unblockUser":
-                        testClient.unblockUser(scan, reader, writer);
-                        break;
-                    case "createPost":
-                        testClient.createPost(scan, reader, writer);
-                        break;
-                    case "likePost":
-                    case "likeComment":
-                        testClient.like(scan, reader, writer);
-                        break;
-                    case "dislikePost":
-                    case "dislikeComment":
-                        testClient.dislike(scan, reader, writer);
-                        break;
-                    case "hidePost":
-                    case "hideComment":
-                        testClient.hide(scan, reader, writer);
-                        break;
-                    case "editPost":
-                    case "editComment":
-                        testClient.edit(scan, reader, writer);
-                        break;
-                    case "createComment":
-                        testClient.createComment(scan, reader, writer);
-                        break;
-                }
-                //Forward-thinking is strongly encouraged
-                //you WILL add a GUI
-                //you WILL redo the client
-                //you WILL code sober
+                username = testClient.signIn(scan, reader, writer);
+            } else if (result == JOptionPane.NO_OPTION) {
+                inOrUp = "up";
+                writer.write(inOrUp);
+                writer.println();
+                writer.flush();
+                username = testClient.createUser(scan, reader, writer);
+            }
+            if (username != null) {
+                String finalUsername = username;
+                String finalUsername1 = username;
+                SwingUtilities.invokeLater(() -> {
+                    System.out.println("Here 1");
+                    // Create test posts and add them to an array
+                    Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
+                    Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
+                    Post[] testPosts = new Post[]{testPost, testPost2};
+
+                    // Perform actions on the test posts
+                    testPost.like("james");
+                    testPost.dislike("lucas");
+                    testPost.like("Karina");
+
+                    // Create an instance of the GUI class
+                    GUI gui = new GUI(finalUsername1);
+
+                    // Create a JScrollPane with all test posts using the GUI instance
+                    JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
+
+                    // Assign the postsPanel to the panel property of the GUI instance
+                    gui.panel = postsPanel;
+
+                    // Add the panel to the homeScreen frame
+                    gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
+
+                    // Set the default close operation
+                    gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                    // Make the homeScreen frame visible
+                    gui.homeScreen.setVisible(true);
+                });
+                System.out.println("Here 2");
+
+                /*while (true) {
+                    String commandResponse = null;
+                    switch (commandResponse) {
+                        case "createUser":
+                            testClient.createUser(scan, reader, writer);
+                            break;
+                        case "signIn":
+                            testClient.signIn(scan, reader, writer);
+                            break;
+                        case "userSearch":
+                            testClient.userSearch(scan, reader, writer);
+                            break;
+                        case "getFeed":
+                            testClient.getFeed(scan, reader, writer);
+                            break;
+                        case "viewProfile":
+                            testClient.viewProfile(scan, reader, writer);
+                            break;
+                        case "friendUser":
+                            testClient.friendUser(scan, reader, writer);
+                            break;
+                        case "unfriendUser":
+                            testClient.unfriendUser(scan, reader, writer);
+                            break;
+                        case "blockUser":
+                            testClient.blockUser(scan, reader, writer);
+                            break;
+                        case "unblockUser":
+                            testClient.unblockUser(scan, reader, writer);
+                            break;
+                        case "createPost":
+                            testClient.createPost(scan, reader, writer);
+                            break;
+                        case "likePost":
+                        case "likeComment":
+                            testClient.like(scan, reader, writer);
+                            break;
+                        case "dislikePost":
+                        case "dislikeComment":
+                            testClient.dislike(scan, reader, writer);
+                            break;
+                        case "hidePost":
+                        case "hideComment":
+                            testClient.hide(scan, reader, writer);
+                            break;
+                        case "editPost":
+                        case "editComment":
+                            testClient.edit(scan, reader, writer);
+                            break;
+                        case "createComment":
+                            testClient.createComment(scan, reader, writer);
+                            break;
+                    }
+                    //Forward-thinking is strongly encouraged
+                    //you WILL add a GUI
+                    //you WILL redo the client
+                    //you WILL code sober
+                } */
             }
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public String createUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
@@ -183,11 +163,11 @@ public class Client implements ClientInterface {
                 String usernamePrompt = reader.readLine();
                 do {
                     usernameResponse = JOptionPane.showInputDialog(null,
-                            usernamePrompt, "Social Media Platform",
+                            usernamePrompt, "HELLo",
                             JOptionPane.QUESTION_MESSAGE);
                     if (usernameResponse == null || usernameResponse.isEmpty()) {
                         JOptionPane.showMessageDialog(null,
-                                "Enter a valid username", "Social Media Platform",
+                                "Enter a valid username", "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } while (usernameResponse == null || usernameResponse.isEmpty());
@@ -197,11 +177,11 @@ public class Client implements ClientInterface {
                 String passwordPrompt = reader.readLine();
                 if (passwordPrompt.equals("Sorry, that username is already taken.")) {
                     JOptionPane.showMessageDialog(null,
-                            passwordPrompt, "Social Media Platform",
+                            passwordPrompt, "HELLo",
                             JOptionPane.ERROR_MESSAGE);
                     yesOrNo = JOptionPane.showConfirmDialog(null,
                             reader.readLine(),
-                            "Social Media Platform", JOptionPane.YES_NO_OPTION);
+                            "HELLo", JOptionPane.YES_NO_OPTION);
                     if (yesOrNo == JOptionPane.YES_OPTION) {
                         writer.write("Yes");
                         writer.println();
@@ -214,11 +194,11 @@ public class Client implements ClientInterface {
                 } else {
                     do {
                         passwordResponse = JOptionPane.showInputDialog(null,
-                                passwordPrompt, "Social Media Platform",
+                                passwordPrompt, "HELLo",
                                 JOptionPane.QUESTION_MESSAGE);
                         if (passwordResponse == null || passwordResponse.isEmpty()) {
                             JOptionPane.showMessageDialog(null,
-                                    "Enter a valid password", "Social Media Platform",
+                                    "Enter a valid password", "HELLo",
                                     JOptionPane.ERROR_MESSAGE);
                         }
                     } while (passwordResponse == null || passwordResponse.isEmpty());
@@ -228,11 +208,11 @@ public class Client implements ClientInterface {
                     String accountCreation = reader.readLine();
                     if (!accountCreation.contains("Account creation successful.")) {
                         JOptionPane.showMessageDialog(null,
-                                accountCreation, "Social Media Platform",
+                                accountCreation, "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
                         yesOrNo = JOptionPane.showConfirmDialog(null,
                                 reader.readLine(),
-                                "Social Media Platform", JOptionPane.YES_NO_OPTION);
+                                "HELLo", JOptionPane.YES_NO_OPTION);
                         if (yesOrNo == JOptionPane.YES_OPTION) {
                             writer.write("Yes");
                             writer.println();
@@ -244,7 +224,7 @@ public class Client implements ClientInterface {
                         }
                     } else {
                         JOptionPane.showMessageDialog(null,
-                                accountCreation, "Social Media Platform",
+                                accountCreation, "HELLo",
                                 JOptionPane.INFORMATION_MESSAGE);
                         yesOrNo = JOptionPane.NO_OPTION;
                     }
@@ -265,11 +245,11 @@ public class Client implements ClientInterface {
                 String usernamePrompt = reader.readLine();
                 do {
                     usernameResponse = JOptionPane.showInputDialog(null,
-                            usernamePrompt, "Social Media Platform",
+                            usernamePrompt, "HELLo",
                             JOptionPane.QUESTION_MESSAGE);
                     if (usernameResponse == null || usernameResponse.isEmpty()) {
                         JOptionPane.showMessageDialog(null,
-                                "Enter a valid username", "Social Media Platform",
+                                "Enter a valid username", "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } while (usernameResponse == null || usernameResponse.isEmpty());
@@ -279,11 +259,11 @@ public class Client implements ClientInterface {
                 String passwordPrompt = reader.readLine();
                 do {
                     passwordResponse = JOptionPane.showInputDialog(null,
-                            passwordPrompt, "Social Media Platform",
+                            passwordPrompt, "HELLo",
                             JOptionPane.QUESTION_MESSAGE);
                     if (passwordResponse == null || passwordResponse.isEmpty()) {
                         JOptionPane.showMessageDialog(null,
-                                "Enter a valid password", "Social Media Platform",
+                                "Enter a valid password", "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } while (passwordResponse == null || passwordResponse.isEmpty());
@@ -293,11 +273,11 @@ public class Client implements ClientInterface {
                 String loginAttempt = reader.readLine();
                 if (!loginAttempt.contains("Login successful.")) {
                     JOptionPane.showMessageDialog(null,
-                            loginAttempt, "Social Media Platform",
+                            loginAttempt, "HELLo",
                             JOptionPane.ERROR_MESSAGE);
                     yesOrNo = JOptionPane.showConfirmDialog(null,
                             reader.readLine(),
-                            "Social Media Platform", JOptionPane.YES_NO_OPTION);
+                            "HELLo", JOptionPane.YES_NO_OPTION);
                     if (yesOrNo == JOptionPane.YES_OPTION) {
                         writer.write("Yes");
                         writer.println();
@@ -310,7 +290,7 @@ public class Client implements ClientInterface {
                     }
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            loginAttempt, "Social Media Platform",
+                            loginAttempt, "HELLo",
                             JOptionPane.INFORMATION_MESSAGE);
                     yesOrNo = JOptionPane.NO_OPTION;
                 }
