@@ -1,29 +1,39 @@
+import org.junit.Before;
 import org.junit.Test;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 
-//test for the helper methods in GUI only - we don't need to test the GUI but if we are using any helper methods we do need to test them
 public class GUITest {
 
     @Test
     public void testCreateComment() {
         GUI gui = new GUI("testUser");
-        boolean result = gui.createComment("Test comment", "testUser");
+        Post testPost = new Post("John Doe", "This is a test post.", "TestPost");
+        boolean result = gui.createComment("Test comment", "testUser", testPost);
         assertTrue(result); // Check if comment is successfully added
     }
 
     @Test
-    public void testDeleteComment() {
+    public void testDeleteComment() throws IOException {
         GUI gui = new GUI("testUser");
-        gui.createComment("Test comment", "testUser"); // Create a comment
-        boolean result = gui.deleteComment("testUser: Test comment");
+        Post testPost = new Post("John Doe", "This is a test post.", "TestPost");
+        gui.createComment("Test comment", "testUser", testPost); // Create a comment
+        boolean result = gui.deleteComment("Test comment", "testUser");
         assertTrue(result); // Check if comment is successfully deleted
     }
 
     @Test
-    public void testViewComment() {
+    public void testViewComments() {
         // Assuming there are comments in the file
         GUI gui = new GUI("testUser");
-        gui.viewComment(); // Trigger the method
+        Post testPost = new Post("John Doe", "This is a test post.", "TestPost");
+        gui.viewComments(testPost, gui.user); // Trigger the method
         // Manually verify if the comments are displayed correctly in the dialog
     }
 
