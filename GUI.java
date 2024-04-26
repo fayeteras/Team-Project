@@ -106,6 +106,7 @@ public class GUI extends JPanel {
     }
     
     // Individual Post Panel method
+    //viewing comments
     public synchronized void viewComment() {
         try (BufferedReader fileReader = new BufferedReader(new FileReader("userComments.txt"))) {
             String line;
@@ -162,6 +163,7 @@ public class GUI extends JPanel {
         }
     }
 
+    //saving comments to a text file
     public synchronized void recordLikeDislike(String commentText, String action) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikeComments.txt", true))) {
             writer.write(commentText + "," + action + "\n");
@@ -170,7 +172,7 @@ public class GUI extends JPanel {
         }
     }
 
-
+//creating comments method
     public synchronized boolean createComment(String commentText, String username) {
         try (FileWriter fileWriter = new FileWriter("userComments.txt", true)) {
             fileWriter.write(username + ": " + commentText + "\n");
@@ -180,7 +182,7 @@ public class GUI extends JPanel {
             return false;
         }
     }
-
+//deleting comments method
     public synchronized boolean deleteComment(String commentText) {
         try {
             File inputFile = new File("userComments.txt");
