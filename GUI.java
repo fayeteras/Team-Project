@@ -1,15 +1,20 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.File;
-
-
-
+import java.awt.event.*;
+import java.util.*;
+import java.io.*;
+/**
+ * GUI.java
+ *
+ * GUI that client will use once the user has successfully signed in or up
+ * to our social media platform. It functions through many buttons and text fields
+ * that allow the user to interact with other posts and people on the platform.
+ *
+ * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
+ *
+ * @author LO4-Team 2
+ * @version Fri April 26th, 2024
+ */
 public class GUI extends JPanel {
     User user;
     Client client;
@@ -18,6 +23,7 @@ public class GUI extends JPanel {
     JPanel bottomBanner;
     JButton homeButton;
     JTextField searchField;
+    JButton searchButton;
     JButton usernameButton;
     JScrollPane postsPanel;
     JScrollPane panel;
@@ -93,7 +99,12 @@ public class GUI extends JPanel {
         searchField.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         searchField.setColumns(20);
         searchPanel.add(searchField, BorderLayout.WEST);
-        searchPanel.add(Box.createRigidArea(new Dimension(100, 0)));
+        // Initialize and configure searchButton
+        searchButton = new JButton("Search");
+        searchButton.addActionListener(searchListener);
+        searchButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 30));
+        searchButton.setForeground(Color.BLUE);
+        searchPanel.add(searchButton, BorderLayout.CENTER);
         banner.add(searchPanel, BorderLayout.CENTER);
 
         // Initialize and configure username button
@@ -219,9 +230,9 @@ public class GUI extends JPanel {
                     String text = parts[2].trim();
                     // Check if the current line contains the specified comment text
                     if (text.equals(commentText)) {
-                            continue;
-                        }
+                        continue;
                     }
+                }
                 // Write the current line to the temp file
                 writer.write(currentLine + System.getProperty("line.separator"));
             }
@@ -417,5 +428,31 @@ public class GUI extends JPanel {
         profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
 
         return profilePanel;
+    }
+
+    //(Sean) userSearch GUI implementation
+    ActionListener searchListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == searchButton) {
+                search();
+                searchField.setText("Search");
+            }
+        }
+    };
+
+    public void search() {
+        String tempString = searchField.getText();
+        Database db = new Database();
+        if (db.userExists(tempString)) {
+            User searchedUser = new User(tempString);
+            //Waiting on viewProfile to be created.
+            viewProfilePanel(searchedUser);
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "This username is not in our records!", "HELLo",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 }
