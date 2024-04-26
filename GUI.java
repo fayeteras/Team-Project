@@ -12,7 +12,7 @@ import java.io.File;
 
 public class GUI extends JPanel {
     User user;
-
+    Client client;
     JFrame homeScreen = new JFrame(); // Initialize homeScreen frame object
     JPanel banner;
     JPanel bottomBanner;
@@ -104,57 +104,67 @@ public class GUI extends JPanel {
         // Add banner to the top of the homeScreen frame
         homeScreen.add(banner, BorderLayout.NORTH);
     }
-    
+
     // Individual Post Panel method
     //viewing comments
-    public synchronized void viewComment() {
+    public synchronized void viewComments(Post post) {
         try (BufferedReader fileReader = new BufferedReader(new FileReader("userComments.txt"))) {
             String line;
             JPanel commentsPanel = new JPanel();
             commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
             while ((line = fileReader.readLine()) != null) {
-                JPanel commentEntry = new JPanel(new BorderLayout());
-                commentEntry.setPreferredSize(new Dimension(600, 70)); // Increase height to accommodate buttons
-                JLabel commentLabel = new JLabel(line);
-                commentEntry.add(commentLabel, BorderLayout.CENTER);
+                String[] commentParts = line.split("\\|");
+                if (commentParts.length == 3) { // Check if the comment has the correct number of parts
+                    String postID = commentParts[1];
+                    if (postID.equals(String.valueOf(post.getPostID()))) {
+                        // Create a panel to hold the comment, username, like button, dislike button, and delete button
+                        JPanel commentEntry = new JPanel(new BorderLayout());
+                        commentEntry.setPreferredSize(new Dimension(600, 70));
 
-                // Create panel for like and dislike buttons
-                JPanel likeDislikePanel = new JPanel(new GridLayout(2, 1));
+                        // Create a JLabel to display the comment content and username
+                        JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
+                        commentEntry.add(commentLabel, BorderLayout.CENTER);
 
-                // Create like button for the comment
-                JButton likeButton = new JButton("Like");
-                likeButton.addActionListener(likeEv -> {
-                    String commentText = commentLabel.getText();
-                    recordLikeDislike(commentText, "like"); // Record the like action
-                });
-                likeDislikePanel.add(likeButton);
+                        // Create a panel to hold the like and dislike buttons
+                        JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-                // Create dislike button for the comment
-                JButton dislikeButton = new JButton("Dislike");
-                dislikeButton.addActionListener(dislikeEv -> {
-                    String commentText = commentLabel.getText();
-                    recordLikeDislike(commentText, "dislike"); // Record the dislike action
-                });
-                likeDislikePanel.add(dislikeButton);
+                        // Create like button for the comment
+                        JButton likeButton = new JButton("Like");
+                        likeButton.addActionListener(e -> {
+                            // Handle like action
+                            recordLikeDislike(commentParts[2], "like");
+                        });
+                        likeDislikePanel.add(likeButton);
 
-                commentEntry.add(likeDislikePanel, BorderLayout.EAST);
+                        // Create dislike button for the comment
+                        JButton dislikeButton = new JButton("Dislike");
+                        dislikeButton.addActionListener(e -> {
+                            // Handle dislike action
+                            recordLikeDislike(commentParts[2], "dislike");
+                        });
+                        likeDislikePanel.add(dislikeButton);
 
-                // Create delete button for the comment (visible only to the user who wrote it or the post owner)
-                JButton deleteButton = new JButton("Delete");
-                deleteButton.addActionListener(deleteEv -> {
-                    // Perform delete operation here
-                    String commentText = commentLabel.getText();
-                    if (deleteComment(commentText)) {
-                        commentsPanel.remove(commentEntry);
-                        commentsPanel.revalidate();
-                        commentsPanel.repaint();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
+                        // Create delete button for the comment
+                        JButton deleteButton = new JButton("Delete");
+                        deleteButton.addActionListener(e -> {
+                            // Handle delete action
+                            if (deleteComment(commentParts[2], commentParts[0])) {
+                                // Remove the comment entry from the panel if deletion is successful
+                                commentsPanel.remove(commentEntry);
+                                commentsPanel.revalidate();
+                                commentsPanel.repaint();
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        });
+                        likeDislikePanel.add(deleteButton);
+
+                        commentEntry.add(likeDislikePanel, BorderLayout.SOUTH);
+
+                        // Add the comment entry panel to the comments panel
+                        commentsPanel.add(commentEntry);
                     }
-                });
-                commentEntry.add(deleteButton, BorderLayout.WEST);
-
-                commentsPanel.add(commentEntry);
+                }
             }
             JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
             JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
@@ -172,18 +182,21 @@ public class GUI extends JPanel {
         }
     }
 
-//creating comments method
-    public synchronized boolean createComment(String commentText, String username) {
+    //creating comments method
+    public synchronized boolean createComment(String commentText, String username, Post parentPost) {
         try (FileWriter fileWriter = new FileWriter("userComments.txt", true)) {
-            fileWriter.write(username + ": " + commentText + "\n");
+            fileWriter.write(username + "|" + parentPost.getPostID() + "|" + commentText + "\n");
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
-//deleting comments method
-    public synchronized boolean deleteComment(String commentText) {
+
+
+
+    //deleting comments method
+    public synchronized boolean deleteComment(String commentText, String currentUser) {
         try {
             File inputFile = new File("userComments.txt");
             File tempFile = new File("temp.txt");
@@ -191,24 +204,60 @@ public class GUI extends JPanel {
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-            String lineToRemove = commentText;
             String currentLine;
 
             while ((currentLine = reader.readLine()) != null) {
-                // trim newline when comparing with lineToRemove
-                String trimmedLine = currentLine.trim();
-                if (trimmedLine.equals(lineToRemove)) continue;
+                // Split the line to get the username, postID, and comment text
+                String[] parts = currentLine.split("\\|");
+                if (parts.length == 3) {
+                    String username = parts[0].trim();
+                    String postID = parts[1].trim();
+                    String text = parts[2].trim();
+                    // Check if the current line contains the specified comment text
+                    if (text.equals(commentText)) {
+                        // Check if the current user is the author of the comment or the owner of the post
+                        if (username.equals(currentUser) || isPostOwner(currentUser, postID)) {
+                            // Skip deleting this line
+                            continue;
+                        }
+                    }
+                }
+                // Write the current line to the temp file
                 writer.write(currentLine + System.getProperty("line.separator"));
             }
+
+            // Close readers and writers
             writer.close();
             reader.close();
-            inputFile.delete();
-            tempFile.renameTo(inputFile);
-            return true;
+
+            // Delete the original file and rename the temp file to the original file name
+            if (inputFile.delete()) {
+                tempFile.renameTo(inputFile);
+                return true; // Successfully deleted the comment
+            } else {
+                return false; // Failed to delete the comment
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private boolean isPostOwner(String username, String postID) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader("userPosts.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 4) {
+                    String postOwner = parts[0].trim();
+                    String postId = parts[3].trim();
+                    if (postId.equals(postID) && username.equals(postOwner)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public JPanel UserPostPanel(Post post) {
@@ -252,7 +301,7 @@ public class GUI extends JPanel {
         // View comments, add comment, and edit buttons
         JPanel commentsAddEdit = new JPanel(new GridLayout(1, 3));
         JButton commentButton = new JButton("View Comments");
-        commentButton.addActionListener(e -> viewComment());
+        commentButton.addActionListener(e -> viewComments(post));
         commentsAddEdit.add(commentButton);
 
         // Add comment button
@@ -268,7 +317,8 @@ public class GUI extends JPanel {
             submitButton.addActionListener(submitEv -> {
                 // Get the text from the comment field and add it to the post
                 String commentText = commentField.getText();
-                boolean commentAdded = createComment(commentText, user.getUsername());
+                boolean commentAdded = createComment(commentField.getText(), user.getUsername(), post);
+
                 if (commentAdded) {
                     JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 } else {
