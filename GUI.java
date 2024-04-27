@@ -252,7 +252,7 @@ public class GUI extends JPanel {
         }
     }
 
-    public JPanel UserPostPanel(Post post) {
+    public JPanel UserPostPanel(String username, String text, String likes, String dislikes) {
         JPanel postPanel = new JPanel(new BorderLayout());
         postPanel.setPreferredSize(new Dimension(600, 150));
         postPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -261,13 +261,13 @@ public class GUI extends JPanel {
         ));
 
         // Username label
-        JLabel usernameLabel = new JLabel(" " + post.getUsername());
+        JLabel usernameLabel = new JLabel(" " + username);
         usernameLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
-        usernameLabel.setForeground(Color.BLUE);
+        usernameLabel.setForeground(Color.RED);
         postPanel.add(usernameLabel, BorderLayout.NORTH);
 
         // Post text area
-        JLabel postText = new JLabel(post.getText());
+        JLabel postText = new JLabel(text);
         postText.setVerticalAlignment(JLabel.TOP);
         postText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
         JScrollPane postScrollPane = new JScrollPane(postText);
@@ -278,10 +278,10 @@ public class GUI extends JPanel {
 
         // Likes and dislikes buttons panel
         JPanel likesDislikesPanel = new JPanel(new GridLayout(1, 4));
-        JLabel likesLabel = new JLabel(String.format("Likes: " + post.getLikesCount()));
+        JLabel likesLabel = new JLabel(String.format("Likes: " + likes));
         JButton likeButton = new JButton("+");
         likesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
-        JLabel dislikesLabel = new JLabel(String.format("Dislikes: " + post.getDislikesCount()));
+        JLabel dislikesLabel = new JLabel(String.format("Dislikes: " + dislikes));
         JButton dislikeButton = new JButton("-");
         dislikesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         likesDislikesPanel.add(likesLabel);
