@@ -437,7 +437,7 @@ public class GUI extends JPanel {
         if (db.userExists(tempString)) {
             User searchedUser = new User(tempString);
             //Waiting on viewProfile to be created.
-            viewProfilePanel(searchedUser);
+            panel = viewProfilePanel(searchedUser);
         } else {
             JOptionPane.showMessageDialog(null,
                     "This username is not in our records!", "HELLo",
