@@ -442,7 +442,6 @@ public class GUI extends JPanel {
 
             //homeScreen.setVisible(false);
             viewProfilePanel(searchedUser).setVisible(true);
-            System.out.println("working");
         } else {
             JOptionPane.showMessageDialog(null,
                     "This username is not in our records!", "HELLo",
