@@ -366,8 +366,8 @@ public class GUI extends JPanel {
         JLabel friendsList = new JLabel(viewUser.getFriendList().toString());
         friendsList.setVerticalAlignment(JLabel.TOP);
         friendsList.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
-        JScrollPane postScrollPane = new JScrollPane(friendsList);
-        profilePanel.add(postScrollPane, BorderLayout.CENTER);
+        JScrollPane friendScrollPane = new JScrollPane(friendsList);
+        profilePanel.add(friendScrollPane, BorderLayout.CENTER);
 
         // Bottom panel for block and unblock
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -414,12 +414,20 @@ public class GUI extends JPanel {
         bottomPanel.add(friendsPanel, BorderLayout.EAST);
         profilePanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Set maximum size of the post panel
         profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+        JPanel mainPanel = new JPanel(new GridLayout(0, 1));
         JScrollPane scrollPane = new JScrollPane(profilePanel);
+        JScrollPane postScrollPane = new JScrollPane();
+        for (int i = 0; i < user.getPostsList().size(); i++) {
+            postScrollPane.add(UserPostPanel(user.getPostsList().get(i)));
+        }
+        
+        mainPanel.add(scrollPane);
+        mainPanel.add(postScrollPane);
+        
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         JFrame viewFrame = new JFrame();
-        viewFrame.add(scrollPane, BorderLayout.CENTER);
+        viewFrame.add(mainPanel, BorderLayout.CENTER);
         return viewFrame;
     }
     //(Sean) userSearch GUI implementation
