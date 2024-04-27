@@ -154,6 +154,54 @@ public class GUI extends JPanel {
         }
     }
 
+    public synchronized void viewPosts(User currentUser) {
+        try (BufferedReader fileReader = new BufferedReader(new FileReader("userPosts.txt"))) {
+            String line;
+            JPanel postsPanel = new JPanel();
+            postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+            while ((line = fileReader.readLine()) != null) {
+                String[] postParts = line.split("\\|");
+                if (postParts.length == 2) { // Check if the comment has the correct number of parts
+                        // Create a panel to hold the comment, username, like button, dislike button, and delete button
+                        JPanel postEntry = new JPanel(new BorderLayout());
+                        postEntry.setPreferredSize(new Dimension(600, 70));
+
+                        // Create a JLabel to display the comment content and username
+                        JLabel commentLabel = new JLabel(postParts[0] + ": " + postParts[1]);
+                        postEntry.add(commentLabel, BorderLayout.CENTER);
+
+                        // Create a panel to hold the like and dislike buttons
+                        JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+                        // Create like button for the comment
+                        JButton likeButton = new JButton("Like");
+                        likeButton.addActionListener(e -> {
+                            // Handle like action
+                            recordLikeDislike(postParts[1], "like");
+                        });
+                        likeDislikePanel.add(likeButton);
+
+                        // Create dislike button for the comment
+                        JButton dislikeButton = new JButton("Dislike");
+                        dislikeButton.addActionListener(e -> {
+                            // Handle dislike action
+                            recordLikeDislike(postParts[1], "dislike");
+                        });
+                        likeDislikePanel.add(dislikeButton);
+
+                        postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
+
+                        // Add the comment entry panel to the comments panel
+                        postsPanel.add(postEntry);
+                }
+            }
+            JScrollPane commentsScrollPane = new JScrollPane(postsPanel);
+            JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public synchronized void recordLikeDislike(String commentText, String action) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikeComments.txt", true))) {
             writer.write(commentText + "," + action + "\n");
@@ -375,8 +423,15 @@ public class GUI extends JPanel {
             }
         });
 
+        JButton viewPostsButton = new JButton("View Posts");
+        viewPostsButton.addActionListener(e -> {
+            viewPosts(user);
+        });
+        postsPanel.add(viewPostsButton);
+
         return scrollPane;
     }
+
 
     public JFrame viewProfilePanel(User viewUser) { //(Tyler) The user we are viewing (not finished/tested)
         JPanel profilePanel = new JPanel(new BorderLayout());
