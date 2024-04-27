@@ -348,7 +348,7 @@ public class GUI extends JPanel {
         return scrollPane;
     }
 
-    public JPanel viewProfilePanel(User viewUser) { //The user we are viewing (not finished/tested)
+    public JPanel viewProfilePanel(User viewUser) { //(Tyler) The user we are viewing (not finished/tested)
         JPanel profilePanel = new JPanel(new BorderLayout());
         profilePanel.setPreferredSize(new Dimension(600, 150));
         profilePanel.setBorder(BorderFactory.createCompoundBorder(
@@ -376,14 +376,19 @@ public class GUI extends JPanel {
         JPanel blockPanel = new JPanel(new GridLayout(1, 1));
         String text;
         if (user.isBlocked(viewUser.getUsername())) {
-            text = "Unblock";
+            JButton blockButton = new JButton("Unblock");
+            blockPanel.add(blockButton);
+            blockButton.addActionListener(block -> {
+                user.unblockUser(viewUser.getUsername());
+        });
         } else {
-            text = "Block";
+            JButton blockButton = new JButton("Block");
+            blockPanel.add(blockButton);
+            blockButton.addActionListener(block -> {
+                user.blockUser(viewUser.getUsername());
+            });
         }
-        JButton blockButton = new JButton(text);
-
-        blockPanel.add(blockButton);
-
+        
         bottomPanel.add(blockPanel, BorderLayout.WEST);
 
         // View friends and add friend buttons
@@ -391,14 +396,21 @@ public class GUI extends JPanel {
         JButton viewFriendsButton = new JButton("Friends");
         friendsPanel.add(viewFriendsButton);
 
-        if (user.isFriend(viewUser.getUsername())) { //(TODO)
-            text = "Remove Friend";
+        if (user.isFriend(viewUser.getUsername())) { 
+            JButton addFriendButton = new JButton("Remove Friend");
+            friendsPanel.add(addFriendButton);
+            addFriendButton.addActionListener(friend -> {
+                user.removeFriend(viewUser.getUsername());
+            });
         } else {
-            text = "Add Friend";
+            JButton addFriendButton = new JButton("Add Friend");
+            friendsPanel.add(addFriendButton);
+            addFriendButton.addActionListener(friend -> {
+                user.addFriend(viewUser.getUsername());
+            });
         }
 
-        JButton addFriendButton = new JButton(text);
-        friendsPanel.add(addFriendButton);
+        
         bottomPanel.add(friendsPanel, BorderLayout.EAST);
         profilePanel.add(bottomPanel, BorderLayout.SOUTH);
 
