@@ -177,7 +177,7 @@ public class GUI extends JPanel {
                         JButton likeButton = new JButton("Like");
                         likeButton.addActionListener(e -> {
                             // Handle like action
-                            recordLikeDislike(postParts[1], "like");
+                            recordLikeDislikePost(postParts[1], "like");
                         });
                         likeDislikePanel.add(likeButton);
 
@@ -185,7 +185,7 @@ public class GUI extends JPanel {
                         JButton dislikeButton = new JButton("Dislike");
                         dislikeButton.addActionListener(e -> {
                             // Handle dislike action
-                            recordLikeDislike(postParts[1], "dislike");
+                            recordLikeDislikePost(postParts[1], "dislike");
                         });
                         likeDislikePanel.add(dislikeButton);
 
