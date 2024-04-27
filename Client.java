@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -50,6 +50,7 @@ public class Client implements ClientInterface {
                 username = testClient.signIn(scan, reader, writer);
             } else if (result == JOptionPane.NO_OPTION) {
                 inOrUp = "up";
+                System.out.println("hello");
                 writer.write(inOrUp);
                 writer.println();
                 writer.flush();
@@ -172,6 +173,7 @@ public class Client implements ClientInterface {
                 writer.flush();
                 String passwordPrompt = reader.readLine();
                 if (passwordPrompt.equals("Sorry, that username is already taken.")) {
+                    usernameResponse = null;
                     JOptionPane.showMessageDialog(null,
                             passwordPrompt, "HELLo",
                             JOptionPane.ERROR_MESSAGE);
@@ -202,7 +204,7 @@ public class Client implements ClientInterface {
                     writer.println();
                     writer.flush();
                     String accountCreation = reader.readLine();
-                    if (!accountCreation.contains("Account creation successful.")) {
+                    if (!accountCreation.contains("Account created.")) {
                         JOptionPane.showMessageDialog(null,
                                 accountCreation, "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
