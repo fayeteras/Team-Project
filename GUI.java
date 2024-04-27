@@ -328,10 +328,40 @@ public class GUI extends JPanel {
         JScrollPane scrollPane = new JScrollPane(postsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        JButton postButton = new JButton("Create Post");
-        postButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
-        postButton.setForeground(Color.BLUE);
-        postsPanel.add(postButton, "South");
+        JButton addPostButton = new JButton("Create Post");
+        addPostButton.addActionListener(e -> {
+            // Create a dialog to add a comment
+            JDialog addPostDialog = new JDialog(homeScreen, "Add Post", true);
+            addPostDialog.setLayout(new BorderLayout());
+
+            // Text field to enter comment
+            JTextField PostField = new JTextField(20);
+            JButton submitButton = new JButton("Submit");
+            submitButton.addActionListener(submitEv -> {
+                // Get the text from the comment field and add it to the post
+                String postText = PostField.getText();
+                boolean commentAdded = createPost(PostField.getText(), user.getUsername());
+                if (commentAdded) {
+                    JOptionPane.showMessageDialog(null, "Post added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to add Post.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                addPostDialog.dispose();
+            });
+
+            // Add components to the dialog
+            JPanel addPostPanel = new JPanel();
+            addPostPanel.add(new JLabel("Enter your post: "));
+            addPostPanel.add(PostField);
+            addPostPanel.add(submitButton);
+            addPostDialog.add(addPostPanel, BorderLayout.CENTER);
+
+            // Set dialog properties
+            addPostDialog.setSize(300, 150);
+            addPostDialog.setLocationRelativeTo(null);
+            addPostDialog.setVisible(true);
+        });
+        postsPanel.add(addPostButton);
 
         postButton.addActionListener( a -> {
             String postText = JOptionPane.showInputDialog(null,
@@ -456,5 +486,23 @@ public class GUI extends JPanel {
                     JOptionPane.ERROR_MESSAGE);
         }
 
+    }
+
+    public synchronized void recordLikeDislikePost(String postText, String action) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikePosts.txt", true))) {
+            writer.write(postText + "," + action + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized boolean createPost(String postText, String username) {
+        try (FileWriter fileWriter = new FileWriter("userPosts.txt", true)) {
+            fileWriter.write(username + "|" + postText + "\n");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
