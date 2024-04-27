@@ -348,7 +348,7 @@ public class GUI extends JPanel {
         return scrollPane;
     }
 
-    public JPanel viewProfilePanel(User viewUser) { //(Tyler) The user we are viewing (not finished/tested)
+    public JScrollPane viewProfilePanel(User viewUser) { //(Tyler) The user we are viewing (not finished/tested)
         JPanel profilePanel = new JPanel(new BorderLayout());
         profilePanel.setPreferredSize(new Dimension(600, 150));
         profilePanel.setBorder(BorderFactory.createCompoundBorder(
@@ -416,8 +416,9 @@ public class GUI extends JPanel {
 
         // Set maximum size of the post panel
         profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
-
-        return profilePanel;
+        JScrollPane scrollPane = new JScrollPane(profilePanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        return scrollPane;
     }
     //(Sean) userSearch GUI implementation
     ActionListener searchListener = new ActionListener() {
