@@ -30,41 +30,6 @@ public class GUI extends JPanel {
     JScrollPane postsPanel;
     JScrollPane panel;
 
-
-
-    // Main method
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // Create test posts and add them to an array
-            Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
-            Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
-            Post[] testPosts = new Post[] { testPost, testPost2 };
-
-            // Perform actions on the test posts
-            testPost.like("james");
-            testPost.dislike("lucas");
-            testPost.like("Karina");
-
-            // Create an instance of the GUI class
-            GUI gui = new GUI("testUser", new Client());
-
-            // Create a JScrollPane with all test posts using the GUI instance
-            JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
-
-            // Assign the postsPanel to the panel property of the GUI instance
-            gui.panel = postsPanel;
-
-            // Add the panel to the homeScreen frame
-            gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
-
-            // Set the default close operation
-            gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            // Make the homeScreen frame visible
-            gui.homeScreen.setVisible(true);
-        });
-    }
-
     // Constructor for GUI
     public GUI(String username, Client client) {
         this.user = new User(username);
@@ -252,7 +217,7 @@ public class GUI extends JPanel {
         }
     }
 
-    public JPanel UserPostPanel(String username, String text, String likes, String dislikes) {
+    public JPanel UserPostPanel(Post post) {
         JPanel postPanel = new JPanel(new BorderLayout());
         postPanel.setPreferredSize(new Dimension(600, 150));
         postPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -261,13 +226,13 @@ public class GUI extends JPanel {
         ));
 
         // Username label
-        JLabel usernameLabel = new JLabel(" " + username);
+        JLabel usernameLabel = new JLabel(" " + post.getUsername());
         usernameLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
         usernameLabel.setForeground(Color.RED);
         postPanel.add(usernameLabel, BorderLayout.NORTH);
 
         // Post text area
-        JLabel postText = new JLabel(text);
+        JLabel postText = new JLabel(post.getText());
         postText.setVerticalAlignment(JLabel.TOP);
         postText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
         JScrollPane postScrollPane = new JScrollPane(postText);
@@ -278,10 +243,10 @@ public class GUI extends JPanel {
 
         // Likes and dislikes buttons panel
         JPanel likesDislikesPanel = new JPanel(new GridLayout(1, 4));
-        JLabel likesLabel = new JLabel(String.format("Likes: " + likes));
+        JLabel likesLabel = new JLabel(String.format("Likes: " + post.getLikesCount()));
         JButton likeButton = new JButton("+");
         likesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
-        JLabel dislikesLabel = new JLabel(String.format("Dislikes: " + dislikes));
+        JLabel dislikesLabel = new JLabel(String.format("Dislikes: " + post.getDislikesCount()));
         JButton dislikeButton = new JButton("-");
         dislikesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         likesDislikesPanel.add(likesLabel);
@@ -333,7 +298,7 @@ public class GUI extends JPanel {
         commentsAddEdit.add(addCommentButton);
 
         // Edit button (visible only to the owner of the post)
-        if (post.getUsername().equals(user)) {
+        if (post.getUsername().equals(user.getUsername())) {
             JButton editButton = new JButton("Edit");
             commentsAddEdit.add(editButton);
         }
@@ -348,13 +313,14 @@ public class GUI extends JPanel {
 
 
     // All Posts Panel method
-    public JScrollPane AllPostsPanel(Post[] allPosts) {
+    public JScrollPane AllPostsPanel(ArrayList<String[]> allPosts) {
         JPanel postsPanel = new JPanel();
         postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
 
         // Get each individual post and add it to the posts panel
-        for (int i = 0; i < allPosts.length; i++) {
-            JPanel thisPost = UserPostPanel(allPosts[i]);
+        for (int i = 0; i < allPosts.size(); i++) {
+            String[] currentPost = allPosts.get(i);
+            JPanel thisPost = UserPostPanel(new Post(currentPost[0], currentPost[1]));
             postsPanel.add(thisPost);
         }
 

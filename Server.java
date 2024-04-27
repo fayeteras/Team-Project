@@ -531,7 +531,7 @@ public class Server implements Runnable, ServerInterface {
         // Arraylist to hold all posts of every friend
         ArrayList<Post> allPosts = new ArrayList<>();
         for (User friend : friends) {
-            ArrayList<Post> userPosts = friend.getPostsList(); // Need a way to fetch each post -- not the string but the object
+            ArrayList<Post> userPosts = friend.getPostsList();
             allPosts.addAll(userPosts);
         }
 
@@ -554,9 +554,7 @@ public class Server implements Runnable, ServerInterface {
 
     private void sendPosts(Database db, BufferedReader reader, PrintWriter writer, Post post) {
         writer.println(post.getUsername());
-        writer.println(post.getText());
-        writer.println(post.getLikesCount());
-        writer.println(post.getDislikesCount());
+        writer.println(post.getPostID());
     }
 
     private int compareTimestamps(int[] timestamp1, int[] timestamp2) {

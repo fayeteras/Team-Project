@@ -27,7 +27,7 @@ public interface ClientInterface {
     public boolean unblockUser(Scanner scan, BufferedReader reader, PrintWriter writer);
 
     //Feed Methods
-    public boolean getFeed(Scanner scan, BufferedReader reader, PrintWriter writer);
+    public ArrayList<String[]> getFeed(Scanner scan, BufferedReader reader, PrintWriter writer);
 
     //Post Methods - Post Class
     public boolean createPost(String username, String text);

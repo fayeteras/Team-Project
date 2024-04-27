@@ -56,11 +56,9 @@ public class Client implements ClientInterface {
                 username = testClient.createUser(scan, reader, writer);
             }
             if (username != null) {
-                String finalUsername = username;
-                String finalUsername1 = username;
                 SwingUtilities.invokeLater(() -> {
                 // Create an instance of the GUI class
-                    GUI gui = new GUI();
+                    GUI gui = new GUI(username, testClient);
         
                     // Create a JScrollPane with all test posts using the GUI instance
                     JScrollPane postsPanel = gui.AllPostsPanel(testClient.getFeed(scan, reader, writer));
@@ -513,9 +511,7 @@ public ArrayList<String[]> getFeed(Scanner scan, BufferedReader reader, PrintWri
         String[] postInfo = new String[4];
         try {
             postInfo[0] = reader.readLine(); // Username
-            postInfo[1] = reader.readLine(); // Text
-            postInfo[2] = reader.readLine(); // Likes
-            postInfo[3] = reader.readLine(); // Dislikes
+            postInfo[1] = reader.readLine(); // PostID
             return postInfo;
         } catch (IOException e) {
             e.printStackTrace();
