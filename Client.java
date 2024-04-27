@@ -50,7 +50,6 @@ public class Client implements ClientInterface {
                 username = testClient.signIn(scan, reader, writer);
             } else if (result == JOptionPane.NO_OPTION) {
                 inOrUp = "up";
-                System.out.println("hello");
                 writer.write(inOrUp);
                 writer.println();
                 writer.flush();
