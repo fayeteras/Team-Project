@@ -56,32 +56,33 @@ public class Client implements ClientInterface {
                 username = testClient.createUser(scan, reader, writer);
             }
             if (username != null) {
+                String finalUsername = username;
                 SwingUtilities.invokeLater(() -> {
-                // Create an instance of the GUI class
-                    GUI gui = new GUI(username, testClient);
-        
+                    // Create an instance of the GUI class
+                    GUI gui = new GUI(finalUsername, testClient);
+
                     // Create a JScrollPane with all test posts using the GUI instance
                     JScrollPane postsPanel = gui.AllPostsPanel(testClient.getFeed(scan, reader, writer));
-        
+
                     // Assign the postsPanel to the panel property of the GUI instance
                     gui.panel = postsPanel;
-        
+
                     // Add the panel to the homeScreen frame
                     gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
-        
+
                     // Set the default close operation
                     gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
                     // Make the homeScreen frame visible
                     gui.homeScreen.setVisible(true);
                     gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
-    
+
                     // Set the default close operation
                     gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    
+
                     // Make the homeScreen frame visible
                     gui.homeScreen.setVisible(true);
-                    });
+                });
 
                 /*while (true) {
                     String commandResponse = null;
@@ -472,7 +473,7 @@ public class Client implements ClientInterface {
 
 
 
-public ArrayList<String[]> getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
+    public ArrayList<String[]> getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
         ArrayList<String[]> allPosts = new ArrayList<>();
 
         try {
@@ -481,7 +482,7 @@ public ArrayList<String[]> getFeed(Scanner scan, BufferedReader reader, PrintWri
                 // Output the response directly if it's "get feed"
                 writer.println(response);
                 writer.flush();
-            
+
             } else {
                 // Parse the number of posts and handle accordingly
                 int numOfPosts = Integer.parseInt(response);
@@ -494,7 +495,7 @@ public ArrayList<String[]> getFeed(Scanner scan, BufferedReader reader, PrintWri
                 // Output the response
                 writer.println(response);
                 writer.flush();
-                
+
                 // Output all posts if necessary (not included in this code snippet
             }
         } catch (IOException e) {
