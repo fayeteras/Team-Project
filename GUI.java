@@ -348,7 +348,7 @@ public class GUI extends JPanel {
         return scrollPane;
     }
 
-    public JScrollPane viewProfilePanel(User viewUser) { //(Tyler) The user we are viewing (not finished/tested)
+    public JFrame viewProfilePanel(User viewUser) { //(Tyler) The user we are viewing (not finished/tested)
         JPanel profilePanel = new JPanel(new BorderLayout());
         profilePanel.setPreferredSize(new Dimension(600, 150));
         profilePanel.setBorder(BorderFactory.createCompoundBorder(
@@ -392,9 +392,9 @@ public class GUI extends JPanel {
         bottomPanel.add(blockPanel, BorderLayout.WEST);
 
         // View friends and add friend buttons
-        JPanel friendsPanel = new JPanel(new GridLayout(1, 2));
-        JButton viewFriendsButton = new JButton("Friends");
-        friendsPanel.add(viewFriendsButton);
+        JPanel friendsPanel = new JPanel(new GridLayout(1, 1));
+        // JButton viewFriendsButton = new JButton("Friends");
+        // friendsPanel.add(viewFriendsButton);
 
         if (user.isFriend(viewUser.getUsername())) { 
             JButton addFriendButton = new JButton("Remove Friend");
@@ -418,7 +418,9 @@ public class GUI extends JPanel {
         profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
         JScrollPane scrollPane = new JScrollPane(profilePanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        return scrollPane;
+        JFrame viewFrame = new JFrame();
+        viewFrame.add(scrollPane, BorderLayout.CENTER);
+        return viewFrame;
     }
     //(Sean) userSearch GUI implementation
     ActionListener searchListener = new ActionListener() {
@@ -437,7 +439,10 @@ public class GUI extends JPanel {
         if (db.userExists(tempString)) {
             User searchedUser = new User(tempString);
             //Waiting on viewProfile to be created.
-            panel = viewProfilePanel(searchedUser);
+
+            //homeScreen.setVisible(false);
+            viewProfilePanel(searchedUser).setVisible(true);
+            System.out.println("working");
         } else {
             JOptionPane.showMessageDialog(null,
                     "This username is not in our records!", "HELLo",
