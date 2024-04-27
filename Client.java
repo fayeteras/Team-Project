@@ -59,36 +59,31 @@ public class Client implements ClientInterface {
                 String finalUsername = username;
                 String finalUsername1 = username;
                 SwingUtilities.invokeLater(() -> {
-                    System.out.println("Here 1");
-                    // Create test posts and add them to an array
-                    Post testPost = new Post("John Doe", "This is a test post. It is testing post. This is the text of the test post.", "TestPost");
-                    Post testPost2 = new Post("Luke Doe", "This is a test. It is testing post. This is the text of the test post.", "TestPost2");
-                    Post[] testPosts = new Post[]{testPost, testPost2};
-
-                    // Perform actions on the test posts
-                    testPost.like("james");
-                    testPost.dislike("lucas");
-                    testPost.like("Karina");
-
-                    // Create an instance of the GUI class
-                    GUI gui = new GUI(finalUsername1);
-
+                // Create an instance of the GUI class
+                    GUI gui = new GUI();
+        
                     // Create a JScrollPane with all test posts using the GUI instance
-                    JScrollPane postsPanel = gui.AllPostsPanel(testPosts);
-
+                    JScrollPane postsPanel = gui.AllPostsPanel(testClient.getFeed(scan, reader, writer));
+        
                     // Assign the postsPanel to the panel property of the GUI instance
                     gui.panel = postsPanel;
-
+        
                     // Add the panel to the homeScreen frame
                     gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
-
+        
                     // Set the default close operation
                     gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        
                     // Make the homeScreen frame visible
                     gui.homeScreen.setVisible(true);
-                });
-                System.out.println("Here 2");
+                    gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
+    
+                    // Set the default close operation
+                    gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    
+                    // Make the homeScreen frame visible
+                    gui.homeScreen.setVisible(true);
+                    });
 
                 /*while (true) {
                     String commandResponse = null;
@@ -479,18 +474,19 @@ public class Client implements ClientInterface {
 
 
 
-    public boolean getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
+public ArrayList<String[]> getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        ArrayList<String[]> allPosts = new ArrayList<>();
+
         try {
             String response = reader.readLine();
             if (response.equals("get feed")) {
                 // Output the response directly if it's "get feed"
                 writer.println(response);
                 writer.flush();
-                return true;
+            
             } else {
                 // Parse the number of posts and handle accordingly
                 int numOfPosts = Integer.parseInt(response);
-                ArrayList<String[]> allPosts = new ArrayList<>();
 
                 // Read information for each post and add an array of this info to allPosts
                 for (int p = 0; p < numOfPosts; p++) {
@@ -500,19 +496,17 @@ public class Client implements ClientInterface {
                 // Output the response
                 writer.println(response);
                 writer.flush();
-
-                // Output all posts if necessary (not included in this code snippet)
+                
+                // Output all posts if necessary (not included in this code snippet
             }
         } catch (IOException e) {
             System.out.println("Failed to retrieve feed");
             e.printStackTrace();
-            return false;
         } catch (NumberFormatException e) {
             System.out.println("Invalid response format: " + e.getMessage());
             e.printStackTrace();
-            return false;
         }
-        return true;
+        return allPosts;
     }
 
     private String[] readPost (Scanner scan, BufferedReader reader, PrintWriter writer) {
