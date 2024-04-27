@@ -363,7 +363,7 @@ public class GUI extends JPanel {
         });
         postsPanel.add(addPostButton);
 
-        postButton.addActionListener( a -> {
+        addPostButton.addActionListener( a -> {
             String postText = JOptionPane.showInputDialog(null,
                     "Enter post text", "Social Media Platform",
                     JOptionPane.QUESTION_MESSAGE);
