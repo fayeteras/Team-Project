@@ -16,7 +16,7 @@ import java.io.*;
  * @version Fri April 26th, 2024
  */
 
-public class GUI extends JPanel {
+public class GUI extends JPanel implements GUIInterface  {
     User user;
     Client client;
 
