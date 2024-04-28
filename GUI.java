@@ -503,9 +503,13 @@ public class GUI extends JPanel {
         JPanel mainPanel = new JPanel(new GridLayout(0, 1));
         JScrollPane scrollPane = new JScrollPane(profilePanel);
         JScrollPane postScrollPane = new JScrollPane();
-        for (int i = 0; i < user.getPostsList().size(); i++) {
-            postScrollPane.add(UserPostPanel(user.getPostsList().get(i)));
+        for (int i = 0; i < viewUser.getPostsList().size(); i++) {
+            JLabel postText = new JLabel(viewUser.getPostsList().get(i).getText());
+            postText.setVerticalAlignment(JLabel.TOP);
+            postText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+            postScrollPane.add(postText);
         }
+        
 
         mainPanel.add(scrollPane);
         mainPanel.add(postScrollPane);
@@ -513,6 +517,7 @@ public class GUI extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         JFrame viewFrame = new JFrame();
         viewFrame.add(mainPanel, BorderLayout.CENTER);
+        viewFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         return viewFrame;
     }
     //(Sean) userSearch GUI implementation
