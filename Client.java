@@ -62,7 +62,7 @@ public class Client implements ClientInterface {
                     GUI gui = new GUI(finalUsername, testClient);
 
                     // Create a JScrollPane with all test posts using the GUI instance
-                    JScrollPane postsPanel = gui.AllPostsPanel(testClient.getFeed(scan, reader, writer));
+                    JScrollPane postsPanel = gui.AllPostsPanel(testClient.getFeed(scan, reader, writer) , new Post());
 
                     // Assign the postsPanel to the panel property of the GUI instance
                     gui.panel = postsPanel;
