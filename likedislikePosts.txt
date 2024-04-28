@@ -1,0 +1,5 @@
+// format here
+post, like/dislike
+// examples here
+that is a cool post , like
+i disagree, dislike
