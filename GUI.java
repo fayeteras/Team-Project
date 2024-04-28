@@ -273,7 +273,7 @@ public class GUI extends JPanel {
         }
     }
 
-    public synchronized boolean deleteComment(String commentText, String currentUser) {
+public synchronized boolean deleteComment(String commentText, String currentUser) {
         try {
             File inputFile = new File("userComments.txt");
             File tempFile = new File("temp.txt");
@@ -291,18 +291,16 @@ public class GUI extends JPanel {
                     String postID = parts[1].trim();
                     String text = parts[2].trim();
                     // Check if the current line contains the specified comment text
-                    if (text.equals(commentText)) {
-                        continue;
+                    if (!text.equals(commentText)) {
+                        // Write the current line to the temp file if it's not the one to be deleted
+                        writer.write(currentLine + System.getProperty("line.separator"));
                     }
                 }
             }
-            // Write the current line to the temp file
-            writer.write(currentLine + System.getProperty("line.separator"));
 
             // Close readers and writers
             writer.close();
             reader.close();
-
 
             // Delete the original file and rename the temp file to the original file name
             if (inputFile.delete()) {
