@@ -1,27 +1,25 @@
-1. INSTRUCTIONS ON HOW TO COMPILE AND RUN OUR PROJECT
+**1. INSTRUCTIONS ON HOW TO COMPILE AND RUN OUR PROJECT**
 
 In order to do anything with our code, you must download it all first. In the "<> Code" section of our project, please click the dropdown arrow on the green "<> Code" button. Click on the button titled "Download ZIP" to download all of our project files to place into an editor of your choice. If you are using Vocareum, you will need to enter the command "javac {java class here}" for every one of the java files in our project to compile. Also, multiple java files in our project use JUnit testing, so be sure to add the current JUnit library to the classpath if not already done so. 
 
-At Phase 2, our project is not yet designed to run in its fullest, as GUI will be added in on Phase 3. As such, the current way to run our project is to utilize our basic terminal-based server-to-client communication and to run each of our five test cases files to understand our intended functionality.
+Server must be run first, and once the server is up and running the Client class can be run. The client class will automatically launch the GUI and enable account creation and sign in. All of our test cases may also be run to ensure functionality of each action.
 
-As of Phase 2, there are seventeen java classes, five of which are for test cases and six of which are interfaces that are implemented by the other java classes. 
+There are nineteen java classes, six of which are for test cases and seven of which are interfaces that are implemented by the other java classes. 
 
 
 
-2. MEMBER SUBMISSION TIMESTAMPS
+**2. MEMBER SUBMISSION TIMESTAMPS**
 
 April 1st, 2024 - Phase 1 Vocareum workspace submitted - Faye Teras
 April 15th, 2024 - Phase 2 Vocareum workspace submitted - Sean VandenBussche
 
-
-
-3. CLASS SUMMARY
+**3. CLASS SUMMARY**
 
 As of Phase 2, there are seventeen java classes, five of which are for test cases and six of which are interfaces that are implemented by the other java classes. 
 
-PHASE 1 CLASSES
+**PHASE 1 CLASSES**
 
-Comment.java
+_Comment.java_
 
 The Comment class contains methods to initialize and use a Comment object. A Comment is a child of Post, and is for the most part the same as a post. The only difference is that a comment has an additional field to store the parent post for that comment.
 
@@ -32,41 +30,41 @@ and the likes and dislikes files are the same but with "_likes" and "_dislikes" 
 Comments can be nested, so a comment's file name could hypothetically be something like "username_1_5_3.txt". 
 
 
-CommentInterface.java
+_CommentInterface.java_
 
 This is an interface used to call methods in the Comment class. It contains a method, getParent(), that is implemented by the Comment class.
 
 
-CommentTest.java
+_CommentTest.java_
 
 This class uses the JUnit library to ensure that the multiple Comment constructors and getParent() method function as intended. One constructor uses text input to create a comment, so the test file ensures that the input used in the constructor is unchanged. The other constructor reads text input from a file for the contents, so the test file ensure that the file contents used match the expected output. Lastly, Since Comment extends Post, the CommentTest class also makes sure that certain functions like like(username) and dislike(username) still result in the proper modifications for a Comment object as they do for a Post Object.
 
 
-Database.java
+_Database.java_
 
 This class uses a file, allUsers.txt, containing a list of all users of our social media platform and their passwords. When an account is created it can be added to the allUsers file through the method addUser, which takes a username and password as parameters to write into the allUsers text file. This class can also tell whether or not a user already exists in the allUsers file. This is done through the userExists() method, which uses the username as a parameter to return a boolean result for whether the username exists in the allUsers file or not. For password protected logins on our platforms, the method authenticateUser() is used to match the username and password parameters with a username and password in the allUsers file, returning true if there is a match and false if there is not. Lastly, this class has the writeFile() method, which takes in an ArrayList of String data and writes it to a user specified file name.
 
 
-DatabaseInterface.java
+_DatabaseInterface.java_
 
 This is an interface used to call methods in the Database class. 
 
 There are three methods specified, including boolean addUser(String username, String password), boolean userExists(String username), and boolean authenticateUser(String username, String password).
 
 
-DatabaseTest.java
+_DatabaseTest.java_
 
 This class uses the JUnit library to ensure that the methods specifically in Database.java function as intended. 
 
 The first test makes sure that addUser() adds the parameters into the file, asserting that the boolean method returns true. The second test is for userExists(), adding a test user to the allUsers file using addUser() and asserting that that user does exist in the file using userExists() and asserting that a fake user does not exist using userExists(). The third test ensures proper functionality of the authenticateUser method. It does this by first adding a test user to the allUsers file using addUser(). Then it runs two assertions: the first asserting true for a test user with a matching username and password, and asserting false for a matching username and a non-matching password.
 
 
-Post.java
+_Post.java_
 
 This class can make a Post object. Each Post object modifies three files, a file containing the text of the post, a file containing all of the users who have liked the post, and a file containing all of the users who have disliked the post. Each post has its own filename, which will be given to it by the server, and that filename is of the format username_postNumber.txt. The username is the user who has posted it, and the post number is the number post. The text of the post is stored in username_postNumber.txt, the likes are stored in username_postNumber_likes.txt, and the dislikes are stored in username_postNumber_dislikes.txt. The post contains methods to retrieve the post, edit the post, like and dislike, hide the post, and to get who has liked and disliked the post. 
 
 
-PostInterface.java
+_PostInterface.java_
 
 This is an interface used to call methods in the Post class. 
 
@@ -75,19 +73,19 @@ It contains 8 getters for the fields used in the Post class, including String ge
 There are also 7 methods to be implemented in the Post class, including boolean like(String username), boolean dislike(String username), String getText(), boolean deletePost(), boolean hide(String username), int[] getCurrentTime(), and void editPost(String newText).
 
 
-PostTest.java
+_PostTest.java_
 
 There are 8 tests in this class that use the JUnit library to assert that the Post.java class is functioning how it should. 
 
 The first test, testCreateNewPost(), asserts that a Post Object is successfully created. The second test, testEditPost(), edits the text field of a Post Object using editPost() and asserts that the text field of the Post Object is no longer it's String value prior to editPost(). The third test, testLikes(), adds a test user to the like list of the Post Object and asserts that the user has been properly added. The fourth test, testDislikes(), adds a test user to the dislike list of the Post Object and asserts that the user has been properly added. The fifth test, testDeletePost(), starts by creating a test Post Object. Then, it runs the deletePost() command and asserts that the Post Object no longer exists. The sixth test, testConstructorWithFile(), creates a Post Object that uses a file as a parameter. This test then uses the getText() method from Post.java and asserts that it does not return null. The seventh test, testGetText(), Functions much like the previous test, except instead of asserting that the getText() method does not return null, it tests if the text contents of the Post Object match the parameter value that was used upon object creation. The eighth test, testHidePost(), starts by creating a test Post Object and using the hide() method to add the Post to the hiddenFile. Then, the test asserts that the hiddenFile contains the hidden Post Object.
 
 
-User.java
+_User.java_
 
 The primary purpose of User is to keep track of friends and blocked users. To do so, each User Object has an ArrayList of friend Users and blocked Users along with a file for friend Users and blocked Users to read from and write to using readFile() and writeFile() methods. This class contains methods to create files, specifically files for blocked Users and friend Users, using the username of the current User for the beginning of each friend and blocked .txt file. Also, there are two methods to add and unadd User, appending the friend ArrayList and writing to the User's friend file. Similarly,  this class has two methods to block and unblock Users, appending the block ArrayList and writing to the User's blocked file.
 
 
-UserInterface.java
+_UserInterface.java_
 
 This is our interface for our User class. 
 
@@ -96,7 +94,7 @@ It contains 5 getters for the User.java fields, including String getUsername(), 
 There are also 5 methods to be implemented in the User class, including boolean addFriend(String username), boolean removeFriend(String username), boolean blockUser(String username), boolean unblockUser(String username), and boolean writeFile(File filename, ArrayList<String> array).
 
 
-UserTest.java
+_UserTest.java_
 
 This is our testing .java file to ensure that all of the code within User.java is functioning as we expect. There are six tests within this file, each of which will be briefly described here. 
 
@@ -109,7 +107,7 @@ The third test, testAddFriend(), creates a User Object and adds a friend to it t
 All of the tests return a success message to the terminal if the test assertions are all correct.
 
 
-ClientInterface.java
+_ClientInterface.java_
 
 This interface is for Client.java.
 
@@ -124,7 +122,7 @@ There are also six methods that will be used for the User to interact with Posts
 The final method is used to gather the entire social media feed for the User currently signed in. Its name is boolean getFeed().
 
 
-ServerInterface.java
+_ServerInterface.java_
 
 This interface is for Server.java.
 
@@ -138,17 +136,22 @@ There are also five methods that will be used for the User to interact with Post
 
 The final method is used to gather the entire social media feed for the User currently signed in. Its name is boolean getFeed().
 
-PHASE 2 CLASSES
 
-Client.java
+**PHASE 2 & 3 CLASSES**
 
-This is the class for the client that connects to the social media server. The client can issue several input commands (will be turned into GUI actions in Phase 3) to be sent to the Server class and processed. The client can request to friend and block Users, like and dislike posts and comments, and create posts and comments. These are a few of the many options availible for the current connected user to do.
+_Client.java_
 
-Server.java
+This is the class for the client that connects to the social media server. The client can respond to several commands from the GUI to be sent to the Server class and processed. The client can communicate requests to friend and block Users, like and dislike posts and comments, and create posts and comments. These are a few of the many options availible for the current connected user to do.
+
+_Server.java_
 
 This is the class for the Server that permanently runs to accept the multiple clients that will interact with the social media platform. This class uses the methods from the previous classes (Database, User, Post, Comment) to help the user interact with the platform. This server houses methods to create Users and request they sign in, along with calculating the Users, Posts, and Comments in the Database to respond to the many prompts possible from Client.
 
-ClientTest.java
+_GUI.java_
+
+The GUI class serves as the user interface for the platform, enabling users to interact with posts and other users on the platform. It provides a home screen with a top banner featuring a search bar, a home button, and a username panel, and it contains methods for viewing and interacting with posts, such as adding comments, liking, and disliking. The class also includes methods for handling user interaction that communicates with Client, such as creating and deleting posts and comments, and managing user profiles.
+
+_ClientTest.java_
 
 To make sure our client-to-server interaction is working as intended, this test class will test several commands to ensure that the many possible inputs from the User can be handled by our code.
 
