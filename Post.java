@@ -44,7 +44,7 @@ public class Post implements PostInterface {
             totalPosts = Integer.parseInt(bfr.readLine());
             bfr.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            totalPosts = 0;
         }
     }
 
@@ -89,6 +89,7 @@ public class Post implements PostInterface {
     public Post(String username, int postID) {
         this.username = username;
         this.postID = postID;
+        totalPosts++;
         readPostFromFile();
 
         new User(username).addPost(Integer.toString(postNumber));
@@ -200,20 +201,6 @@ public class Post implements PostInterface {
     }
     public boolean isEdited() {
         return edited;
-    }
-
-    public boolean isLiked(String username) {
-        if (likesList.contains(username)) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isDisliked(String username) {
-        if (dislikesList.contains(username)) {
-            return true;
-        }
-        return false;
     }
 
     public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
