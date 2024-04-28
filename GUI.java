@@ -87,75 +87,6 @@ public class GUI extends JPanel {
     }
 
     // Individual Post Panel method
-    public synchronized void viewComments(Post post, User currentUser) {
-        try (BufferedReader fileReader = new BufferedReader(new FileReader("userComments.txt"))) {
-            String line;
-            JPanel commentsPanel = new JPanel();
-            commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
-            while ((line = fileReader.readLine()) != null) {
-                String[] commentParts = line.split("\\|");
-                if (commentParts.length == 3) { // Check if the comment has the correct number of parts
-                    String postID = commentParts[1];
-                    if (postID.equals(String.valueOf(post.getPostID()))) {
-                        // Create a panel to hold the comment, username, like button, dislike button, and delete button
-                        JPanel commentEntry = new JPanel(new BorderLayout());
-                        commentEntry.setPreferredSize(new Dimension(600, 70));
-
-                        // Create a JLabel to display the comment content and username
-                        JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
-                        commentEntry.add(commentLabel, BorderLayout.CENTER);
-
-                        // Create a panel to hold the like and dislike buttons
-                        JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-                        // Create like button for the comment
-                        JButton likeButton = new JButton("Like");
-                        likeButton.addActionListener(e -> {
-                            // Handle like action
-                            recordLikeDislike(commentParts[2], "like");
-                        });
-                        likeDislikePanel.add(likeButton);
-
-                        // Create dislike button for the comment
-                        JButton dislikeButton = new JButton("Dislike");
-                        dislikeButton.addActionListener(e -> {
-                            // Handle dislike action
-                            recordLikeDislike(commentParts[2], "dislike");
-                        });
-                        likeDislikePanel.add(dislikeButton);
-
-                        // Check if the current user is the owner of the post or the comment author
-                        if (commentParts[0].equals(currentUser.getUsername()) || post.getUsername().equals(currentUser.getUsername())) {
-                            // Create delete button for the comment
-                            JButton deleteButton = new JButton("Delete");
-                            deleteButton.addActionListener(e -> {
-                                // Handle delete action
-                                if (deleteComment(commentParts[2], commentParts[0])) {
-                                    // Remove the comment entry from the panel if deletion is successful
-                                    commentsPanel.remove(commentEntry);
-                                    commentsPanel.revalidate();
-                                    commentsPanel.repaint();
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
-                                }
-                            });
-                            likeDislikePanel.add(deleteButton);
-                        }
-
-                        commentEntry.add(likeDislikePanel, BorderLayout.SOUTH);
-
-                        // Add the comment entry panel to the comments panel
-                        commentsPanel.add(commentEntry);
-                    }
-                }
-            }
-            JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
-            JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public synchronized void viewPosts(User currentUser, Post post) {
         try (BufferedReader fileReader = new BufferedReader(new FileReader("userPosts.txt"))) {
             String line;
@@ -163,19 +94,19 @@ public class GUI extends JPanel {
             postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
             while ((line = fileReader.readLine()) != null) {
                 String[] postParts = line.split("\\|");
-                if (postParts.length == 3) { // Check if the comment has the correct number of parts
-                    // Create a panel to hold the comment, username, like button, dislike button, and delete button
+                if (postParts.length == 3) { // Check if the post has the correct number of parts
+                    // Create a panel to hold the post content
                     JPanel postEntry = new JPanel(new BorderLayout());
                     postEntry.setPreferredSize(new Dimension(600, 70));
 
-                    // Create a JLabel to display the comment content and username
-                    JLabel commentLabel = new JLabel(postParts[0] + ": " + postParts[2]);
-                    postEntry.add(commentLabel, BorderLayout.CENTER);
+                    // Create a JLabel to display the post content
+                    JLabel postLabel = new JLabel(postParts[0] + ": " + postParts[2]);
+                    postEntry.add(postLabel, BorderLayout.CENTER);
 
                     // Create a panel to hold the like and dislike buttons
                     JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-                    // Create like button for the comment
+                    // Create like button for the post
                     JButton likeButton = new JButton("Like");
                     likeButton.addActionListener(e -> {
                         // Handle like action
@@ -183,7 +114,7 @@ public class GUI extends JPanel {
                     });
                     likeDislikePanel.add(likeButton);
 
-                    // Create dislike button for the comment
+                    // Create dislike button for the post
                     JButton dislikeButton = new JButton("Dislike");
                     dislikeButton.addActionListener(e -> {
                         // Handle dislike action
@@ -193,7 +124,73 @@ public class GUI extends JPanel {
 
                     JPanel commentsAddEdit = new JPanel(new GridLayout(1, 3));
                     JButton commentButton = new JButton("View Comments");
-                    commentButton.addActionListener(e -> viewComments(new Post(user.getUsername(), postParts[1]), user));
+                    commentButton.addActionListener(e -> {
+                        // View comments for the current post
+                        try (BufferedReader commentReader = new BufferedReader(new FileReader("userComments.txt"))) {
+                            String commentLine;
+                            JPanel commentsPanel = new JPanel();
+                            commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
+                            while ((commentLine = commentReader.readLine()) != null) {
+                                String[] commentParts = commentLine.split("\\|");
+                                if (commentParts.length == 3 && commentParts[1].equals(String.valueOf(post.getPostID()))) {
+                                    // Create a panel to hold the comment content
+                                    JPanel commentEntry = new JPanel(new BorderLayout());
+                                    commentEntry.setPreferredSize(new Dimension(600, 70));
+
+                                    // Create a JLabel to display the comment content
+                                    JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
+                                    commentEntry.add(commentLabel, BorderLayout.CENTER);
+
+                                    // Create a panel to hold like and dislike buttons
+                                    JPanel commentLikeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+                                    // Create like button for the comment
+                                    JButton commentLikeButton = new JButton("Like");
+                                    commentLikeButton.addActionListener(ev -> {
+                                        // Handle like action for comment
+                                        recordLikeDislike(commentParts[2], "like");
+                                    });
+                                    commentLikeDislikePanel.add(commentLikeButton);
+
+                                    // Create dislike button for the comment
+                                    JButton commentDislikeButton = new JButton("Dislike");
+                                    commentDislikeButton.addActionListener(ev -> {
+                                        // Handle dislike action for comment
+                                        recordLikeDislike(commentParts[2], "dislike");
+                                    });
+                                    commentLikeDislikePanel.add(commentDislikeButton);
+
+                                    // Check if the current user is the owner of the post or the comment author
+                                    if (commentParts[0].equals(currentUser.getUsername()) || post.getUsername().equals(currentUser.getUsername())) {
+                                        // Create delete button for the comment
+                                        JButton deleteButton = new JButton("Delete");
+                                        deleteButton.addActionListener(ev -> {
+                                            // Handle delete action for comment
+                                            if (deleteComment(commentParts[2], commentParts[0])) {
+                                                // Remove the comment entry from the panel if deletion is successful
+                                                commentsPanel.remove(commentEntry);
+                                                commentsPanel.revalidate();
+                                                commentsPanel.repaint();
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
+                                            }
+                                        });
+                                        commentLikeDislikePanel.add(deleteButton);
+                                    }
+
+                                    commentEntry.add(commentLikeDislikePanel, BorderLayout.SOUTH);
+
+                                    // Add the comment entry panel to the comments panel
+                                    commentsPanel.add(commentEntry);
+                                }
+                            }
+                            // Display comments panel in a scrollable dialog
+                            JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
+                            JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
                     likeDislikePanel.add(commentButton);
 
                     // Add comment button
@@ -209,7 +206,7 @@ public class GUI extends JPanel {
                         submitButton.addActionListener(submitEv -> {
                             // Get the text from the comment field and add it to the post
                             String commentText = commentField.getText();
-                            boolean commentAdded = createComment(commentField.getText(), user.getUsername(), new Post(user.getUsername(), postParts[1]));
+                            boolean commentAdded = createComment(commentField.getText(), currentUser.getUsername(), new Post(currentUser.getUsername(), postParts[1]));
                             if (commentAdded) {
                                 JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                             } else {
@@ -233,17 +230,18 @@ public class GUI extends JPanel {
                     likeDislikePanel.add(addCommentButton);
 
                     postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
-                    // Add the comment entry panel to the comments panel
+                    // Add the post entry panel to the posts panel
                     postsPanel.add(postEntry);
-
                 }
             }
-            JScrollPane commentsScrollPane = new JScrollPane(postsPanel);
-            JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
+            // Display posts panel in a scrollable dialog
+            JScrollPane postsScrollPane = new JScrollPane(postsPanel);
+            JOptionPane.showMessageDialog(null, postsScrollPane, "Posts", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     public synchronized void recordLikeDislike(String commentText, String action) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikeComments.txt", true))) {
@@ -349,7 +347,7 @@ public class GUI extends JPanel {
         // View comments, add comment, and edit buttons
         JPanel commentsAddEdit = new JPanel(new GridLayout(1, 3));
         JButton commentButton = new JButton("View Comments");
-        commentButton.addActionListener(e -> viewComments(post, user));
+        //commentButton.addActionListener(e -> viewComments(post, user));
         commentsAddEdit.add(commentButton);
 
         // Add comment button
