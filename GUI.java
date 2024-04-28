@@ -545,13 +545,103 @@ public class GUI extends JPanel {
         profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
         JPanel mainPanel = new JPanel(new GridLayout(0, 1));
         JScrollPane scrollPane = new JScrollPane(profilePanel);
-        JScrollPane postScrollPane = new JScrollPane();
-        for (int i = 0; i < user.getPostsList().size(); i++) {
-            postScrollPane.add(UserPostPanel(user.getPostsList().get(i)));
-        }
+        try (BufferedReader fileReader = new BufferedReader(new FileReader("userPosts.txt"))) {
+            String line;
+            JPanel postsPanel = new JPanel();
+            postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+            while ((line = fileReader.readLine()) != null) {
+                String[] postParts = line.split("\\|");
+                if (postParts.length == 3 && postParts[0].equals(viewUser.getUsername())) { // Check if the post has the correct number of parts
+                    // Create a panel to hold the post content
+                    JPanel postEntry = new JPanel(new BorderLayout());
+                    postEntry.setPreferredSize(new Dimension(600, 70));
 
-        mainPanel.add(scrollPane);
-        mainPanel.add(postScrollPane);
+                    // Create a JLabel to display the post content
+                    JLabel postLabel = new JLabel(postParts[0] + ": " + postParts[2]);
+                    postEntry.add(postLabel, BorderLayout.CENTER);
+
+                    Post thisPost = new Post(user.getUsername(), Integer.parseInt(postParts[1]));
+
+                    JButton commentButton = new JButton("View Comments");
+                    commentButton.addActionListener(e -> {
+                        // View comments for the current post
+                        try (BufferedReader commentReader = new BufferedReader(new FileReader("userComments.txt"))) {
+                            String commentLine;
+                            JPanel commentsPanel = new JPanel();
+                            commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
+                            while ((commentLine = commentReader.readLine()) != null) {
+                                String[] commentParts = commentLine.split("\\|");
+                                if (commentParts.length == 3 && commentParts[1].equals(String.valueOf(thisPost.getPostID()))) {
+                                    // Create a panel to hold the comment content
+                                    JPanel commentEntry = new JPanel(new BorderLayout());
+                                    commentEntry.setPreferredSize(new Dimension(600, 70));
+
+                                    // Create a JLabel to display the comment content
+                                    JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
+                                    commentEntry.add(commentLabel, BorderLayout.CENTER);
+
+                                    // Create a panel to hold like and dislike buttons
+                                    JPanel commentLikeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+                                    // Create like button for the comment
+                                    JButton commentLikeButton = new JButton("Like");
+                                    commentLikeButton.addActionListener(ev -> {
+                                        // Handle like action for comment
+                                        recordLikeDislike(commentParts[2], "like");
+                                    });
+                                    commentLikeDislikePanel.add(commentLikeButton);
+
+                                    // Create dislike button for the comment
+                                    JButton commentDislikeButton = new JButton("Dislike");
+                                    commentDislikeButton.addActionListener(ev -> {
+                                        // Handle dislike action for comment
+                                        recordLikeDislike(commentParts[2], "dislike");
+                                    });
+                                    commentLikeDislikePanel.add(commentDislikeButton);
+
+                                    // Check if the current user is the owner of the post or the comment author
+                                    if (commentParts[0].equals(user.getUsername()) || postParts [0].equals(user.getUsername())) {
+                                        // Create delete button for the comment
+                                        JButton deleteButton = new JButton("Delete");
+                                        deleteButton.addActionListener(ev -> {
+                                            // Handle delete action for comment
+                                            if (deleteComment(commentParts[2], commentParts[0])) {
+                                                // Remove the comment entry from the panel if deletion is successful
+                                                commentsPanel.remove(commentEntry);
+                                                commentsPanel.revalidate();
+                                                commentsPanel.repaint();
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
+                                            }
+                                        });
+                                        commentLikeDislikePanel.add(deleteButton);
+                                    }
+
+                                    commentEntry.add(commentLikeDislikePanel, BorderLayout.SOUTH);
+
+                                    // Add the comment entry panel to the comments panel
+                                    commentsPanel.add(commentEntry);
+                                }
+                            }
+                            // Display comments panel in a scrollable dialog
+                            JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
+                            JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+
+                    // Add the post entry panel to the posts panel
+                    postsPanel.add(postEntry);
+                }
+            }
+            // Display posts panel in a scrollable dialog
+            JScrollPane postsScrollPane = new JScrollPane(postsPanel);
+            mainPanel.add(scrollPane);
+            mainPanel.add(postsScrollPane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         JFrame viewFrame = new JFrame();
