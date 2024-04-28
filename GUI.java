@@ -16,7 +16,7 @@ import java.io.*;
  * @version Fri April 26th, 2024
  */
 
-public class GUI extends JPanel implements GUIInterface  {
+public class GUI extends JPanel {
     User user;
     Client client;
 
@@ -127,15 +127,11 @@ public class GUI extends JPanel implements GUIInterface  {
                     JButton commentButton = new JButton("View Comments");
                     commentButton.addActionListener(e -> {
                         // View comments for the current post
-                        String commentLine = null;
-                        JPanel commentsPanel = new JPanel();
-                        commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
                         try (BufferedReader commentReader = new BufferedReader(new FileReader("userComments.txt"))) {
-                            commentLine = commentReader.readLine();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                            if (commentLine != null) {
+                            String commentLine;
+                            JPanel commentsPanel = new JPanel();
+                            commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
+                            while ((commentLine = commentReader.readLine()) != null) {
                                 String[] commentParts = commentLine.split("\\|");
                                 if (commentParts.length == 3 && commentParts[1].equals(String.valueOf(thisPost.getPostID()))) {
                                     // Create a panel to hold the comment content
@@ -166,7 +162,7 @@ public class GUI extends JPanel implements GUIInterface  {
                                     commentLikeDislikePanel.add(commentDislikeButton);
 
                                     // Check if the current user is the owner of the post or the comment author
-                                    if (commentParts[0].equals(currentUser.getUsername()) || post.getUsername().equals(currentUser.getUsername())) {
+                                    if (commentParts[0].equals(user.getUsername()) || postParts [0].equals(user.getUsername())) {
                                         // Create delete button for the comment
                                         JButton deleteButton = new JButton("Delete");
                                         deleteButton.addActionListener(ev -> {
@@ -192,6 +188,9 @@ public class GUI extends JPanel implements GUIInterface  {
                             // Display comments panel in a scrollable dialog
                             JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
                             JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                     });
                     likeDislikePanel.add(commentButton);
 
@@ -245,7 +244,6 @@ public class GUI extends JPanel implements GUIInterface  {
     }
 
 
-
     public synchronized void recordLikeDislike(String commentText, String action) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikeComments.txt", true))) {
             writer.write(commentText + "," + action + "\n");
@@ -255,6 +253,15 @@ public class GUI extends JPanel implements GUIInterface  {
     }
 
 
+    public synchronized boolean createComment(String commentText, String username, Post parentPost) {
+        try (FileWriter fileWriter = new FileWriter("userComments.txt", true)) {
+            fileWriter.write(username + "|" + parentPost.getPostID() + "|" + commentText + "\n");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public synchronized boolean deleteComment(String commentText, String currentUser) {
         try {
@@ -294,18 +301,6 @@ public class GUI extends JPanel implements GUIInterface  {
             } else {
                 return false; // Failed to delete the comment
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    public synchronized boolean createComment(String commentText, String username, Post post) {
-        File commentsFile = new File("userComments.txt");
-
-        // Write the comment details to the comments file
-        try (FileWriter fileWriter = new FileWriter(commentsFile, true)) {
-            fileWriter.write(username + "|" + post.getPostID() + "|" + commentText + "\n");
-            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -369,7 +364,6 @@ public class GUI extends JPanel implements GUIInterface  {
             submitButton.addActionListener(submitEv -> {
                 // Get the text from the comment field and add it to the post
                 String commentText = commentField.getText();
-
                 boolean commentAdded = createComment(commentField.getText(), user.getUsername(), post);
                 if (commentAdded) {
                     JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -458,7 +452,7 @@ public class GUI extends JPanel implements GUIInterface  {
             addPostDialog.setVisible(true);
         });
         postsPanel.add(addPostButton);
-
+        /*
         addPostButton.addActionListener( a -> {
             String postText = JOptionPane.showInputDialog(null,
                     "Enter post text", "Social Media Platform",
@@ -470,7 +464,7 @@ public class GUI extends JPanel implements GUIInterface  {
                 JOptionPane.showMessageDialog(null, "Failure posting", "Failure", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-
+        */
         JButton viewPostsButton = new JButton("View Posts");
         viewPostsButton.addActionListener(e -> {
 
@@ -564,7 +558,6 @@ public class GUI extends JPanel implements GUIInterface  {
         viewFrame.add(mainPanel, BorderLayout.CENTER);
         return viewFrame;
     }
-
     //(Sean) userSearch GUI implementation
     ActionListener searchListener = new ActionListener() {
         @Override
@@ -601,39 +594,11 @@ public class GUI extends JPanel implements GUIInterface  {
         }
     }
 
-
-
     public synchronized boolean createPost(String postText, String username) {
-        try {
-            File postIDFile = new File("lastPostID.txt");
-            int postID;
-
-            // Check if the file exists
-            if (postIDFile.exists()) {
-                BufferedReader reader = new BufferedReader(new FileReader(postIDFile));
-                postID = Integer.parseInt(reader.readLine()); // Read the last used post ID
-                reader.close();
-            } else {
-                postID = 0; // Set initial post ID if the file doesn't exist
-            }
-
-            // Increment post ID for each new post
-            postID++;
-
-            // Write the updated post ID back to the file
-            BufferedWriter writer = new BufferedWriter(new FileWriter(postIDFile));
-            writer.write(String.valueOf(postID));
-            writer.close();
-
-            // Write the post details to the posts file using the incremented post ID
-            try (FileWriter fileWriter = new FileWriter("userPosts.txt", true)) {
-                fileWriter.write(username + "|" + postID + "|" + postText + "\n");
-                return true;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
+        try (FileWriter fileWriter = new FileWriter("userPosts.txt", true)) {
+            new Post("james", 0);
+            fileWriter.write(username + "|" + Post.getTotalPosts() + "|" + postText + "\n");
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
