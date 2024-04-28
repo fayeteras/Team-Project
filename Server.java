@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -166,6 +167,8 @@ public class Server implements Runnable, ServerInterface {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("User canceled or exited panel in Client.");
         }
     }
 
@@ -199,6 +202,8 @@ public class Server implements Runnable, ServerInterface {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("User canceled or exited panel in Client.");
         }
     }
 
