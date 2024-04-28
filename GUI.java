@@ -1,606 +1,585 @@
 import javax.swing.*;
+
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
 import java.io.*;
+import java.net.*;
+import java.util.*;
 /**
- * GUI.java
+ * Client.java
  *
- * GUI that client will use once the user has successfully signed in or up
- * to our social media platform. It functions through many buttons and text fields
- * that allow the user to interact with other posts and people on the platform.
+ * Client that connects to the social media server. The client writes input
+ * to the Server class where it will calculate and return the user's experience on
+ * the social media platform.
  *
  * <p>Purdue University -- CS18000 -- Spring 2024 -- Team Project
  *
  * @author LO4-Team 2
- * @version Fri April 26th, 2024
+ * @version Mon April 15th, 2024
  */
+public class Client implements ClientInterface {
+    private static String host = "localhost";
+    private static int port = 620;
 
-public class GUI extends JPanel {
-    User user;
-    Client client;
+    private static BufferedReader reader;
+    private static PrintWriter writer;
+    GUI GUI;
 
-    Post post;
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        try (Socket socket = new Socket(host, port)) {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new PrintWriter(socket.getOutputStream());
+            Client testClient = new Client();
+            //(Sean) the following code is for the user to sign in or sign up
+            //before being able to access any of the features of the social media platform.
+            //If this messes with your code, just comment this all out.
+            String inOrUp;
+            String[] loginOptions = {"Sign In", "Sign Up"};
+            String username = null;
+            int result = JOptionPane.showOptionDialog(null,
+                    "                                        Welcome to HELLo!" +
+                            "\nBefore you can access our platform, you either need to sign in or sign up." +
+                            "\n                                   Please choose an option.",
+                    "HELLo", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, loginOptions, loginOptions[1]);
+            if (result == JOptionPane.YES_OPTION) {
+                inOrUp = "in";
+                writer.write(inOrUp);
+                writer.println();
+                writer.flush();
+                username = testClient.signIn(scan, reader, writer);
+            } else if (result == JOptionPane.NO_OPTION) {
+                inOrUp = "up";
+                writer.write(inOrUp);
+                writer.println();
+                writer.flush();
+                username = testClient.createUser(scan, reader, writer);
+            }
+            if (username != null) {
+                String finalUsername = username;
+                SwingUtilities.invokeLater(() -> {
+                    // Create an instance of the GUI class
+                    GUI gui = new GUI(finalUsername, testClient);
 
-    JFrame homeScreen = new JFrame(); // Initialize homeScreen frame object
-    JPanel banner;
-    JPanel bottomBanner;
-    JButton homeButton;
-    JTextField searchField;
-    JButton searchButton;
-    JButton usernameButton;
-    JScrollPane postsPanel;
-    JScrollPane panel;
+                    // Create a JScrollPane with all test posts using the GUI instance
+                    JScrollPane postsPanel = gui.AllPostsPanel(testClient.getFeed(scan, reader, writer), new Post());
 
-    // Constructor for GUI
-    public GUI(String username, Client client) {
-        this.user = new User(username);
-        this.client = client;
-        // Initialize the homeScreen frame object
-        homeScreen = new JFrame("Home Screen");
+                    // Assign the postsPanel to the panel property of the GUI instance
+                    gui.panel = postsPanel;
 
-        // Set layout of homeScreen to BorderLayout
-        homeScreen.setLayout(new BorderLayout());
+                    // Add the panel to the homeScreen frame
+                    gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
 
-        // Set extended state to maximize the homeScreen frame
-        homeScreen.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    // Set the default close operation
+                    gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Initialize banner panel
-        banner = new JPanel(new BorderLayout());
-        banner.setBackground(Color.LIGHT_GRAY);
-        banner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 50));
+                    // Make the homeScreen frame visible
+                    gui.homeScreen.setVisible(true);
+                    gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
 
-        // Initialize bottom panel
-        bottomBanner = new JPanel(new BorderLayout());
-        bottomBanner.setBackground(Color.LIGHT_GRAY);
-        bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
+                    // Set the default close operation
+                    gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Initialize and configure homeButton
-        homeButton = new JButton("Home");
-        homeButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
-        homeButton.setForeground(Color.BLUE);
-        banner.add(homeButton, BorderLayout.WEST);
+                    // Make the homeScreen frame visible
+                    gui.homeScreen.setVisible(true);
+                });
 
-        // Initialize and configure search panel
-        JPanel searchPanel = new JPanel(new BorderLayout());
-        searchPanel.setBackground(Color.LIGHT_GRAY);
-        searchField = new JTextField("Search");
-        searchField.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
-        searchField.setColumns(20);
-        searchPanel.add(searchField, BorderLayout.WEST);
-        // Initialize and configure searchButton
-        searchButton = new JButton("Search");
-        searchButton.addActionListener(searchListener);
-        searchButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 30));
-        searchButton.setForeground(Color.BLUE);
-        searchPanel.add(searchButton, BorderLayout.CENTER);
-        banner.add(searchPanel, BorderLayout.CENTER);
-
-        // Initialize and configure username button
-        usernameButton = new JButton(user.getUsername());
-        usernameButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 25));
-        usernameButton.setForeground(Color.BLUE);
-        banner.add(usernameButton, BorderLayout.EAST);
-
-        // Add banner to the top of the homeScreen frame
-        homeScreen.add(banner, BorderLayout.NORTH);
-    }
-
-    // Individual Post Panel method
-    public synchronized void viewComments(Post post, User currentUser) {
-        try (BufferedReader fileReader = new BufferedReader(new FileReader("userComments.txt"))) {
-            String line;
-            JPanel commentsPanel = new JPanel();
-            commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
-            while ((line = fileReader.readLine()) != null) {
-                String[] commentParts = line.split("\\|");
-                if (commentParts.length == 3) { // Check if the comment has the correct number of parts
-                    String postID = commentParts[1];
-                    if (postID.equals(String.valueOf(post.getPostID()))) {
-                        // Create a panel to hold the comment, username, like button, dislike button, and delete button
-                        JPanel commentEntry = new JPanel(new BorderLayout());
-                        commentEntry.setPreferredSize(new Dimension(600, 70));
-
-                        // Create a JLabel to display the comment content and username
-                        JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
-                        commentEntry.add(commentLabel, BorderLayout.CENTER);
-
-                        // Create a panel to hold the like and dislike buttons
-                        JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-                        // Create like button for the comment
-                        JButton likeButton = new JButton("Like");
-                        likeButton.addActionListener(e -> {
-                            // Handle like action
-                            recordLikeDislike(commentParts[2], "like");
-                        });
-                        likeDislikePanel.add(likeButton);
-
-                        // Create dislike button for the comment
-                        JButton dislikeButton = new JButton("Dislike");
-                        dislikeButton.addActionListener(e -> {
-                            // Handle dislike action
-                            recordLikeDislike(commentParts[2], "dislike");
-                        });
-                        likeDislikePanel.add(dislikeButton);
-
-                        // Check if the current user is the owner of the post or the comment author
-                        if (commentParts[0].equals(currentUser.getUsername()) || post.getUsername().equals(currentUser.getUsername())) {
-                            // Create delete button for the comment
-                            JButton deleteButton = new JButton("Delete");
-                            deleteButton.addActionListener(e -> {
-                                // Handle delete action
-                                if (deleteComment(commentParts[2], commentParts[0])) {
-                                    // Remove the comment entry from the panel if deletion is successful
-                                    commentsPanel.remove(commentEntry);
-                                    commentsPanel.revalidate();
-                                    commentsPanel.repaint();
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
-                                }
-                            });
-                            likeDislikePanel.add(deleteButton);
-                        }
-
-                        commentEntry.add(likeDislikePanel, BorderLayout.SOUTH);
-
-                        // Add the comment entry panel to the comments panel
-                        commentsPanel.add(commentEntry);
+                /*while (true) {
+                    String commandResponse = null;
+                    switch (commandResponse) {
+                        case "createUser":
+                            testClient.createUser(scan, reader, writer);
+                            break;
+                        case "signIn":
+                            testClient.signIn(scan, reader, writer);
+                            break;
+                        case "userSearch":
+                            testClient.userSearch(scan, reader, writer);
+                            break;
+                        case "getFeed":
+                            testClient.getFeed(scan, reader, writer);
+                            break;
+                        case "viewProfile":
+                            testClient.viewProfile(scan, reader, writer);
+                            break;
+                        case "friendUser":
+                            testClient.friendUser(scan, reader, writer);
+                            break;
+                        case "unfriendUser":
+                            testClient.unfriendUser(scan, reader, writer);
+                            break;
+                        case "blockUser":
+                            testClient.blockUser(scan, reader, writer);
+                            break;
+                        case "unblockUser":
+                            testClient.unblockUser(scan, reader, writer);
+                            break;
+                        case "createPost":
+                            testClient.createPost(scan, reader, writer);
+                            break;
+                        case "likePost":
+                        case "likeComment":
+                            testClient.like(scan, reader, writer);
+                            break;
+                        case "dislikePost":
+                        case "dislikeComment":
+                            testClient.dislike(scan, reader, writer);
+                            break;
+                        case "hidePost":
+                        case "hideComment":
+                            testClient.hide(scan, reader, writer);
+                            break;
+                        case "editPost":
+                        case "editComment":
+                            testClient.edit(scan, reader, writer);
+                            break;
+                        case "createComment":
+                            testClient.createComment(scan, reader, writer);
+                            break;
                     }
-                }
+                    //Forward-thinking is strongly encouraged
+                    //you WILL add a GUI
+                    //you WILL redo the client
+                    //you WILL code sober
+                } */
             }
-            JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
-            JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    public synchronized void viewPosts(User currentUser, Post post) {
-        try (BufferedReader fileReader = new BufferedReader(new FileReader("userPosts.txt"))) {
-            String line;
-            JPanel postsPanel = new JPanel();
-            postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
-            while ((line = fileReader.readLine()) != null) {
-                String[] postParts = line.split("\\|");
-                if (postParts.length == 2) { // Check if the comment has the correct number of parts
-                    // Create a panel to hold the comment, username, like button, dislike button, and delete button
-                    JPanel postEntry = new JPanel(new BorderLayout());
-                    postEntry.setPreferredSize(new Dimension(600, 70));
-
-                    // Create a JLabel to display the comment content and username
-                    JLabel commentLabel = new JLabel(postParts[0] + ": " + postParts[1]);
-                    postEntry.add(commentLabel, BorderLayout.CENTER);
-
-                    // Create a panel to hold the like and dislike buttons
-                    JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-                    // Create like button for the comment
-                    JButton likeButton = new JButton("Like");
-                    likeButton.addActionListener(e -> {
-                        // Handle like action
-                        recordLikeDislikePost(postParts[1], "like");
-                    });
-                    likeDislikePanel.add(likeButton);
-
-                    // Create dislike button for the comment
-                    JButton dislikeButton = new JButton("Dislike");
-                    dislikeButton.addActionListener(e -> {
-                        // Handle dislike action
-                        recordLikeDislikePost(postParts[1], "dislike");
-                    });
-                    likeDislikePanel.add(dislikeButton);
-
-                    JPanel commentsAddEdit = new JPanel(new GridLayout(1, 3));
-                    JButton commentButton = new JButton("View Comments");
-                    commentButton.addActionListener(e -> viewComments(post, user));
-                    commentsAddEdit.add(commentButton);
-
-                    // Add comment button
-                    JButton addCommentButton = new JButton("Add Comment");
-                    addCommentButton.addActionListener(e -> {
-                        // Create a dialog to add a comment
-                        JDialog addCommentDialog = new JDialog(homeScreen, "Add Comment", true);
-                        addCommentDialog.setLayout(new BorderLayout());
-
-                        // Text field to enter comment
-                        JTextField commentField = new JTextField(20);
-                        JButton submitButton = new JButton("Submit");
-                        submitButton.addActionListener(submitEv -> {
-                            // Get the text from the comment field and add it to the post
-                            String commentText = commentField.getText();
-                            boolean commentAdded = createComment(commentField.getText(), user.getUsername(), post);
-                            if (commentAdded) {
-                                JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Failed to add comment.", "Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            addCommentDialog.dispose();
-                        });
-
-                        // Add components to the dialog
-                        JPanel addCommentPanel = new JPanel();
-                        addCommentPanel.add(new JLabel("Enter your comment: "));
-                        addCommentPanel.add(commentField);
-                        addCommentPanel.add(submitButton);
-                        addCommentDialog.add(addCommentPanel, BorderLayout.CENTER);
-
-                        // Set dialog properties
-                        addCommentDialog.setSize(300, 150);
-                        addCommentDialog.setLocationRelativeTo(null);
-                        addCommentDialog.setVisible(true);
-                    });
-                    commentsAddEdit.add(addCommentButton);
-
-                    postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
-
-                    // Add the comment entry panel to the comments panel
-                    postsPanel.add(postEntry);
-                }
-            }
-            JScrollPane commentsScrollPane = new JScrollPane(postsPanel);
-            JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public synchronized void recordLikeDislike(String commentText, String action) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikeComments.txt", true))) {
-            writer.write(commentText + "," + action + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public synchronized boolean createComment(String commentText, String username, Post parentPost) {
-        try (FileWriter fileWriter = new FileWriter("userComments.txt", true)) {
-            fileWriter.write(username + "|" + parentPost.getPostID() + "|" + commentText + "\n");
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public synchronized boolean deleteComment(String commentText, String currentUser) {
+    public String createUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
         try {
-            File inputFile = new File("userComments.txt");
-            File tempFile = new File("temp.txt");
-
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-
-            String currentLine;
-
-            while ((currentLine = reader.readLine()) != null) {
-                // Split the line to get the username, postID, and comment text
-                String[] parts = currentLine.split("\\|");
-                if (parts.length == 3) {
-                    String username = parts[0].trim();
-                    String postID = parts[1].trim();
-                    String text = parts[2].trim();
-                    // Check if the current line contains the specified comment text
-                    if (text.equals(commentText)) {
-                        continue;
+            int yesOrNo = JOptionPane.YES_OPTION;
+            String usernameResponse = null;
+            String passwordResponse;
+            while (yesOrNo == JOptionPane.YES_OPTION) {
+                String usernamePrompt = reader.readLine();
+                do {
+                    usernameResponse = JOptionPane.showInputDialog(null,
+                            usernamePrompt, "HELLo",
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (usernameResponse == null || usernameResponse.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Enter a valid username", "HELLo",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } while (usernameResponse == null || usernameResponse.isEmpty());
+                writer.write(usernameResponse);
+                writer.println();
+                writer.flush();
+                String passwordPrompt = reader.readLine();
+                if (passwordPrompt.equals("Sorry, that username is already taken.")) {
+                    usernameResponse = null;
+                    JOptionPane.showMessageDialog(null,
+                            passwordPrompt, "HELLo",
+                            JOptionPane.ERROR_MESSAGE);
+                    yesOrNo = JOptionPane.showConfirmDialog(null,
+                            reader.readLine(),
+                            "HELLo", JOptionPane.YES_NO_OPTION);
+                    if (yesOrNo == JOptionPane.YES_OPTION) {
+                        writer.write("Yes");
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        writer.write("No");
+                        writer.println();
+                        writer.flush();
+                    }
+                } else {
+                    do {
+                        passwordResponse = JOptionPane.showInputDialog(null,
+                                passwordPrompt, "HELLo",
+                                JOptionPane.QUESTION_MESSAGE);
+                        if (passwordResponse == null || passwordResponse.isEmpty()) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Enter a valid password", "HELLo",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    } while (passwordResponse == null || passwordResponse.isEmpty());
+                    writer.write(passwordResponse);
+                    writer.println();
+                    writer.flush();
+                    String accountCreation = reader.readLine();
+                    if (!accountCreation.contains("Account created.")) {
+                        JOptionPane.showMessageDialog(null,
+                                accountCreation, "HELLo",
+                                JOptionPane.ERROR_MESSAGE);
+                        yesOrNo = JOptionPane.showConfirmDialog(null,
+                                reader.readLine(),
+                                "HELLo", JOptionPane.YES_NO_OPTION);
+                        if (yesOrNo == JOptionPane.YES_OPTION) {
+                            writer.write("Yes");
+                            writer.println();
+                            writer.flush();
+                        } else {
+                            writer.write("No");
+                            writer.println();
+                            writer.flush();
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                accountCreation, "HELLo",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        yesOrNo = JOptionPane.NO_OPTION;
                     }
                 }
             }
-            // Write the current line to the temp file
-            writer.write(currentLine + System.getProperty("line.separator"));
+            return usernameResponse;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            // Close readers and writers
-            writer.close();
-            reader.close();
+    public String signIn(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            int yesOrNo = JOptionPane.YES_OPTION;
+            String usernameResponse = null;
+            String passwordResponse;
+            while (yesOrNo == JOptionPane.YES_OPTION) {
+                String usernamePrompt = reader.readLine();
+                do {
+                    usernameResponse = JOptionPane.showInputDialog(null,
+                            usernamePrompt, "HELLo",
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (usernameResponse == null || usernameResponse.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Enter a valid username", "HELLo",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } while (usernameResponse == null || usernameResponse.isEmpty());
+                writer.write(usernameResponse);
+                writer.println();
+                writer.flush();
+                String passwordPrompt = reader.readLine();
+                do {
+                    passwordResponse = JOptionPane.showInputDialog(null,
+                            passwordPrompt, "HELLo",
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (passwordResponse == null || passwordResponse.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Enter a valid password", "HELLo",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } while (passwordResponse == null || passwordResponse.isEmpty());
+                writer.write(passwordResponse);
+                writer.println();
+                writer.flush();
+                String loginAttempt = reader.readLine();
+                if (!loginAttempt.contains("Login successful.")) {
+                    JOptionPane.showMessageDialog(null,
+                            loginAttempt, "HELLo",
+                            JOptionPane.ERROR_MESSAGE);
+                    yesOrNo = JOptionPane.showConfirmDialog(null,
+                            reader.readLine(),
+                            "HELLo", JOptionPane.YES_NO_OPTION);
+                    if (yesOrNo == JOptionPane.YES_OPTION) {
+                        writer.write("Yes");
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        writer.write("No");
+                        writer.println();
+                        writer.flush();
+                        usernameResponse = null;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            loginAttempt, "HELLo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    yesOrNo = JOptionPane.NO_OPTION;
+                }
+            }
+            return usernameResponse;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public void userSearch(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            int yesOrNo = JOptionPane.YES_OPTION;
+            String usernameResponse;
+            while (yesOrNo == JOptionPane.YES_OPTION) {
+                String usernamePrompt = reader.readLine();
+                do {
+                    usernameResponse = JOptionPane.showInputDialog(null,
+                            usernamePrompt, "HELLo",
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (usernameResponse == null || usernameResponse.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Enter a valid username", "HELLo",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } while (usernameResponse == null || usernameResponse.isEmpty());
+                writer.write(usernameResponse);
+                writer.println();
+                writer.flush();
+                String searchAttempt = reader.readLine();
+                if (!searchAttempt.contains("The user has")) {
+                    JOptionPane.showMessageDialog(null,
+                            searchAttempt, "HELLo",
+                            JOptionPane.ERROR_MESSAGE);
+                    yesOrNo = JOptionPane.showConfirmDialog(null,
+                            reader.readLine(),
+                            "HELLo", JOptionPane.YES_NO_OPTION);
+                    if (yesOrNo == JOptionPane.YES_OPTION) {
+                        writer.write("Yes");
+                        writer.println();
+                        writer.flush();
+                    } else {
+                        writer.write("No");
+                        writer.println();
+                        writer.flush();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            searchAttempt, "HELLo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    yesOrNo = JOptionPane.showConfirmDialog(null,
+                            reader.readLine(),
+                            "HELLo", JOptionPane.YES_NO_OPTION);
+                    if (yesOrNo == JOptionPane.YES_OPTION) {
+                        writer.write("Yes");
+                        writer.println();
+                        writer.flush();
+                        //(Sean) If this loop is entered, the user would like to
+                        //view the profile of the User whose username is the
+                        //string variable "searchAttempt" in this method.
+                        viewProfile(scan, reader, writer);
+                        yesOrNo = JOptionPane.NO_OPTION;
+                    } else {
+                        writer.write("No");
+                        writer.println();
+                        writer.flush();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            // Delete the original file and rename the temp file to the original file name
-            if (inputFile.delete()) {
-                tempFile.renameTo(inputFile);
-                return true; // Successfully deleted the comment
-            } else {
-                return false; // Failed to delete the comment
+    public void viewProfile(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            String username = reader.readLine();
+            System.out.println("Profile: " + username);
+            int friendsCount = Integer.parseInt(reader.readLine());
+            System.out.println("Friends: " + friendsCount);
+            String line;
+            ArrayList<String[]> allPosts = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                allPosts.add(readPost(scan, reader, writer));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public boolean friendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        System.out.println("Who would you like to friend?");
+        String username = scan.nextLine();
+        writer.write(username);
+        try {
+            switch (reader.readLine()) {
+                case "REPEAT" :
+                    System.out.println("You are already friends with " + username);
+                    break;
+                case "BLOCKED" :
+                    System.out.println(username + " is blocked!");
+                    break;
+                case "SUCCESS" :
+                    System.out.println("You have added " + username + " as a friend!");
+                    break;
+                case "FAILED" :
+                    System.out.println("Error friending " + username);
+                    break;
             }
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
+        return true;
     }
-
-    public JPanel UserPostPanel(Post post) {
-        JPanel postPanel = new JPanel(new BorderLayout());
-        postPanel.setPreferredSize(new Dimension(600, 150));
-        postPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-
-        // Username label
-        JLabel usernameLabel = new JLabel(" " + post.getUsername());
-        usernameLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
-        usernameLabel.setForeground(Color.RED);
-        postPanel.add(usernameLabel, BorderLayout.NORTH);
-
-        // Post text area
-        JLabel postText = new JLabel(post.getText());
-        postText.setVerticalAlignment(JLabel.TOP);
-        postText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
-        JScrollPane postScrollPane = new JScrollPane(postText);
-        postPanel.add(postScrollPane, BorderLayout.CENTER);
-
-        // Bottom panel for likes, dislikes, and view comments button
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-
-        // Likes and dislikes buttons panel
-        JPanel likesDislikesPanel = new JPanel(new GridLayout(1, 4));
-        JLabel likesLabel = new JLabel(String.format("Likes: " + post.getLikesCount()));
-        JButton likeButton = new JButton("+");
-        likesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
-        JLabel dislikesLabel = new JLabel(String.format("Dislikes: " + post.getDislikesCount()));
-        JButton dislikeButton = new JButton("-");
-        dislikesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
-        likesDislikesPanel.add(likesLabel);
-        likesDislikesPanel.add(likeButton);
-        likesDislikesPanel.add(dislikesLabel);
-        likesDislikesPanel.add(dislikeButton);
-        bottomPanel.add(likesDislikesPanel, BorderLayout.WEST);
-
-        // View comments, add comment, and edit buttons
-        JPanel commentsAddEdit = new JPanel(new GridLayout(1, 3));
-        JButton commentButton = new JButton("View Comments");
-        commentButton.addActionListener(e -> viewComments(post, user));
-        commentsAddEdit.add(commentButton);
-
-        // Add comment button
-        JButton addCommentButton = new JButton("Add Comment");
-        addCommentButton.addActionListener(e -> {
-            // Create a dialog to add a comment
-            JDialog addCommentDialog = new JDialog(homeScreen, "Add Comment", true);
-            addCommentDialog.setLayout(new BorderLayout());
-
-            // Text field to enter comment
-            JTextField commentField = new JTextField(20);
-            JButton submitButton = new JButton("Submit");
-            submitButton.addActionListener(submitEv -> {
-                // Get the text from the comment field and add it to the post
-                String commentText = commentField.getText();
-                boolean commentAdded = createComment(commentField.getText(), user.getUsername(), post);
-                if (commentAdded) {
-                    JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Failed to add comment.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                addCommentDialog.dispose();
-            });
-
-            // Add components to the dialog
-            JPanel addCommentPanel = new JPanel();
-            addCommentPanel.add(new JLabel("Enter your comment: "));
-            addCommentPanel.add(commentField);
-            addCommentPanel.add(submitButton);
-            addCommentDialog.add(addCommentPanel, BorderLayout.CENTER);
-
-            // Set dialog properties
-            addCommentDialog.setSize(300, 150);
-            addCommentDialog.setLocationRelativeTo(null);
-            addCommentDialog.setVisible(true);
-        });
-        commentsAddEdit.add(addCommentButton);
-
-        // Edit button (visible only to the owner of the post)
-        if (post.getUsername().equals(user.getUsername())) {
-            JButton editButton = new JButton("Edit");
-            commentsAddEdit.add(editButton);
-        }
-        bottomPanel.add(commentsAddEdit, BorderLayout.EAST);
-        postPanel.add(bottomPanel, BorderLayout.SOUTH);
-
-        // Set maximum size of the post panel
-        postPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
-
-        return postPanel;
-    }
-
-
-    // All Posts Panel method
-    public JScrollPane AllPostsPanel(ArrayList<String[]> allPosts) {
-        JPanel postsPanel = new JPanel();
-        postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
-
-        // Get each individual post and add it to the posts panel
-        for (int i = 0; i < allPosts.size(); i++) {
-            String[] currentPost = allPosts.get(i);
-            JPanel thisPost = UserPostPanel(new Post(currentPost[0], currentPost[1]));
-            postsPanel.add(thisPost);
-        }
-
-        // Create a scroll pane with the posts panel
-        JScrollPane scrollPane = new JScrollPane(postsPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        JButton addPostButton = new JButton("Create Post");
-        addPostButton.addActionListener(e -> {
-            // Create a dialog to add a comment
-            JDialog addPostDialog = new JDialog(homeScreen, "Add Post", true);
-            addPostDialog.setLayout(new BorderLayout());
-
-            // Text field to enter comment
-            JTextField PostField = new JTextField(20);
-            JButton submitButton = new JButton("Submit");
-            submitButton.addActionListener(submitEv -> {
-                // Get the text from the comment field and add it to the post
-                String postText = PostField.getText();
-                boolean commentAdded = createPost(PostField.getText(), user.getUsername());
-                if (commentAdded) {
-                    JOptionPane.showMessageDialog(null, "Post added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Failed to add Post.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                addPostDialog.dispose();
-            });
-
-            // Add components to the dialog
-            JPanel addPostPanel = new JPanel();
-            addPostPanel.add(new JLabel("Enter your post: "));
-            addPostPanel.add(PostField);
-            addPostPanel.add(submitButton);
-            addPostDialog.add(addPostPanel, BorderLayout.CENTER);
-
-            // Set dialog properties
-            addPostDialog.setSize(300, 150);
-            addPostDialog.setLocationRelativeTo(null);
-            addPostDialog.setVisible(true);
-        });
-        postsPanel.add(addPostButton);
-
-        addPostButton.addActionListener( a -> {
-            String postText = JOptionPane.showInputDialog(null,
-                    "Enter post text", "Social Media Platform",
-                    JOptionPane.QUESTION_MESSAGE);
-            boolean success = client.createPost(user.getUsername(), postText);
-            if (success) {
-                JOptionPane.showMessageDialog(null, "Post successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+    public boolean unfriendUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        System.out.println("Who would you like to unfriend?");
+        String username = scan.nextLine();
+        writer.write(username);
+        try {
+            if (reader.readLine().equals("SUCCESS")) {
+                System.out.println("You have removed " + username + " as a friend.");
             } else {
-                JOptionPane.showMessageDialog(null, "Failure posting", "Failure", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("There was an error removing " + username + " as a friend.");
             }
-        });
-
-        JButton viewPostsButton = new JButton("View Posts");
-        viewPostsButton.addActionListener(e -> {
-           
-            viewPosts(user, post);
-        });
-        postsPanel.add(viewPostsButton);
-
-        return scrollPane;
-    }
-
-
-    public JFrame viewProfilePanel(User viewUser) { //(Tyler) The user we are viewing (not finished/tested)
-        JPanel profilePanel = new JPanel(new BorderLayout());
-        profilePanel.setPreferredSize(new Dimension(600, 150));
-        profilePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-
-        // Username label
-        JLabel usernameLabel = new JLabel(" " + viewUser.getUsername());
-        usernameLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
-        usernameLabel.setForeground(Color.BLUE);
-        profilePanel.add(usernameLabel, BorderLayout.NORTH);
-
-        // Friends list
-        JLabel friendsList = new JLabel(viewUser.getFriendList().toString());
-        friendsList.setVerticalAlignment(JLabel.TOP);
-        friendsList.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
-        JScrollPane friendScrollPane = new JScrollPane(friendsList);
-        profilePanel.add(friendScrollPane, BorderLayout.CENTER);
-
-        // Bottom panel for block and unblock
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-
-        // Likes and dislikes buttons panel
-        JPanel blockPanel = new JPanel(new GridLayout(1, 1));
-        String text;
-        if (user.isBlocked(viewUser.getUsername())) {
-            JButton blockButton = new JButton("Unblock");
-            blockPanel.add(blockButton);
-            blockButton.addActionListener(block -> {
-                user.unblockUser(viewUser.getUsername());
-            });
-        } else {
-            JButton blockButton = new JButton("Block");
-            blockPanel.add(blockButton);
-            blockButton.addActionListener(block -> {
-                user.blockUser(viewUser.getUsername());
-            });
-        }
-
-        bottomPanel.add(blockPanel, BorderLayout.WEST);
-
-        // View friends and add friend buttons
-        JPanel friendsPanel = new JPanel(new GridLayout(1, 1));
-        // JButton viewFriendsButton = new JButton("Friends");
-        // friendsPanel.add(viewFriendsButton);
-
-        if (user.isFriend(viewUser.getUsername())) {
-            JButton addFriendButton = new JButton("Remove Friend");
-            friendsPanel.add(addFriendButton);
-            addFriendButton.addActionListener(friend -> {
-                user.removeFriend(viewUser.getUsername());
-            });
-        } else {
-            JButton addFriendButton = new JButton("Add Friend");
-            friendsPanel.add(addFriendButton);
-            addFriendButton.addActionListener(friend -> {
-                user.addFriend(viewUser.getUsername());
-            });
-        }
-
-
-        bottomPanel.add(friendsPanel, BorderLayout.EAST);
-        profilePanel.add(bottomPanel, BorderLayout.SOUTH);
-
-        profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
-        JPanel mainPanel = new JPanel(new GridLayout(0, 1));
-        JScrollPane scrollPane = new JScrollPane(profilePanel);
-        JScrollPane postScrollPane = new JScrollPane();
-        for (int i = 0; i < user.getPostsList().size(); i++) {
-            postScrollPane.add(UserPostPanel(user.getPostsList().get(i)));
-        }
-
-        mainPanel.add(scrollPane);
-        mainPanel.add(postScrollPane);
-
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        JFrame viewFrame = new JFrame();
-        viewFrame.add(mainPanel, BorderLayout.CENTER);
-        return viewFrame;
-    }
-    //(Sean) userSearch GUI implementation
-    ActionListener searchListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == searchButton) {
-                search();
-                searchField.setText("Search");
-            }
-        }
-    };
-
-    public void search() {
-        String tempString = searchField.getText();
-        Database db = new Database();
-        if (db.userExists(tempString)) {
-            User searchedUser = new User(tempString);
-            //Waiting on viewProfile to be created.
-
-            //homeScreen.setVisible(false);
-            viewProfilePanel(searchedUser).setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(null,
-                    "This username is not in our records!", "HELLo",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-
-    }
-
-    public synchronized void recordLikeDislikePost(String postText, String action) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("likedislikePosts.txt", true))) {
-            writer.write(postText + "," + action + "\n");
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    public boolean blockUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        System.out.println("Who would you like to block?");
+        String username = scan.nextLine();
+        writer.write(username);
+        try {
+            switch (reader.readLine()) {
+                case "REPEAT" :
+                    System.out.println("You have already blocked " + username);
+                case "FRIEND" :
+                    System.out.println("You cannot block " + username + " while they are your friend!");
+                case "SUCCESS" :
+                    System.out.println("You have blocked " + username);
+                case "FAILED" :
+                    System.out.println("Error blocking " + username);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;    }
+
+    public boolean createPost(String username, String text) {
+        System.out.println("aeioru");
+        writer.write("createPost");
+        writer.println();
+        writer.flush();
+        writer.write(text);
+        writer.println();
+        writer.flush();
+        try {
+            return Boolean.parseBoolean(reader.readLine());
+        } catch (IOException e) {
+            return false;
         }
     }
 
-    public synchronized boolean createPost(String postText, String username) {
-        try (FileWriter fileWriter = new FileWriter("userPosts.txt", true)) {
-            fileWriter.write(username + "|" + postText + "\n");
+    public boolean unblockUser(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        System.out.println("Who would you like to unblock?");
+        String username = scan.nextLine();
+        writer.write(username);
+        try {
+            if (reader.readLine().equals("SUCCESS")) {
+                System.out.println("You have unblocked " + username);
+            } else {
+                System.out.println("There was an error unblocking " + username);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+    public ArrayList<String[]> getFeed(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        ArrayList<String[]> allPosts = new ArrayList<>();
+
+        try {
+            String response = reader.readLine();
+            if (response.equals("get feed")) {
+                // Output the response directly if it's "get feed"
+                writer.println(response);
+                writer.flush();
+
+            } else {
+                // Parse the number of posts and handle accordingly
+                int numOfPosts = Integer.parseInt(response);
+
+                // Read information for each post and add an array of this info to allPosts
+                for (int p = 0; p < numOfPosts; p++) {
+                    allPosts.add(readPost(scan, reader, writer));
+                }
+
+                // Output the response
+                writer.println(response);
+                writer.flush();
+
+                // Output all posts if necessary (not included in this code snippet
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to retrieve feed");
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid response format: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return allPosts;
+    }
+
+    private String[] readPost (Scanner scan, BufferedReader reader, PrintWriter writer) {
+        String[] postInfo = new String[4];
+        try {
+            postInfo[0] = reader.readLine(); // Username
+            postInfo[1] = reader.readLine(); // PostID
+            return postInfo;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public boolean like(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            String filename = scan.nextLine();
+            writer.write(filename);
+            writer.println();
+            writer.flush();
             return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean dislike(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            String filename = scan.nextLine();
+            writer.write(filename);
+            writer.println();
+            writer.flush();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean hide(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        try {
+            String filename = scan.nextLine();
+            writer.write(filename); //Will probably be a button that has filename in GUI;
+            writer.println();
+            writer.flush();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean edit(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        String fileName = scan.nextLine(); //ig just enter the file name lmao
+        writer.write(fileName);
+        String text = scan.nextLine();
+        writer.write(text);
+        writer.write("END");
+        try {
+            return Boolean.parseBoolean(reader.readLine());
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean createComment(Scanner scan, BufferedReader reader, PrintWriter writer) {
+        String text = scan.nextLine(); //it's just going to have to be a single line for now. when we make the gui it can be multiple.
+        writer.write(text);//THIS IS NOT HOW IT WILL WORK IN THE FINAL VERSION it will use a while loop like the server side
+        String parent = scan.nextLine();
+        writer.write(parent);
+        writer.write("END");
+        try {
+            return Boolean.parseBoolean(reader.readLine());
+        } catch (IOException e) {
             return false;
         }
     }
