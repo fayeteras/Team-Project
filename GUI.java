@@ -1,8 +1,10 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+import java.awt.image.BufferedImage;
 /**
  * GUI.java
  *
@@ -53,7 +55,14 @@ public class GUI extends JPanel {
         // Initialize bottom panel
         bottomBanner = new JPanel(new BorderLayout());
         bottomBanner.setBackground(Color.LIGHT_GRAY);
-        bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
+        bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+        try {
+            BufferedImage image = ImageIO.read(new File("logo.png"));
+            ImageIcon imageIcon = new ImageIcon(image);
+            JLabel label = new JLabel(imageIcon);
+            bottomBanner.add(label);
+        } catch (IOException e) {
+        }
 
         // Initialize and configure homeButton
         homeButton = new JButton("Home");
@@ -84,6 +93,7 @@ public class GUI extends JPanel {
 
         // Add banner to the top of the homeScreen frame
         homeScreen.add(banner, BorderLayout.NORTH);
+        homeScreen.add(bottomBanner, BorderLayout.SOUTH);
     }
 
     // Individual Post Panel method
@@ -582,6 +592,7 @@ public synchronized boolean deleteComment(String commentText, String currentUser
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         JFrame viewFrame = new JFrame();
         viewFrame.add(mainPanel, BorderLayout.CENTER);
+        viewFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         return viewFrame;
     }
     //(Sean) userSearch GUI implementation
