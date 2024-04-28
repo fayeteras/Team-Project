@@ -161,12 +161,12 @@ public class Client implements ClientInterface {
                     usernameResponse = JOptionPane.showInputDialog(null,
                             usernamePrompt, "HELLo",
                             JOptionPane.QUESTION_MESSAGE);
-                    if (usernameResponse == null || usernameResponse.isEmpty()) {
+                    if (usernameResponse.isEmpty()) {
                         JOptionPane.showMessageDialog(null,
                                 "Enter a valid username", "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
                     }
-                } while (usernameResponse == null || usernameResponse.isEmpty());
+                } while (usernameResponse.isEmpty());
                 writer.write(usernameResponse);
                 writer.println();
                 writer.flush();
@@ -193,12 +193,12 @@ public class Client implements ClientInterface {
                         passwordResponse = JOptionPane.showInputDialog(null,
                                 passwordPrompt, "HELLo",
                                 JOptionPane.QUESTION_MESSAGE);
-                        if (passwordResponse == null || passwordResponse.isEmpty()) {
+                        if (passwordResponse.isEmpty()) {
                             JOptionPane.showMessageDialog(null,
                                     "Enter a valid password", "HELLo",
                                     JOptionPane.ERROR_MESSAGE);
                         }
-                    } while (passwordResponse == null || passwordResponse.isEmpty());
+                    } while (passwordResponse.isEmpty());
                     writer.write(passwordResponse);
                     writer.println();
                     writer.flush();
@@ -230,6 +230,8 @@ public class Client implements ClientInterface {
             return usernameResponse;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("User canceled or exited panel.");
         }
     }
 
@@ -244,12 +246,12 @@ public class Client implements ClientInterface {
                     usernameResponse = JOptionPane.showInputDialog(null,
                             usernamePrompt, "HELLo",
                             JOptionPane.QUESTION_MESSAGE);
-                    if (usernameResponse == null || usernameResponse.isEmpty()) {
+                    if (usernameResponse.isEmpty()) {
                         JOptionPane.showMessageDialog(null,
                                 "Enter a valid username", "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
                     }
-                } while (usernameResponse == null || usernameResponse.isEmpty());
+                } while (usernameResponse.isEmpty());
                 writer.write(usernameResponse);
                 writer.println();
                 writer.flush();
@@ -258,12 +260,12 @@ public class Client implements ClientInterface {
                     passwordResponse = JOptionPane.showInputDialog(null,
                             passwordPrompt, "HELLo",
                             JOptionPane.QUESTION_MESSAGE);
-                    if (passwordResponse == null || passwordResponse.isEmpty()) {
+                    if (passwordResponse.isEmpty()) {
                         JOptionPane.showMessageDialog(null,
                                 "Enter a valid password", "HELLo",
                                 JOptionPane.ERROR_MESSAGE);
                     }
-                } while (passwordResponse == null || passwordResponse.isEmpty());
+                } while (passwordResponse.isEmpty());
                 writer.write(passwordResponse);
                 writer.println();
                 writer.flush();
@@ -295,6 +297,8 @@ public class Client implements ClientInterface {
             return usernameResponse;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("User canceled or exited panel.");
         }
     }
 
