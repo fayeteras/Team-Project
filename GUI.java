@@ -97,7 +97,7 @@ public class GUI extends JPanel implements GUIInterface  {
                 if (postParts.length == 3) { // Check if the post has the correct number of parts
                     // Create a panel to hold the post content
                     JPanel postEntry = new JPanel(new BorderLayout());
-                    postEntry.setPreferredSize(new Dimension(600, 100)); // Increase height to accommodate the buttons
+                    postEntry.setPreferredSize(new Dimension(600, 70));
 
                     // Create a JLabel to display the post content
                     JLabel postLabel = new JLabel(postParts[0] + ": " + postParts[2]);
@@ -122,20 +122,22 @@ public class GUI extends JPanel implements GUIInterface  {
                     });
                     likeDislikePanel.add(dislikeButton);
 
-                    // Create a panel to hold the comment and add comment buttons
-                    JPanel commentsAddEdit = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                    Post thisPost = new Post(user.getUsername(), Integer.parseInt(postParts[1]));
 
-                    // Create view comments button
                     JButton commentButton = new JButton("View Comments");
                     commentButton.addActionListener(e -> {
                         // View comments for the current post
+                        String commentLine = null;
+                        JPanel commentsPanel = new JPanel();
+                        commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
                         try (BufferedReader commentReader = new BufferedReader(new FileReader("userComments.txt"))) {
-                            String commentLine;
-                            JPanel commentsPanel = new JPanel();
-                            commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
-                            while ((commentLine = commentReader.readLine()) != null) {
+                            commentLine = commentReader.readLine();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                            if (commentLine != null) {
                                 String[] commentParts = commentLine.split("\\|");
-                                if (commentParts.length == 3 && commentParts[1].equals(String.valueOf(post.getPostID()))) {
+                                if (commentParts.length == 3 && commentParts[1].equals(String.valueOf(thisPost.getPostID()))) {
                                     // Create a panel to hold the comment content
                                     JPanel commentEntry = new JPanel(new BorderLayout());
                                     commentEntry.setPreferredSize(new Dimension(600, 70));
@@ -190,11 +192,8 @@ public class GUI extends JPanel implements GUIInterface  {
                             // Display comments panel in a scrollable dialog
                             JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
                             JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
                     });
-                    commentsAddEdit.add(commentButton);
+                    likeDislikePanel.add(commentButton);
 
                     // Add comment button
                     JButton addCommentButton = new JButton("Add Comment");
@@ -209,8 +208,7 @@ public class GUI extends JPanel implements GUIInterface  {
                         submitButton.addActionListener(submitEv -> {
                             // Get the text from the comment field and add it to the post
                             String commentText = commentField.getText();
-
-                            boolean commentAdded = createComment(commentText, user.getUsername(), post);
+                            boolean commentAdded = createComment(commentField.getText(), currentUser.getUsername(), thisPost);
                             if (commentAdded) {
                                 JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                             } else {
@@ -231,11 +229,9 @@ public class GUI extends JPanel implements GUIInterface  {
                         addCommentDialog.setLocationRelativeTo(null);
                         addCommentDialog.setVisible(true);
                     });
-                    commentsAddEdit.add(addCommentButton); // Add the add comment button
+                    likeDislikePanel.add(addCommentButton);
 
                     postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
-                    postEntry.add(commentsAddEdit, BorderLayout.EAST); // Add the commentsAddEdit panel to the post entry
-
                     // Add the post entry panel to the posts panel
                     postsPanel.add(postEntry);
                 }
