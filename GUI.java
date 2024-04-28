@@ -20,6 +20,8 @@ public class GUI extends JPanel {
     User user;
     Client client;
 
+    Post post;
+
     JFrame homeScreen = new JFrame(); // Initialize homeScreen frame object
     JPanel banner;
     JPanel bottomBanner;
@@ -154,7 +156,7 @@ public class GUI extends JPanel {
         }
     }
 
-    public synchronized void viewPosts(User currentUser) {
+    public synchronized void viewPosts(User currentUser, Post post) {
         try (BufferedReader fileReader = new BufferedReader(new FileReader("userPosts.txt"))) {
             String line;
             JPanel postsPanel = new JPanel();
@@ -188,6 +190,47 @@ public class GUI extends JPanel {
                         recordLikeDislikePost(postParts[1], "dislike");
                     });
                     likeDislikePanel.add(dislikeButton);
+
+                    JPanel commentsAddEdit = new JPanel(new GridLayout(1, 3));
+                    JButton commentButton = new JButton("View Comments");
+                    commentButton.addActionListener(e -> viewComments(post, user));
+                    commentsAddEdit.add(commentButton);
+
+                    // Add comment button
+                    JButton addCommentButton = new JButton("Add Comment");
+                    addCommentButton.addActionListener(e -> {
+                        // Create a dialog to add a comment
+                        JDialog addCommentDialog = new JDialog(homeScreen, "Add Comment", true);
+                        addCommentDialog.setLayout(new BorderLayout());
+
+                        // Text field to enter comment
+                        JTextField commentField = new JTextField(20);
+                        JButton submitButton = new JButton("Submit");
+                        submitButton.addActionListener(submitEv -> {
+                            // Get the text from the comment field and add it to the post
+                            String commentText = commentField.getText();
+                            boolean commentAdded = createComment(commentField.getText(), user.getUsername(), post);
+                            if (commentAdded) {
+                                JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Failed to add comment.", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                            addCommentDialog.dispose();
+                        });
+
+                        // Add components to the dialog
+                        JPanel addCommentPanel = new JPanel();
+                        addCommentPanel.add(new JLabel("Enter your comment: "));
+                        addCommentPanel.add(commentField);
+                        addCommentPanel.add(submitButton);
+                        addCommentDialog.add(addCommentPanel, BorderLayout.CENTER);
+
+                        // Set dialog properties
+                        addCommentDialog.setSize(300, 150);
+                        addCommentDialog.setLocationRelativeTo(null);
+                        addCommentDialog.setVisible(true);
+                    });
+                    commentsAddEdit.add(addCommentButton);
 
                     postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
 
@@ -411,7 +454,7 @@ public class GUI extends JPanel {
         });
         postsPanel.add(addPostButton);
 
-        /* addPostButton.addActionListener( a -> {
+        addPostButton.addActionListener( a -> {
             String postText = JOptionPane.showInputDialog(null,
                     "Enter post text", "Social Media Platform",
                     JOptionPane.QUESTION_MESSAGE);
@@ -421,11 +464,12 @@ public class GUI extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(null, "Failure posting", "Failure", JOptionPane.INFORMATION_MESSAGE);
             }
-        }); */
+        });
 
         JButton viewPostsButton = new JButton("View Posts");
         viewPostsButton.addActionListener(e -> {
-            viewPosts(user);
+           
+            viewPosts(user, post);
         });
         postsPanel.add(viewPostsButton);
 
@@ -503,13 +547,9 @@ public class GUI extends JPanel {
         JPanel mainPanel = new JPanel(new GridLayout(0, 1));
         JScrollPane scrollPane = new JScrollPane(profilePanel);
         JScrollPane postScrollPane = new JScrollPane();
-        for (int i = 0; i < viewUser.getPostsList().size(); i++) {
-            JLabel postText = new JLabel(viewUser.getPostsList().get(i).getText());
-            postText.setVerticalAlignment(JLabel.TOP);
-            postText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
-            postScrollPane.add(postText);
+        for (int i = 0; i < user.getPostsList().size(); i++) {
+            postScrollPane.add(UserPostPanel(user.getPostsList().get(i)));
         }
-        
 
         mainPanel.add(scrollPane);
         mainPanel.add(postScrollPane);
@@ -517,7 +557,6 @@ public class GUI extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         JFrame viewFrame = new JFrame();
         viewFrame.add(mainPanel, BorderLayout.CENTER);
-        viewFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         return viewFrame;
     }
     //(Sean) userSearch GUI implementation
