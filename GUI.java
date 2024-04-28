@@ -83,7 +83,7 @@ public class GUI extends JPanel {
         // Add banner to the top of the homeScreen frame
         homeScreen.add(banner, BorderLayout.NORTH);
     }
-    
+
     // Individual Post Panel method
     public synchronized void viewComments(Post post, User currentUser) {
         try (BufferedReader fileReader = new BufferedReader(new FileReader("userComments.txt"))) {
@@ -162,37 +162,37 @@ public class GUI extends JPanel {
             while ((line = fileReader.readLine()) != null) {
                 String[] postParts = line.split("\\|");
                 if (postParts.length == 2) { // Check if the comment has the correct number of parts
-                        // Create a panel to hold the comment, username, like button, dislike button, and delete button
-                        JPanel postEntry = new JPanel(new BorderLayout());
-                        postEntry.setPreferredSize(new Dimension(600, 70));
+                    // Create a panel to hold the comment, username, like button, dislike button, and delete button
+                    JPanel postEntry = new JPanel(new BorderLayout());
+                    postEntry.setPreferredSize(new Dimension(600, 70));
 
-                        // Create a JLabel to display the comment content and username
-                        JLabel commentLabel = new JLabel(postParts[0] + ": " + postParts[1]);
-                        postEntry.add(commentLabel, BorderLayout.CENTER);
+                    // Create a JLabel to display the comment content and username
+                    JLabel commentLabel = new JLabel(postParts[0] + ": " + postParts[1]);
+                    postEntry.add(commentLabel, BorderLayout.CENTER);
 
-                        // Create a panel to hold the like and dislike buttons
-                        JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                    // Create a panel to hold the like and dislike buttons
+                    JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-                        // Create like button for the comment
-                        JButton likeButton = new JButton("Like");
-                        likeButton.addActionListener(e -> {
-                            // Handle like action
-                            recordLikeDislikePost(postParts[1], "like");
-                        });
-                        likeDislikePanel.add(likeButton);
+                    // Create like button for the comment
+                    JButton likeButton = new JButton("Like");
+                    likeButton.addActionListener(e -> {
+                        // Handle like action
+                        recordLikeDislikePost(postParts[1], "like");
+                    });
+                    likeDislikePanel.add(likeButton);
 
-                        // Create dislike button for the comment
-                        JButton dislikeButton = new JButton("Dislike");
-                        dislikeButton.addActionListener(e -> {
-                            // Handle dislike action
-                            recordLikeDislikePost(postParts[1], "dislike");
-                        });
-                        likeDislikePanel.add(dislikeButton);
+                    // Create dislike button for the comment
+                    JButton dislikeButton = new JButton("Dislike");
+                    dislikeButton.addActionListener(e -> {
+                        // Handle dislike action
+                        recordLikeDislikePost(postParts[1], "dislike");
+                    });
+                    likeDislikePanel.add(dislikeButton);
 
-                        postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
+                    postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
 
-                        // Add the comment entry panel to the comments panel
-                        postsPanel.add(postEntry);
+                    // Add the comment entry panel to the comments panel
+                    postsPanel.add(postEntry);
                 }
             }
             JScrollPane commentsScrollPane = new JScrollPane(postsPanel);
@@ -244,8 +244,8 @@ public class GUI extends JPanel {
                     }
                 }
             }
-                // Write the current line to the temp file
-                writer.write(currentLine + System.getProperty("line.separator"));
+            // Write the current line to the temp file
+            writer.write(currentLine + System.getProperty("line.separator"));
 
             // Close readers and writers
             writer.close();
@@ -411,7 +411,7 @@ public class GUI extends JPanel {
         });
         postsPanel.add(addPostButton);
 
-        addPostButton.addActionListener( a -> {
+        /* addPostButton.addActionListener( a -> {
             String postText = JOptionPane.showInputDialog(null,
                     "Enter post text", "Social Media Platform",
                     JOptionPane.QUESTION_MESSAGE);
@@ -421,7 +421,7 @@ public class GUI extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(null, "Failure posting", "Failure", JOptionPane.INFORMATION_MESSAGE);
             }
-        });
+        }); */
 
         JButton viewPostsButton = new JButton("View Posts");
         viewPostsButton.addActionListener(e -> {
@@ -465,7 +465,7 @@ public class GUI extends JPanel {
             blockPanel.add(blockButton);
             blockButton.addActionListener(block -> {
                 user.unblockUser(viewUser.getUsername());
-        });
+            });
         } else {
             JButton blockButton = new JButton("Block");
             blockPanel.add(blockButton);
@@ -473,7 +473,7 @@ public class GUI extends JPanel {
                 user.blockUser(viewUser.getUsername());
             });
         }
-        
+
         bottomPanel.add(blockPanel, BorderLayout.WEST);
 
         // View friends and add friend buttons
@@ -481,7 +481,7 @@ public class GUI extends JPanel {
         // JButton viewFriendsButton = new JButton("Friends");
         // friendsPanel.add(viewFriendsButton);
 
-        if (user.isFriend(viewUser.getUsername())) { 
+        if (user.isFriend(viewUser.getUsername())) {
             JButton addFriendButton = new JButton("Remove Friend");
             friendsPanel.add(addFriendButton);
             addFriendButton.addActionListener(friend -> {
@@ -495,7 +495,7 @@ public class GUI extends JPanel {
             });
         }
 
-        
+
         bottomPanel.add(friendsPanel, BorderLayout.EAST);
         profilePanel.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -506,10 +506,10 @@ public class GUI extends JPanel {
         for (int i = 0; i < user.getPostsList().size(); i++) {
             postScrollPane.add(UserPostPanel(user.getPostsList().get(i)));
         }
-        
+
         mainPanel.add(scrollPane);
         mainPanel.add(postScrollPane);
-        
+
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         JFrame viewFrame = new JFrame();
         viewFrame.add(mainPanel, BorderLayout.CENTER);
