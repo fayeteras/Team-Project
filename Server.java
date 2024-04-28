@@ -393,10 +393,13 @@ public class Server implements Runnable, ServerInterface {
 
     public boolean likePost(Database db, BufferedReader reader, PrintWriter writer) {
         try {
-            String toLike = reader.readLine(); //I'm going to say that it'll give the filename
-            Post post = new Post("a", toLike);
-            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
-            return post.like(user.getUsername());
+            String[] postInfo = new String[2];
+            postInfo[0] = reader.readLine(); //Username
+            postInfo[1] = reader.readLine(); //PostID
+            Post post = new Post(postInfo[0], Integer.parseInt(postInfo[1]));
+            boolean success = post.like(user.getUsername());
+            writer.println(String.valueOf(success));
+            return success;
         } catch (IOException e) {
             return false;
         }
@@ -404,10 +407,13 @@ public class Server implements Runnable, ServerInterface {
 
     public boolean dislikePost(Database db, BufferedReader reader, PrintWriter writer) {
         try {
-            String toDislike = reader.readLine(); //I'm going to say that it'll give the filename
-            Post post = new Post("a", toDislike);
-            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
-            return post.dislike(user.getUsername());
+            String[] postInfo = new String[2];
+            postInfo[0] = reader.readLine(); //Username
+            postInfo[1] = reader.readLine(); //PostID
+            Post post = new Post(postInfo[0], Integer.parseInt(postInfo[1]));
+            boolean success = post.dislike(user.getUsername());
+            writer.println(String.valueOf(success));
+            return success;
         } catch (IOException e) {
             return false;
         }
@@ -415,10 +421,13 @@ public class Server implements Runnable, ServerInterface {
 
     public boolean hidePost(Database db, BufferedReader reader, PrintWriter writer) {
         try {
-            String toHide = reader.readLine(); //I'm going to say that it'll give the filename
-            Post post = new Post("a", toHide);
-            //(Noah) you don't need the username and it's not written anywhere so it's just a placeholder.
-            return post.hide(user.getUsername());
+            String[] postInfo = new String[2];
+            postInfo[0] = reader.readLine(); //Username
+            postInfo[1] = reader.readLine(); //PostID
+            Post post = new Post(postInfo[0], Integer.parseInt(postInfo[1]));
+            boolean success = post.hide(user.getUsername());
+            writer.println(String.valueOf(success));
+            return success;
         } catch (IOException e) {
             return false;
         }

@@ -202,6 +202,20 @@ public class Post implements PostInterface {
         return edited;
     }
 
+    public boolean isLiked(String username) {
+        if (likesList.contains(username)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isDisliked(String username) {
+        if (dislikesList.contains(username)) {
+            return true;
+        }
+        return false;
+    }
+
     public int[] getCurrentTime() {//(Tyler) Added Timestamp / getCurrentTime() Method
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         //System.out.println("Timestamp : " + ts); <- Full TimeStamp

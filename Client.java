@@ -61,11 +61,8 @@ public class Client implements ClientInterface {
                     // Create an instance of the GUI class
                     GUI gui = new GUI(finalUsername, testClient);
 
-                    // Create a JScrollPane with all test posts using the GUI instance
-                    JScrollPane postsPanel = gui.AllPostsPanel(testClient.getFeed(scan, reader, writer) , new Post());
-
                     // Assign the postsPanel to the panel property of the GUI instance
-                    gui.panel = postsPanel;
+                    gui.panel = gui.AllPostsPanel(testClient.getFeed(scan, reader, writer));
 
                     // Add the panel to the homeScreen frame
                     gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
@@ -83,6 +80,8 @@ public class Client implements ClientInterface {
                     // Make the homeScreen frame visible
                     gui.homeScreen.setVisible(true);
                 });
+
+                System.out.println("HERE");
 
                 /*while (true) {
                     String commandResponse = null;
@@ -453,6 +452,32 @@ public class Client implements ClientInterface {
         writer.flush();
         try {
             return Boolean.parseBoolean(reader.readLine());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean likePost(Post post) {
+       try {
+            writer.write(post.getUsername());
+            writer.write(post.getPostID());
+            if (reader.readLine().equals("true")) {
+            return true;
+            }
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean dislikePost(Post post) {
+        try {
+            writer.write(post.getUsername());
+            writer.write(post.getPostID());
+            if (reader.readLine().equals("true")) {
+            return true;
+            }
+            return false;
         } catch (IOException e) {
             return false;
         }
