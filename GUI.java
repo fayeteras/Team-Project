@@ -647,6 +647,7 @@ public class GUI extends JPanel {
     }
 
     public synchronized boolean createPost(String postText, String username) {
+        client.createPost(postText, username);
         try (FileWriter fileWriter = new FileWriter("userPosts.txt", true)) {
             fileWriter.write(username + "|" + Post.getTotalPosts() + "|" + postText + "\n");
             return true;
