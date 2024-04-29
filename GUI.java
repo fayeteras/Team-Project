@@ -133,7 +133,7 @@ public class GUI extends JPanel implements GUIInterface {
 
                         // Create a panel to hold the post content
                         JPanel postEntry = new JPanel(new BorderLayout());
-                        postEntry.setPreferredSize(new Dimension(600, 70));
+                        postEntry.setPreferredSize(new Dimension(600, 90));
                         postEntry.setBorder(new LineBorder(SECONDARY_COLOR, 1));
 
                         //Top Banner
