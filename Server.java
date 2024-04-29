@@ -45,12 +45,10 @@ public class Server implements Runnable, ServerInterface {
                 createUser(db, reader, writer);
             }
             //Everything below should be the same as Phase 2
-            while (true) {
-                /* (Noah) i don't think we need this
+            /* while (true) {
                 writer.write("What would you like to do, User?");
                 writer.println();
                 writer.flush();
-                */
 
                 command = reader.readLine();
                 System.out.println("ae");
@@ -116,9 +114,11 @@ public class Server implements Runnable, ServerInterface {
                         editComment(db, reader, writer);
                         break;
                 }
-            }
+            } */
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("User canceled or exited panel in Client.");
         }
     }
 
