@@ -75,13 +75,7 @@ public class Client implements ClientInterface {
 
                     // Make the homeScreen frame visible
                     gui.homeScreen.setVisible(true);
-                    gui.homeScreen.add(gui.panel, BorderLayout.CENTER);
-
-                    // Set the default close operation
-                    gui.homeScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-                    // Make the homeScreen frame visible
-                    gui.homeScreen.setVisible(true);
+                    
                 });
 
                 /*while (true) {
