@@ -1,5 +1,1 @@
-//format here
-Username|PostID|Content
-//examples here
-OurLordAndSavni|1|This is my first post!
-MitchellDanielsBlvd|2|Just had a BLAST in CS180 today!
+
