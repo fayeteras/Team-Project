@@ -75,7 +75,7 @@ public class Client implements ClientInterface {
 
                     // Make the homeScreen frame visible
                     gui.homeScreen.setVisible(true);
-                    
+
                 });
 
                 /*while (true) {
@@ -438,7 +438,6 @@ public class Client implements ClientInterface {
         return true;    }
 
     public boolean createPost(String username, String text) {
-        System.out.println("aeioru");
         writer.write("createPost");
         writer.println();
         writer.flush();
@@ -580,5 +579,13 @@ public class Client implements ClientInterface {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public static void setWriter(PrintWriter writer) {
+        Client.writer = writer;
+    }
+
+    public static void setReader(BufferedReader reader) {
+        Client.reader = reader;
     }
 }
