@@ -27,7 +27,6 @@ public class Server implements Runnable, ServerInterface {
     @Override
     public void run() {
         try {
-            System.out.println("please");
             Database db = new Database();
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -40,7 +39,6 @@ public class Server implements Runnable, ServerInterface {
             String inOrUp = reader.readLine();
             if (inOrUp.equals("in")) {
                 signIn(db, reader, writer);
-                System.out.println("signed in");
             } else {
                 createUser(db, reader, writer);
             }
@@ -602,7 +600,6 @@ public class Server implements Runnable, ServerInterface {
 
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server started and listening on port " + PORT);
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 Server server = new Server(clientSocket);
