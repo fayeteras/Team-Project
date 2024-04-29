@@ -124,8 +124,13 @@ public class User implements UserInterface {
     // Method to add a friend
     public boolean addFriend(String username) {
         if (!friendList.contains(username)) {
-            friendList.add(username);
-            return writeFile(friendsFile, friendList); // Write updated friendList to file
+            User blockedUser = new User(username);
+            if (blockedUser.getBlockList().contains(this.username)) {
+                return false;
+            } else {
+                friendList.add(username);
+                return writeFile(friendsFile, friendList); // Write updated friendList to file
+            }
         }
         return false;
     }
@@ -143,6 +148,14 @@ public class User implements UserInterface {
     public boolean blockUser(String username) {
         if (!blockList.contains(username)) {
             blockList.add(username);
+            if (friendList.contains(username)) {
+                friendList.remove(username);
+            }
+            User blockedUser = new User(username);
+            if (blockedUser.getFriendList().contains(this.username)) {
+                blockedUser.getFriendList().remove(this.username);
+            }
+            blockedUser.writeFile(blockedUser.friendsFile, blockedUser.friendList);
             return writeFile(blockedFile, blockList); // Write updated blockList to file
         }
         return false;
