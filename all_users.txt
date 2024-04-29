@@ -1,5 +1,0 @@
-//format here
-Username|Password
-//examples here
-BigGuy|Sm@llGuy
-Seanski|D@Man123
