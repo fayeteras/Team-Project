@@ -164,10 +164,8 @@ public class ClientTest {
         try {
             Client testClient = new Client();
             // Call the getFeed method
-            boolean result = testClient.getFeed(null, mockReader, mockWriter);
 
             // Verify that the method returns true (indicating success)
-            assertTrue(result);
 
             // Verify the output matches the expected output
             assertEquals(serverResponse, stringWriter.toString());

@@ -20,6 +20,13 @@ import java.io.*;
  */
 
 public class GUI extends JPanel implements GUIInterface {
+    // consistent colors, fonts, and button sizes
+    private static final Color PRIMARY_COLOR = new Color(161, 62, 62); // Red
+    private static final Color SECONDARY_COLOR = new Color(190, 131, 90); // Orange
+    private static final Font HEADER_FONT = new Font("Arial", Font.BOLD, 24);
+    private static final Font TEXT_FONT = new Font("Arial", Font.PLAIN, 16);
+    private static final Dimension BUTTON_SIZE = new Dimension(100, 40);
+
     User user;
     Client client;
 
@@ -50,12 +57,12 @@ public class GUI extends JPanel implements GUIInterface {
 
         // Initialize banner panel
         banner = new JPanel(new BorderLayout());
-        banner.setBackground(Color.LIGHT_GRAY);
+        banner.setBackground(SECONDARY_COLOR);
         banner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 50));
 
         // Initialize bottom panel
         bottomBanner = new JPanel(new BorderLayout());
-        bottomBanner.setBackground(Color.LIGHT_GRAY);
+        bottomBanner.setBackground(SECONDARY_COLOR);
         bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
         try {
             BufferedImage image = ImageIO.read(new File("logo.png"));
@@ -67,29 +74,29 @@ public class GUI extends JPanel implements GUIInterface {
 
         // Initialize and configure homeButton
         homeButton = new JButton("Home");
-        homeButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
-        homeButton.setForeground(Color.BLUE);
+        homeButton.setFont(HEADER_FONT);
+        homeButton.setForeground(PRIMARY_COLOR);
         banner.add(homeButton, BorderLayout.WEST);
 
         // Initialize and configure search panel
         JPanel searchPanel = new JPanel(new BorderLayout());
-        searchPanel.setBackground(Color.LIGHT_GRAY);
+        searchPanel.setBackground(SECONDARY_COLOR);
         searchField = new JTextField("Search");
-        searchField.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        searchField.setFont(TEXT_FONT);
         searchField.setColumns(20);
         searchPanel.add(searchField, BorderLayout.WEST);
         // Initialize and configure searchButton
         searchButton = new JButton("Search");
         searchButton.addActionListener(searchListener);
-        searchButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 30));
-        searchButton.setForeground(Color.BLUE);
+        searchButton.setFont(HEADER_FONT);
+        searchButton.setForeground(PRIMARY_COLOR);
         searchPanel.add(searchButton, BorderLayout.CENTER);
         banner.add(searchPanel, BorderLayout.CENTER);
 
         // Initialize and configure username button
         usernameButton = new JButton(user.getUsername());
-        usernameButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 25));
-        usernameButton.setForeground(Color.BLUE);
+        usernameButton.setFont(HEADER_FONT);
+        usernameButton.setForeground(PRIMARY_COLOR);
         banner.add(usernameButton, BorderLayout.EAST);
 
         // Add banner to the top of the homeScreen frame
@@ -127,13 +134,14 @@ public class GUI extends JPanel implements GUIInterface {
                         // Create a panel to hold the post content
                         JPanel postEntry = new JPanel(new BorderLayout());
                         postEntry.setPreferredSize(new Dimension(600, 70));
-                        postEntry.setBorder(new LineBorder(Color.GRAY, 1));
+                        postEntry.setBorder(new LineBorder(SECONDARY_COLOR, 1));
 
                         //Top Banner
                         JPanel topBanner = new JPanel(new BorderLayout());
                         topBanner.setPreferredSize(new Dimension(600, 20));
-                        topBanner.setBackground(Color.LIGHT_GRAY);
+                        topBanner.setBackground(SECONDARY_COLOR);
                         JLabel usernameLabel = new JLabel(postParts[0]);
+                        usernameLabel.setFont(HEADER_FONT);
                         topBanner.add(usernameLabel, BorderLayout.WEST);
 
                         //Hide Post Button
@@ -145,6 +153,7 @@ public class GUI extends JPanel implements GUIInterface {
 
                         // Create a JLabel to display the post content
                         JLabel postLabel = new JLabel(postParts[2]);
+                        postLabel.setFont(TEXT_FONT);
                         postEntry.add(postLabel, BorderLayout.CENTER);
 
                         // Create a panel to hold the like and dislike buttons
@@ -185,6 +194,7 @@ public class GUI extends JPanel implements GUIInterface {
 
                                         // Create a JLabel to display the comment content
                                         JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
+                                        commentLabel.setFont(TEXT_FONT);
                                         commentEntry.add(commentLabel, BorderLayout.CENTER);
 
                                         // Create a panel to hold like and dislike buttons
@@ -291,6 +301,7 @@ public class GUI extends JPanel implements GUIInterface {
 
                 // Create a JLabel to display the post content
                 JLabel postLabel = new JLabel("Your post feed is empty! Why don't you find some friends?");
+                postLabel.setFont(TEXT_FONT);
                 postEntry.add(postLabel, BorderLayout.CENTER);
                 postsPanel.add(postEntry);
             }
@@ -426,20 +437,20 @@ public class GUI extends JPanel implements GUIInterface {
         JPanel postPanel = new JPanel(new BorderLayout());
         postPanel.setPreferredSize(new Dimension(600, 150));
         postPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+                BorderFactory.createLineBorder(SECONDARY_COLOR, 1),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 
         // Username label
         JLabel usernameLabel = new JLabel(" " + post.getUsername());
-        usernameLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
+        usernameLabel.setFont(HEADER_FONT);
         usernameLabel.setForeground(Color.RED);
         postPanel.add(usernameLabel, BorderLayout.NORTH);
 
         // Post text area
         JLabel postText = new JLabel(post.getText());
         postText.setVerticalAlignment(JLabel.TOP);
-        postText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+        postText.setFont(TEXT_FONT);
         JScrollPane postScrollPane = new JScrollPane(postText);
         postPanel.add(postScrollPane, BorderLayout.CENTER);
 
@@ -450,10 +461,10 @@ public class GUI extends JPanel implements GUIInterface {
         JPanel likesDislikesPanel = new JPanel(new GridLayout(1, 4));
         JLabel likesLabel = new JLabel(String.format("Likes: " + post.getLikesCount()));
         JButton likeButton = new JButton("+");
-        likesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        likesLabel.setFont(TEXT_FONT);
         JLabel dislikesLabel = new JLabel(String.format("Dislikes: " + post.getDislikesCount()));
         JButton dislikeButton = new JButton("-");
-        dislikesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        dislikesLabel.setFont(TEXT_FONT);
         likesDislikesPanel.add(likesLabel);
         likesDislikesPanel.add(likeButton);
         likesDislikesPanel.add(dislikesLabel);
@@ -576,20 +587,20 @@ public class GUI extends JPanel implements GUIInterface {
         JPanel profilePanel = new JPanel(new BorderLayout());
         profilePanel.setPreferredSize(new Dimension(600, 150));
         profilePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+                BorderFactory.createLineBorder(SECONDARY_COLOR, 1),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
 
         // Username label
         JLabel usernameLabel = new JLabel(" " + viewUser.getUsername());
-        usernameLabel.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 20));
-        usernameLabel.setForeground(Color.BLUE);
+        usernameLabel.setFont(HEADER_FONT);
+        usernameLabel.setForeground(PRIMARY_COLOR);
         profilePanel.add(usernameLabel, BorderLayout.NORTH);
 
         // Friends list
-        JLabel friendsList = new JLabel(viewUser.getFriendList().toString());
+        JLabel friendsList = new JLabel(viewUser.getUsername() + "'s friends: " + viewUser.getFriendList().toString());
         friendsList.setVerticalAlignment(JLabel.TOP);
-        friendsList.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+        friendsList.setFont(TEXT_FONT);
         JScrollPane friendScrollPane = new JScrollPane(friendsList);
         profilePanel.add(friendScrollPane, BorderLayout.CENTER);
 
