@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -115,14 +116,35 @@ public class GUI extends JPanel implements GUIInterface {
                         }
                     }
                     if (isFriendPost) {
+                        Post thisPost = new Post(user.getUsername(), Integer.parseInt(postParts[1]));
+                        if (isPostHidden(thisPost)) { //Don't show post if user has hidden it already
+                            continue;
+                        }
+
                         //If a friend post is found, the feed is not empty
                         isFeedEmpty = false;
+
                         // Create a panel to hold the post content
                         JPanel postEntry = new JPanel(new BorderLayout());
                         postEntry.setPreferredSize(new Dimension(600, 70));
+                        postEntry.setBorder(new LineBorder(Color.GRAY, 1));
+
+                        //Top Banner
+                        JPanel topBanner = new JPanel(new BorderLayout());
+                        topBanner.setPreferredSize(new Dimension(600, 20));
+                        topBanner.setBackground(Color.LIGHT_GRAY);
+                        JLabel usernameLabel = new JLabel(postParts[0]);
+                        topBanner.add(usernameLabel, BorderLayout.WEST);
+
+                        //Hide Post Button
+                        JButton hidePost = new JButton("Hide");
+                        topBanner.add(hidePost, BorderLayout.EAST);
+                        hidePost.addActionListener(e -> {
+                            hidePost(thisPost, postEntry);
+                        });
 
                         // Create a JLabel to display the post content
-                        JLabel postLabel = new JLabel(postParts[0] + ": " + postParts[2]);
+                        JLabel postLabel = new JLabel(postParts[2]);
                         postEntry.add(postLabel, BorderLayout.CENTER);
 
                         // Create a panel to hold the like and dislike buttons
@@ -146,7 +168,6 @@ public class GUI extends JPanel implements GUIInterface {
                         });
                         likeDislikePanel.add(dislikeButton);
 
-                        Post thisPost = new Post(user.getUsername(), Integer.parseInt(postParts[1]));
 
                         JButton commentButton = new JButton("View Comments");
                         commentButton.addActionListener(e -> {
@@ -257,6 +278,7 @@ public class GUI extends JPanel implements GUIInterface {
                         likeDislikePanel.add(addCommentButton);
 
                         postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
+                        postEntry.add(topBanner, BorderLayout.NORTH);
                         // Add the post entry panel to the posts panel
                         postsPanel.add(postEntry);
                     }
@@ -279,6 +301,59 @@ public class GUI extends JPanel implements GUIInterface {
         }
     }
 
+    private void hidePost(Post post, JPanel postEntry) {
+        // Create a confirmation dialog asking the user if they want to hide the post
+        int response = JOptionPane.showConfirmDialog(
+                null,
+                "Are you sure you want to hide this post? You cannot undo this action.",
+                "Hide Post",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        // If the user clicks "Yes" (value 0), proceed with hiding the post
+        if (response == JOptionPane.YES_OPTION) {
+            // Define the path to the file where hidden posts will be stored
+            String hiddenPostsFilePath = "hiddenPosts.txt";
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(hiddenPostsFilePath, true))) {
+                // Write the username and post ID to the file
+                // Format: "username|postID"
+                writer.write(user.getUsername() + "|" + post.getPostID() + "\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Remove the post entry panel from the parent panel
+            JPanel parentPanel = (JPanel) postEntry.getParent();
+            parentPanel.remove(postEntry);
+
+            // Revalidate and repaint the parent panel to update the GUI
+            parentPanel.revalidate();
+            parentPanel.repaint();
+        }
+    }
+
+    private boolean isPostHidden(Post post) {
+        // Define the path to the file where hidden posts are stored
+        String hiddenPostsFilePath = "hiddenPosts.txt";
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(hiddenPostsFilePath))) {
+            String line;
+            // Check each line in the file
+            while ((line = reader.readLine()) != null) {
+                // Split the line by "|"
+                String[] parts = line.split("\\|");
+                // Check if the line matches the current user's username and post ID
+                if (parts.length == 2 && parts[0].equals(user.getUsername()) && Integer.parseInt(parts[1]) == post.getPostID()) {
+                    return true; // Post is hidden
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false; // Post is not hidden
+    }
 
 
     public synchronized void recordLikeDislike(String commentText, String action) {
