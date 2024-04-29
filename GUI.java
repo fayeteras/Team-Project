@@ -609,7 +609,7 @@ public class GUI extends JPanel implements GUIInterface {
         });
         postsPanel.add(addPostButton);
 
-        JButton viewPostsButton = new JButton("Get Friend Feed");
+        JButton viewPostsButton = new JButton("Get Post Feed");
         viewPostsButton.setPreferredSize(new Dimension(100, 50));
         viewPostsButton.addActionListener(e -> {
             viewPosts(user);
