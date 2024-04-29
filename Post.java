@@ -36,7 +36,7 @@ public class Post implements PostInterface {
     private static final String POST_COUNT_FILE = "postCount.txt";
 
 
-    public Post() { //(Noah) this is kind of weird but this one just sets the totalPosts.
+    /* public Post() { //(Noah) this is kind of weird but this one just sets the totalPosts.
         try {
             File f = new File("postCount.txt");
             FileReader fr = new FileReader(f);
@@ -46,7 +46,7 @@ public class Post implements PostInterface {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    } */
 
     public Post(String username, String text, String fileName) {
         this.username = username;
