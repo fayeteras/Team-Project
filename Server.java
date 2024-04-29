@@ -150,6 +150,7 @@ public class Server implements Runnable, ServerInterface {
                         //an ArrayList of them. Idk if that's helpful at all.
                         userArray.add(newUser);
                         user = newUser;
+                        user.addFriend(user.getUsername());
                         yesOrNo = "No";
                         writer.write("Account created. Welcome " + username + "! Loading our platform now...");
                         writer.println();
@@ -188,6 +189,7 @@ public class Server implements Runnable, ServerInterface {
                     yesOrNo = "No";
                     writer.write("Login successful. Welcome " + username + "! Loading our platform now...");
                     user = new User(username);
+                    user.addFriend(user.getUsername());
                     writer.println();
                     writer.flush();
                 } else {
