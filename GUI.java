@@ -132,62 +132,62 @@ public class GUI extends JPanel implements GUIInterface  {
                             JPanel commentsPanel = new JPanel();
                             commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
                             while ((commentLine = commentReader.readLine()) != null) {
-                            String[] commentParts = commentLine.split("\\|");
-                            if (commentParts.length == 3 && commentParts[1].equals(String.valueOf(thisPost.getPostID()))) {
-                                // Create a panel to hold the comment content
-                                JPanel commentEntry = new JPanel(new BorderLayout());
-                                commentEntry.setPreferredSize(new Dimension(600, 70));
+                                String[] commentParts = commentLine.split("\\|");
+                                if (commentParts.length == 3 && commentParts[1].equals(String.valueOf(thisPost.getPostID()))) {
+                                    // Create a panel to hold the comment content
+                                    JPanel commentEntry = new JPanel(new BorderLayout());
+                                    commentEntry.setPreferredSize(new Dimension(600, 70));
 
-                                // Create a JLabel to display the comment content
-                                JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
-                                commentEntry.add(commentLabel, BorderLayout.CENTER);
+                                    // Create a JLabel to display the comment content
+                                    JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
+                                    commentEntry.add(commentLabel, BorderLayout.CENTER);
 
-                                // Create a panel to hold like and dislike buttons
-                                JPanel commentLikeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                                    // Create a panel to hold like and dislike buttons
+                                    JPanel commentLikeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-                                // Create like button for the comment
-                                JButton commentLikeButton = new JButton("Like");
-                                commentLikeButton.addActionListener(ev -> {
-                                    // Handle like action for comment
-                                    recordLikeDislike(commentParts[2], "like");
-                                });
-                                commentLikeDislikePanel.add(commentLikeButton);
-
-                                // Create dislike button for the comment
-                                JButton commentDislikeButton = new JButton("Dislike");
-                                commentDislikeButton.addActionListener(ev -> {
-                                    // Handle dislike action for comment
-                                    recordLikeDislike(commentParts[2], "dislike");
-                                });
-                                commentLikeDislikePanel.add(commentDislikeButton);
-
-                                // Check if the current user is the owner of the post or the comment author
-                                if (commentParts[0].equals(user.getUsername()) || postParts [0].equals(user.getUsername())) {
-                                    // Create delete button for the comment
-                                    JButton deleteButton = new JButton("Delete");
-                                    deleteButton.addActionListener(ev -> {
-                                        // Handle delete action for comment
-                                        if (deleteComment(commentParts[2], commentParts[0])) {
-                                            // Remove the comment entry from the panel if deletion is successful
-                                            commentsPanel.remove(commentEntry);
-                                            commentsPanel.revalidate();
-                                            commentsPanel.repaint();
-                                        } else {
-                                            JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
-                                        }
+                                    // Create like button for the comment
+                                    JButton commentLikeButton = new JButton("Like");
+                                    commentLikeButton.addActionListener(ev -> {
+                                        // Handle like action for comment
+                                        recordLikeDislike(commentParts[2], "like");
                                     });
-                                    commentLikeDislikePanel.add(deleteButton);
+                                    commentLikeDislikePanel.add(commentLikeButton);
+
+                                    // Create dislike button for the comment
+                                    JButton commentDislikeButton = new JButton("Dislike");
+                                    commentDislikeButton.addActionListener(ev -> {
+                                        // Handle dislike action for comment
+                                        recordLikeDislike(commentParts[2], "dislike");
+                                    });
+                                    commentLikeDislikePanel.add(commentDislikeButton);
+
+                                    // Check if the current user is the owner of the post or the comment author
+                                    if (commentParts[0].equals(user.getUsername()) || postParts [0].equals(user.getUsername())) {
+                                        // Create delete button for the comment
+                                        JButton deleteButton = new JButton("Delete");
+                                        deleteButton.addActionListener(ev -> {
+                                            // Handle delete action for comment
+                                            if (deleteComment(commentParts[2], commentParts[0])) {
+                                                // Remove the comment entry from the panel if deletion is successful
+                                                commentsPanel.remove(commentEntry);
+                                                commentsPanel.revalidate();
+                                                commentsPanel.repaint();
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Failed to delete comment.", "Error", JOptionPane.ERROR_MESSAGE);
+                                            }
+                                        });
+                                        commentLikeDislikePanel.add(deleteButton);
+                                    }
+
+                                    commentEntry.add(commentLikeDislikePanel, BorderLayout.SOUTH);
+
+                                    // Add the comment entry panel to the comments panel
+                                    commentsPanel.add(commentEntry);
                                 }
-
-                                commentEntry.add(commentLikeDislikePanel, BorderLayout.SOUTH);
-
-                                // Add the comment entry panel to the comments panel
-                                commentsPanel.add(commentEntry);
                             }
-                        }
-                        // Display comments panel in a scrollable dialog
-                        JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
-                        JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
+                            // Display comments panel in a scrollable dialog
+                            JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
+                            JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -205,8 +205,6 @@ public class GUI extends JPanel implements GUIInterface  {
                         JTextField commentField = new JTextField(20);
                         JButton submitButton = new JButton("Submit");
                         submitButton.addActionListener(submitEv -> {
-                            // Get the text from the comment field and add it to the post
-                            String commentText = commentField.getText();
                             boolean commentAdded = createComment(commentField.getText(), currentUser.getUsername(), thisPost);
                             if (commentAdded) {
                                 JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -277,9 +275,9 @@ public class GUI extends JPanel implements GUIInterface  {
                         continue;
                     }
                 }
+                // Write the current line to the temp file
+                writer.write(currentLine + System.getProperty("line.separator"));
             }
-            // Write the current line to the temp file
-            writer.write(currentLine + System.getProperty("line.separator"));
 
             // Close readers and writers
             writer.close();
