@@ -1,3 +1,4 @@
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -110,7 +111,7 @@ public class GUI extends JPanel implements GUIInterface {
             String line;
             boolean isFeedEmpty = true;
             JPanel postsPanel = new JPanel();
-            postsPanel.setLayout(new BorderLayout());
+            postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
             postsPanel.setBackground(Color.LIGHT_GRAY);
 
             while ((line = fileReader.readLine()) != null) {
