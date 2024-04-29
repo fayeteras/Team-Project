@@ -34,6 +34,8 @@ public class GUI extends JPanel implements GUIInterface {
     Post post;
 
     JFrame homeScreen = new JFrame(); // Initialize homeScreen frame object
+
+    JFrame viewProfileFrame; //frame that pops-up when viewprofile is called
     JPanel banner;
     JPanel bottomBanner;
     JButton homeButton;
@@ -650,7 +652,10 @@ public class GUI extends JPanel implements GUIInterface {
             blockPanel.add(blockButton);
             blockButton.addActionListener(block -> {
                 user.unblockUser(viewUser.getUsername());
-                blockButton.setVisible(false);
+                viewProfileFrame.setVisible(false);
+                User newView = new User(viewUser.getUsername());
+                viewProfileFrame = viewProfilePanel(newView);
+                viewProfileFrame.setVisible(true);
                 JOptionPane.showMessageDialog(null, "User unblocked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             });
         } else {
@@ -658,7 +663,10 @@ public class GUI extends JPanel implements GUIInterface {
             blockPanel.add(blockButton);
             blockButton.addActionListener(block -> {
                 user.blockUser(viewUser.getUsername());
-                blockButton.setVisible(false);
+                viewProfileFrame.setVisible(false);
+                User newView = new User(viewUser.getUsername());
+                viewProfileFrame = viewProfilePanel(newView);
+                viewProfileFrame.setVisible(true);
                 JOptionPane.showMessageDialog(null, "User blocked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             });
         }
@@ -675,16 +683,25 @@ public class GUI extends JPanel implements GUIInterface {
             friendsPanel.add(addFriendButton);
             addFriendButton.addActionListener(friend -> {
                 user.removeFriend(viewUser.getUsername());
-                addFriendButton.setVisible(false);
+                viewProfileFrame.setVisible(false);
+                User newView = new User(viewUser.getUsername());
+                viewProfileFrame = viewProfilePanel(newView);
+                viewProfileFrame.setVisible(true);
                 JOptionPane.showMessageDialog(null, "Friend removed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             });
         } else {
             JButton addFriendButton = new JButton("Add Friend");
             friendsPanel.add(addFriendButton);
             addFriendButton.addActionListener(friend -> {
-                user.addFriend(viewUser.getUsername());
-                addFriendButton.setVisible(false);
-                JOptionPane.showMessageDialog(null, "Friend added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                if (user.addFriend(viewUser.getUsername())) {
+                    viewProfileFrame.setVisible(false);
+                    User newView = new User(viewUser.getUsername());
+                    viewProfileFrame = viewProfilePanel(newView);
+                    viewProfileFrame.setVisible(true);
+                    JOptionPane.showMessageDialog(null, "Friend added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Cannot friend this user. Either you blocked them or they blocked you.", "Failure", JOptionPane.ERROR_MESSAGE);
+                }
             });
         }
 
@@ -757,7 +774,8 @@ public class GUI extends JPanel implements GUIInterface {
             //Waiting on viewProfile to be created.
 
             //homeScreen.setVisible(false);
-            viewProfilePanel(searchedUser).setVisible(true);
+            viewProfileFrame = viewProfilePanel(searchedUser);
+            viewProfileFrame.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(null,
                     "This username is not in our records!", "HELLo",
