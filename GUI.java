@@ -1,6 +1,8 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.io.*;
 /**
@@ -53,7 +55,14 @@ public class GUI extends JPanel implements GUIInterface  {
         // Initialize bottom panel
         bottomBanner = new JPanel(new BorderLayout());
         bottomBanner.setBackground(Color.LIGHT_GRAY);
-        bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
+        bottomBanner.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+        try {
+            BufferedImage image = ImageIO.read(new File("logo.png"));
+            ImageIcon imageIcon = new ImageIcon(image);
+            JLabel label = new JLabel(imageIcon);
+            bottomBanner.add(label);
+        } catch (IOException e) {
+        }
 
         // Initialize and configure homeButton
         homeButton = new JButton("Home");
@@ -84,6 +93,7 @@ public class GUI extends JPanel implements GUIInterface  {
 
         // Add banner to the top of the homeScreen frame
         homeScreen.add(banner, BorderLayout.NORTH);
+        homeScreen.add(bottomBanner, BorderLayout.SOUTH);
     }
 
     // Individual Post Panel method
@@ -205,6 +215,8 @@ public class GUI extends JPanel implements GUIInterface  {
                         JTextField commentField = new JTextField(20);
                         JButton submitButton = new JButton("Submit");
                         submitButton.addActionListener(submitEv -> {
+                            // Get the text from the comment field and add it to the post
+                            String commentText = commentField.getText();
                             boolean commentAdded = createComment(commentField.getText(), currentUser.getUsername(), thisPost);
                             if (commentAdded) {
                                 JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -499,12 +511,16 @@ public class GUI extends JPanel implements GUIInterface  {
             blockPanel.add(blockButton);
             blockButton.addActionListener(block -> {
                 user.unblockUser(viewUser.getUsername());
+                blockButton.setVisible(false);
+                JOptionPane.showMessageDialog(null, "User unblocked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             });
         } else {
             JButton blockButton = new JButton("Block");
             blockPanel.add(blockButton);
             blockButton.addActionListener(block -> {
                 user.blockUser(viewUser.getUsername());
+                blockButton.setVisible(false);
+                JOptionPane.showMessageDialog(null, "User blocked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             });
         }
 
@@ -520,12 +536,16 @@ public class GUI extends JPanel implements GUIInterface  {
             friendsPanel.add(addFriendButton);
             addFriendButton.addActionListener(friend -> {
                 user.removeFriend(viewUser.getUsername());
+                addFriendButton.setVisible(false);
+                JOptionPane.showMessageDialog(null, "Friend removed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             });
         } else {
             JButton addFriendButton = new JButton("Add Friend");
             friendsPanel.add(addFriendButton);
             addFriendButton.addActionListener(friend -> {
                 user.addFriend(viewUser.getUsername());
+                addFriendButton.setVisible(false);
+                JOptionPane.showMessageDialog(null, "Friend added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             });
         }
 
@@ -536,17 +556,46 @@ public class GUI extends JPanel implements GUIInterface  {
         profilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
         JPanel mainPanel = new JPanel(new GridLayout(0, 1));
         JScrollPane scrollPane = new JScrollPane(profilePanel);
-        JScrollPane postScrollPane = new JScrollPane();
-        for (int i = 0; i < user.getPostsList().size(); i++) {
-            postScrollPane.add(UserPostPanel(user.getPostsList().get(i)));
-        }
+        try (BufferedReader fileReader = new BufferedReader(new FileReader("userPosts.txt"))) {
+            String line;
+            JPanel postsPanel = new JPanel();
+            postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+            //Add header for all the posts
+            JPanel postHeaderPanel = new JPanel(new BorderLayout());
+            postHeaderPanel.setPreferredSize(new Dimension(600, 70));
 
-        mainPanel.add(scrollPane);
-        mainPanel.add(postScrollPane);
+            // Create a JLabel to display the post content
+            JLabel postHeaderText = new JLabel("These are the user's posts:");
+            postHeaderPanel.add(postHeaderText, BorderLayout.CENTER);
+            // Add the post entry panel to the posts panel
+            postsPanel.add(postHeaderPanel);
+            int postCount = 0;
+            while ((line = fileReader.readLine()) != null) {
+                String[] postParts = line.split("\\|");
+                if (postParts.length == 3 && postParts[0].equals(viewUser.getUsername())) { // Check if the post has the correct number of parts
+                    // Create a panel to hold the post content
+                    JPanel postEntry = new JPanel(new BorderLayout());
+                    postEntry.setPreferredSize(new Dimension(600, 70));
+                    postCount++;
+                    // Create a JLabel to display the post content
+                    JLabel postLabel = new JLabel("Post " + postCount + ": " + postParts[2]);
+                    postEntry.add(postLabel, BorderLayout.CENTER);
+                    // Add the post entry panel to the posts panel
+                    postsPanel.add(postEntry);
+                }
+            }
+            // Display posts panel in a scrollable dialog
+            JScrollPane postsScrollPane = new JScrollPane(postsPanel);
+            mainPanel.add(scrollPane);
+            mainPanel.add(postsScrollPane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         JFrame viewFrame = new JFrame();
         viewFrame.add(mainPanel, BorderLayout.CENTER);
+        viewFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         return viewFrame;
     }
 
@@ -608,6 +657,7 @@ public class GUI extends JPanel implements GUIInterface  {
             // Write the updated post ID back to the file
             BufferedWriter writer = new BufferedWriter(new FileWriter(postIDFile));
             writer.write(String.valueOf(postID));
+            writer.flush();
             writer.close();
 
             // Write the post details to the posts file using the incremented post ID
