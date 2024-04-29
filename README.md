@@ -1,17 +1,20 @@
 **1. INSTRUCTIONS ON HOW TO COMPILE AND RUN OUR PROJECT**
 
-In order to do anything with our code, you must download it all first. In the "<> Code" section of our project, please click the dropdown arrow on the green "<> Code" button. Click on the button titled "Download ZIP" to download all of our project files to place into an editor of your choice. If you are using Vocareum, you will need to enter the command "javac {java class here}" for every one of the java files in our project to compile. Also, multiple java files in our project use JUnit testing, so be sure to add the current JUnit library to the classpath if not already done so. 
+In order to do anything with our code, you must download it all first. In the "<> Code" section of our project, please click the dropdown arrow on the green "<> Code" button. Click on the button titled "Download ZIP" to download all of our project files to place into an editor of your choice. If you are using Vocareum, you will need to enter the command "javac {java class here}" for every one of the java files in our project to compile. Also, multiple java files in our project use JUnit testing, so be sure to add the current JUnit library to the classpath if not already done so.
 
 Server must be run first, and once the server is up and running the Client class can be run. The client class will automatically launch the GUI and enable account creation and sign in. All of our test cases may also be run to ensure functionality of each action.
 
-There are nineteen java classes, six of which are for test cases and seven of which are interfaces that are implemented by the other java classes. 
+There are nineteen java classes, six of which are for test cases and seven of which are interfaces that are implemented by the other java classes. Along with these, there are six .txt files and one .png file for our platform's logo. Please be sure that all of these files are included.
 
 
 
 **2. MEMBER SUBMISSION TIMESTAMPS**
 
 April 1st, 2024 - Phase 1 Vocareum workspace submitted - Faye Teras
-April 15th, 2024 - Phase 2 Vocareum workspace submitted - Sean VandenBussche
+April 15th, 2024 - Phase 2 Vocareum workspace submitted - Faye Teras
+April 29th, 2024 - Phase 3 Vocareum workspace submitted - Sean VandenBussche
+April 29th, 2024 - Phase 3 project report submitted - Sean VandenBussche
+April 29th, 2024 - Phase 3 project presentation submitted - Sean VandenBussche
 
 **3. CLASS SUMMARY**
 
