@@ -1,5 +1,1 @@
-//format here
-Username|PostID|Content
-//examples here
-Seanski|1|You are so h!
-SealedFayte|1|I LOVE CODINF!!!
+
