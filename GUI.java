@@ -110,59 +110,68 @@ public class GUI extends JPanel implements GUIInterface {
             String line;
             boolean isFeedEmpty = true;
             JPanel postsPanel = new JPanel();
-            postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+            postsPanel.setLayout(new BorderLayout());
+            postsPanel.setBackground(Color.LIGHT_GRAY);
+
             while ((line = fileReader.readLine()) != null) {
                 String[] postParts = line.split("\\|");
                 if (postParts.length == 3) { // Check if the post has the correct number of parts
                     String friendLine;
                     boolean isFriendPost = false;
-                    BufferedReader friendReader = new BufferedReader(new FileReader(currentUser.getUsername() + "_Friends.txt"));
-                    while ((friendLine = friendReader.readLine()) != null) {
-                        if (friendLine.equals(postParts[0])) {
-                            isFriendPost = true;
+                    try (BufferedReader friendReader = new BufferedReader(new FileReader(currentUser.getUsername() + "_Friends.txt"))) {
+                        while ((friendLine = friendReader.readLine()) != null) {
+                            if (friendLine.equals(postParts[0])) {
+                                isFriendPost = true;
+                                break;
+                            }
                         }
                     }
+
                     if (isFriendPost) {
-                        Post thisPost = new Post(user.getUsername(), Integer.parseInt(postParts[1]));
-                        if (isPostHidden(thisPost)) { //Don't show post if user has hidden it already
-                            continue;
+                        Post thisPost = new Post(postParts[0], Integer.parseInt(postParts[1]));
+                        if (isPostHidden(thisPost)) {
+                            continue; // Skip if the post is hidden
                         }
 
-                        //If a friend post is found, the feed is not empty
                         isFeedEmpty = false;
 
-                        // Create a panel to hold the post content
+                        // Create a panel for the post entry
                         JPanel postEntry = new JPanel(new BorderLayout());
-                        postEntry.setPreferredSize(new Dimension(600, 90));
+                        postEntry.setPreferredSize(new Dimension(600, 200));
                         postEntry.setBorder(new LineBorder(SECONDARY_COLOR, 1));
 
-                        //Top Banner
+                        // Top banner
                         JPanel topBanner = new JPanel(new BorderLayout());
                         topBanner.setPreferredSize(new Dimension(600, 20));
                         topBanner.setBackground(SECONDARY_COLOR);
                         JLabel usernameLabel = new JLabel(postParts[0]);
                         usernameLabel.setFont(HEADER_FONT);
+                        usernameLabel.setBackground(Color.WHITE);
                         topBanner.add(usernameLabel, BorderLayout.WEST);
 
-                        //Hide Post Button
-                        JButton hidePost = new JButton("Hide");
-                        topBanner.add(hidePost, BorderLayout.EAST);
-                        hidePost.addActionListener(e -> {
-                            hidePost(thisPost, postEntry);
-                        });
+                        // Hide post button
+                        JButton hidePostButton = new JButton("Hide");
+                        hidePostButton.setFont(TEXT_FONT);
+                        hidePostButton.setBackground(SECONDARY_COLOR);
+                        hidePostButton.addActionListener(e -> hidePost(thisPost, postEntry));
+                        topBanner.add(hidePostButton, BorderLayout.EAST);
 
-                        // Create a JLabel to display the post content
+                        // Post content label
                         JLabel postLabel = new JLabel(postParts[2]);
+                        postLabel.setPreferredSize(new Dimension(600, 50));
                         postLabel.setFont(TEXT_FONT);
                         postEntry.add(postLabel, BorderLayout.CENTER);
 
-                        // Create a panel to hold the like and dislike buttons
+                        // Like and dislike panel
                         JPanel likeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                        likeDislikePanel.setPreferredSize(new Dimension(600, 50));
+                        likeDislikePanel.setBackground(Color.LIGHT_GRAY);
 
                         // Create like button for the post
                         JButton likeButton = new JButton("Like");
+                        likeButton.setFont(TEXT_FONT);
+                        likeButton.setBackground(SECONDARY_COLOR);
                         likeButton.addActionListener(e -> {
-                            // Handle like action
                             recordLikeDislikePost(postParts[2], "like");
                             JOptionPane.showMessageDialog(null, "Post liked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                         });
@@ -170,40 +179,42 @@ public class GUI extends JPanel implements GUIInterface {
 
                         // Create dislike button for the post
                         JButton dislikeButton = new JButton("Dislike");
+                        dislikeButton.setFont(TEXT_FONT);
+                        dislikeButton.setBackground(SECONDARY_COLOR);
                         dislikeButton.addActionListener(e -> {
-                            // Handle dislike action
                             recordLikeDislikePost(postParts[2], "dislike");
                             JOptionPane.showMessageDialog(null, "Post disliked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                         });
                         likeDislikePanel.add(dislikeButton);
 
-
-                        JButton commentButton = new JButton("View Comments");
-                        commentButton.addActionListener(e -> {
-                            // View comments for the current post
+                        // Inner method: viewComments
+                        ActionListener viewCommentsListener = e -> {
                             try (BufferedReader commentReader = new BufferedReader(new FileReader("userComments.txt"))) {
                                 String commentLine;
                                 JPanel commentsPanel = new JPanel();
                                 commentsPanel.setLayout(new BoxLayout(commentsPanel, BoxLayout.Y_AXIS));
+
                                 while ((commentLine = commentReader.readLine()) != null) {
                                     String[] commentParts = commentLine.split("\\|");
                                     if (commentParts.length == 3 && commentParts[1].equals(String.valueOf(thisPost.getPostID()))) {
                                         // Create a panel to hold the comment content
                                         JPanel commentEntry = new JPanel(new BorderLayout());
                                         commentEntry.setPreferredSize(new Dimension(600, 70));
+                                        commentEntry.setBorder(new LineBorder(SECONDARY_COLOR, 1));
 
                                         // Create a JLabel to display the comment content
                                         JLabel commentLabel = new JLabel(commentParts[0] + ": " + commentParts[2]);
                                         commentLabel.setFont(TEXT_FONT);
                                         commentEntry.add(commentLabel, BorderLayout.CENTER);
 
-                                        // Create a panel to hold like and dislike buttons
+                                        // Create a panel to hold like and dislike buttons for comment
                                         JPanel commentLikeDislikePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
                                         // Create like button for the comment
                                         JButton commentLikeButton = new JButton("Like");
+                                        commentLikeButton.setFont(TEXT_FONT);
+                                        commentLikeButton.setBackground(SECONDARY_COLOR);
                                         commentLikeButton.addActionListener(ev -> {
-                                            // Handle like action for comment
                                             recordLikeDislike(commentParts[2], "like");
                                             JOptionPane.showMessageDialog(null, "Comment liked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                                         });
@@ -211,17 +222,20 @@ public class GUI extends JPanel implements GUIInterface {
 
                                         // Create dislike button for the comment
                                         JButton commentDislikeButton = new JButton("Dislike");
+                                        commentDislikeButton.setFont(TEXT_FONT);
+                                        commentDislikeButton.setBackground(SECONDARY_COLOR);
                                         commentDislikeButton.addActionListener(ev -> {
-                                            // Handle dislike action for comment
                                             recordLikeDislike(commentParts[2], "dislike");
                                             JOptionPane.showMessageDialog(null, "Comment disliked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                                         });
                                         commentLikeDislikePanel.add(commentDislikeButton);
 
                                         // Check if the current user is the owner of the post or the comment author
-                                        if (commentParts[0].equals(user.getUsername()) || postParts[0].equals(user.getUsername())) {
+                                        if (commentParts[0].equals(currentUser.getUsername()) || postParts[0].equals(currentUser.getUsername())) {
                                             // Create delete button for the comment
                                             JButton deleteButton = new JButton("Delete");
+                                            deleteButton.setFont(TEXT_FONT);
+                                            deleteButton.setBackground(SECONDARY_COLOR);
                                             deleteButton.addActionListener(ev -> {
                                                 // Handle delete action for comment
                                                 if (deleteComment(commentParts[2], commentParts[0])) {
@@ -242,29 +256,39 @@ public class GUI extends JPanel implements GUIInterface {
                                         commentsPanel.add(commentEntry);
                                     }
                                 }
+
                                 // Display comments panel in a scrollable dialog
                                 JScrollPane commentsScrollPane = new JScrollPane(commentsPanel);
                                 JOptionPane.showMessageDialog(null, commentsScrollPane, "Comments", JOptionPane.INFORMATION_MESSAGE);
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
-                        });
+                        };
+
+                        JButton commentButton = new JButton("View Comments");
+                        commentButton.setFont(TEXT_FONT);
+                        commentButton.setBackground(SECONDARY_COLOR);
+                        commentButton.addActionListener(viewCommentsListener);
                         likeDislikePanel.add(commentButton);
 
-                        // Add comment button
-                        JButton addCommentButton = new JButton("Add Comment");
-                        addCommentButton.addActionListener(e -> {
+                        // Inner method: addComment
+                        ActionListener addCommentListener = e -> {
                             // Create a dialog to add a comment
-                            JDialog addCommentDialog = new JDialog(homeScreen, "Add Comment", true);
+                            JDialog addCommentDialog = new JDialog((JFrame) null, "Add Comment", true);
                             addCommentDialog.setLayout(new BorderLayout());
 
                             // Text field to enter comment
                             JTextField commentField = new JTextField(20);
+                            commentField.setFont(TEXT_FONT);
+
+                            // Submit button
                             JButton submitButton = new JButton("Submit");
+                            submitButton.setFont(TEXT_FONT);
+                            submitButton.setBackground(SECONDARY_COLOR);
                             submitButton.addActionListener(submitEv -> {
                                 // Get the text from the comment field and add it to the post
                                 String commentText = commentField.getText();
-                                boolean commentAdded = createComment(commentField.getText(), currentUser.getUsername(), thisPost);
+                                boolean commentAdded = createComment(commentText, currentUser.getUsername(), thisPost);
                                 if (commentAdded) {
                                     JOptionPane.showMessageDialog(null, "Comment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                                 } else {
@@ -284,34 +308,41 @@ public class GUI extends JPanel implements GUIInterface {
                             addCommentDialog.setSize(300, 150);
                             addCommentDialog.setLocationRelativeTo(null);
                             addCommentDialog.setVisible(true);
-                        });
+                        };
+
+                        JButton addCommentButton = new JButton("Add Comment");
+                        addCommentButton.setFont(TEXT_FONT);
+                        addCommentButton.setBackground(SECONDARY_COLOR);
+                        addCommentButton.addActionListener(addCommentListener);
                         likeDislikePanel.add(addCommentButton);
 
                         postEntry.add(likeDislikePanel, BorderLayout.SOUTH);
                         postEntry.add(topBanner, BorderLayout.NORTH);
-                        // Add the post entry panel to the posts panel
-                        postsPanel.add(postEntry);
+                        postsPanel.add(postEntry, BorderLayout.NORTH);
                     }
                 }
             }
-            // Display posts panel in a scrollable dialog
-            if (isFeedEmpty) {
-                JPanel postEntry = new JPanel(new BorderLayout());
-                postEntry.setPreferredSize(new Dimension(600, 70));
 
-                // Create a JLabel to display the post content
-                JLabel postLabel = new JLabel("Your post feed is empty! Why don't you find some friends?");
-                postLabel.setFont(TEXT_FONT);
-                postEntry.add(postLabel, BorderLayout.CENTER);
-                postsPanel.add(postEntry);
+            // Display empty feed message if needed
+            if (isFeedEmpty) {
+                JPanel emptyFeedPanel = new JPanel(new BorderLayout());
+                emptyFeedPanel.setPreferredSize(new Dimension(600, 70));
+
+                JLabel emptyFeedLabel = new JLabel("Your post feed is empty! Why don't you find some friends?");
+                emptyFeedLabel.setFont(TEXT_FONT);
+                emptyFeedPanel.add(emptyFeedLabel, BorderLayout.CENTER);
+
+                postsPanel.add(emptyFeedPanel);
             }
+
+            // Display posts panel in a scrollable dialog
             JScrollPane postsScrollPane = new JScrollPane(postsPanel);
+            postsScrollPane.setPreferredSize(new Dimension(1000, 500));
             JOptionPane.showMessageDialog(null, postsScrollPane, "Posts", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     private void hidePost(Post post, JPanel postEntry) {
         // Create a confirmation dialog asking the user if they want to hide the post
         int response = JOptionPane.showConfirmDialog(
@@ -456,6 +487,7 @@ public class GUI extends JPanel implements GUIInterface {
 
         // Bottom panel for likes, dislikes, and view comments button
         JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setPreferredSize(new Dimension(600, 200));
 
         // Likes and dislikes buttons panel
         JPanel likesDislikesPanel = new JPanel(new GridLayout(1, 4));
@@ -523,7 +555,7 @@ public class GUI extends JPanel implements GUIInterface {
         postPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // Set maximum size of the post panel
-        postPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+        postPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
 
         return postPanel;
     }
@@ -539,6 +571,7 @@ public class GUI extends JPanel implements GUIInterface {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         JButton addPostButton = new JButton("Create Post");
+        addPostButton.setPreferredSize(new Dimension(100, 50));
         addPostButton.addActionListener(e -> {
             // Create a dialog to add a comment
             JDialog addPostDialog = new JDialog(homeScreen, "Add Post", true);
@@ -574,6 +607,7 @@ public class GUI extends JPanel implements GUIInterface {
         postsPanel.add(addPostButton);
 
         JButton viewPostsButton = new JButton("Get Friend Feed");
+        viewPostsButton.setPreferredSize(new Dimension(100, 50));
         viewPostsButton.addActionListener(e -> {
             viewPosts(user);
         });
